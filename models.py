@@ -5,24 +5,36 @@ from django.db import models
 
 
 class MediaSet(models.Model):
-    # Generic relation to the object.
+    """A collection of media (photos/galleries/documents)."""
+    # Generic relation to an object.
     content_type = models.ForeignKey(ContentType)
     object_id = models.TextField()
-    content_object = generic.GenericForeignKey('content_type', 'object_id')
+    content_object = generic.GenericForeignKey('content_type',
+        'object_id')
     
-    photos = models.ManyToManyField('photologue.Photo', null=True, blank=True)
-    galleries = models.ManyToManyField('photologue.Gallery', null=True, blank=True)
-    documents = models.ManyToManyField('Document', null=True, blank=True)
+    photos = models.ManyToManyField('photologue.Photo', null=True,
+        blank=True)
+    galleries = models.ManyToManyField('photologue.Gallery',
+        null=True, blank=True)
+    documents = models.ManyToManyField('Document', null=True,
+        blank=True)
     
     class Meta:
         unique_together = ['content_type', 'object_id']
+    
+    @property
+    def photo(self):
+        """Return the first photo from photos.all(), if one exists."""
+        photos = self.photos.all()
+        return photos and photos[0] or None
 
 
 class Document(models.Model):
     name = models.CharField(max_length=200)
     file = models.FileField(upload_to='uploads/documents')
     
-    created_at = models.DateTimeField(auto_now_add=True, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True,
+        editable=False)
     created_by = models.ForeignKey(User, editable=False,
         related_name='document_created_by_user')
     
