@@ -25,8 +25,11 @@ class MediaSet(models.Model):
     @property
     def photo(self):
         """Return the first photo from photos.all(), if one exists."""
-        photos = self.photos.all()
-        return photos and photos[0] or None
+        try:
+            photo = self.photos.all()[0]
+        except IndexError:
+            photo = None
+        return photo
 
 
 class Document(models.Model):
