@@ -1,0 +1,38 @@
+
+/* hide/show elements depending if javascript is enbabled */
+.action.initiate_image_picker {display: none;}
+.image_select_multiple.js-enabled .action.initiate_image_picker {display: inline;}
+.image_select_multiple.js-enabled select {display: none;}
+
+.image_select_multiple .selected_images,
+.image_select_multiple .image_picker {
+  clear: both;
+}
+
+.image_select_multiple .selected_images li,
+.image_select_multiple .image_picker li {
+  display: block;
+  float: left;
+  list-style-type: none;
+}
+
+.image_select_multiple .action,
+.image_select_multiple .image_picker li {
+  cursor: pointer;
+}
+
+.image_select_multiple .image_picker li.selected {
+  background-color: red;
+}
+
+.image_select_multiple .image_picker li:hover {
+  background-color: yellow;
+}
+
+.image_select_multiple .selected_images .action.close,
+.image_select_multiple .selected_images .pagination,
+.image_select_multiple .selected_images .filter,
+.image_select_multiple .image_picker .action.remove {
+  display: none;
+}
+
