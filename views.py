@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.generic.list_detail import object_list
 
 
-PAGINATE_BY = getattr(settings, 'MEDIA_PAGINATE_BY', 10)
+PAGINATE_BY = getattr(settings, 'MEDIA_PAGINATE_BY', 3)
 
 if getattr(settings, 'DEBUG', False):
     def test(request):
@@ -25,8 +25,8 @@ if getattr(settings, 'DEBUG', False):
 
 def image_picker(request):
     """Image picker."""
-    if not request.is_ajax():
-        return HttpResponseBadRequest('error')
+    #if not request.is_ajax():
+    #    return HttpResponseBadRequest('error')
     
     #TODO: Get the queryset specified passed to
     # ImageMultipleChoiceField? Form post/session?

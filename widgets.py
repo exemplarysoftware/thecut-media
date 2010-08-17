@@ -13,9 +13,11 @@ class ImageSelectMultiple(SelectMultiple):
     help_text = 'Choose images...'
     
     class Media:
-        css = {'all': ['stylesheets/image_select_multiple.css']}
-        js = ['http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js']
-        js += ['javascripts/image_select_multiple.js']
+        css = {'all': ['stylesheets/image_select_multiple.css',
+            'stylesheets/jquery.fancybox.css']}
+        js = ['javascripts/jquery-1.4.2.js',
+            'javascripts/jquery.fancybox.js',
+            'javascripts/image_select_multiple.js']
     
     def __init__(self, *args, **kwargs):
         super(ImageSelectMultiple, self).__init__(*args, **kwargs)
@@ -29,8 +31,7 @@ class ImageSelectMultiple(SelectMultiple):
         image_picker_url = reverse('media_image_picker', args={})
         output += mark_safe(
             '<a class="action initiate_image_picker" href="%s">select images</a>\
-                <div class="selected_images"><ul></ul></div>\
-                <div class="image_picker"></div>'
+                <div class="selected_images"><ul></ul></div>'
             %(image_picker_url))
         return output
 
