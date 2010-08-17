@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.generic.list_detail import object_list
 
 
-PAGINATE_BY = getattr(settings, 'MEDIA_PAGINATE_BY', 3)
+PAGINATE_BY = getattr(settings, 'MEDIA_PAGINATE_BY', 10)
 
 if getattr(settings, 'DEBUG', False):
     def test(request):
