@@ -36,3 +36,16 @@
   display: none;
 }
 
+/**/
+.image_select_multiple .image_picker .filter {
+  background-color: #e1e1e1;
+  padding: 5px;
+}
+
+.image_select_multiple .image_picker .pagination {
+  float: right;
+  color: #666666;
+  padding: 5px;
+}
+
+

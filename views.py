@@ -25,8 +25,8 @@ if getattr(settings, 'DEBUG', False):
 
 def image_picker(request):
     """Image picker."""
-    #if not request.is_ajax():
-    #    return HttpResponseBadRequest('error')
+    if not request.is_ajax():
+        return HttpResponseBadRequest('error')
     
     #TODO: Get the queryset specified passed to
     # ImageMultipleChoiceField? Form post/session?

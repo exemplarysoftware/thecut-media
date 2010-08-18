@@ -1,18 +1,7 @@
-{% for photo in photo_list %}
-{% if forloop.first %}<ul>{% endif %}
-  <li id="photo-{{ photo.pk }}">
-    <img src="{{ photo.get_admin_thumbnail_url }}" alt="{{ photo }}" />
-    {{ photo }}
-    <span class="action remove">[x]</span>
-  </li>
-{% if forloop.last %}</ul>{% endif %}
-{% endfor %}
-<!--<span class="action close">[X]</span>-->
-
 <div class="pagination">
   <span class="step-links">
     <span class="current">
-      Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+      Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
     </span>
     {% if page_obj.has_previous %}
       <a href="{% url media_image_picker %}?page={{ page_obj.previous_page_number }}{% if q %}&amp;q={{ q }}{% endif %}" class="action paginate">previous</a>
@@ -26,9 +15,19 @@
 <div class="filter">
   <div>
   <form action="{% url media_image_picker %}" method="post">
-    <div><input type="text" name="q" value="{{ q|default:"" }}" /></div>
+    <span><input type="text" name="q" value="{{ q|default:"" }}" /></span>
   </form>
   <a href="{% url media_image_picker %}" class="action reset">reset</a>
   </div>
 </div>
+
+{% for photo in photo_list %}
+{% if forloop.first %}<ul>{% endif %}
+  <li id="photo-{{ photo.pk }}">
+    <img src="{{ photo.get_admin_thumbnail_url }}" alt="{{ photo }}" />
+    {{ photo }}
+    <span class="action remove">[x]</span>
+  </li>
+{% if forloop.last %}</ul>{% endif %}
+{% endfor %}
 

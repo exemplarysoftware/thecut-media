@@ -10,10 +10,17 @@ $(document).ready(function() {
     
     /* initiate image picker / fancybox*/
     $(this).fancybox({
-      'onComplete': function() {
-        $.fancybox.resize();
+      'autoDimensions': false,
+      'overlayColor': '#000',
+      'overlayOpacity': '0.6',
+      
+      'onStart': function() {
         $('#fancybox-outer').addClass('image_select_multiple');
         $('#fancybox-inner').addClass('image_picker');
+      },
+      
+      'onComplete': function() {
+        //$.fancybox.resize();
         
         /* add image to selection */
         image_picker.find('li').live('click', function (event) {
