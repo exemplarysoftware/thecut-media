@@ -15,7 +15,7 @@ class ImageSelectMultiple(SelectMultiple):
     class Media:
         css = {'all': ['stylesheets/image_select_multiple.css',
             'stylesheets/jquery.fancybox.css']}
-        js = ['javascripts/jquery-1.4.2.js',
+        js = ['javascripts/jquery.js',
             'javascripts/jquery.fancybox.js',
             'javascripts/image_select_multiple.js']
     
