@@ -25,12 +25,20 @@ class MediaSet(models.Model):
     
     @property
     def photo(self):
-        """Return the first photo from photos.all(), if one exists."""
+        """Return the first photo from all_photos, if one exists."""
         try:
-            photo = self.photos.all()[0]
+            photo = self.all_photos[0]
         except IndexError:
             photo = None
         return photo
+    
+    @property
+    def all_photos(self):
+        """Return all photos and all gallery photos."""
+        photos = list(self.photos.all())
+        for gallery in self.galleries.all():
+            photos += list(gallery.photos.all())
+        return photos
 
 
 class Document(models.Model):
