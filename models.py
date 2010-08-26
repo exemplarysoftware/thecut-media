@@ -3,6 +3,11 @@ from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
+try:
+    from magic import Magic
+except ImportError:
+    Magic = None
+
 
 class MediaSet(models.Model):
     """A collection of media (photos/galleries/documents)."""
@@ -54,4 +59,19 @@ class Document(models.Model):
     
     def get_absolute_url(self):
         return self.file.url
+    
+    @property
+    def mime_type(self):
+        """Determine the MIME type of this document.
+        
+        Requires recent version of python-magic from
+        http://github.com/ahupp/python-magic
+        
+        """
+        if Magic:
+            magic = Magic(mime=True)
+            mime = magic.from_file(self.file.path)
+        else:
+            mime = None
+        return mime
 

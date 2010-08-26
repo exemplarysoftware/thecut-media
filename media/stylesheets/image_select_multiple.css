@@ -26,7 +26,7 @@
 }
 
 .image_select_multiple .image_picker li:hover {
-  background-color: yellow;
+  background-color: #00aeef;
 }
 
 .image_select_multiple .selected_images .action.close,
