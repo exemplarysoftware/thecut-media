@@ -8,11 +8,16 @@ $(document).ready(function() {
     var image_picker = $('#fancybox-inner');
     var image_picker_url = image_select.find('.action.initiate_image_picker').attr('href');
     
-    /* initiate image picker / fancybox*/
+    /* initiate image picker / fancybox */
     $(this).fancybox({
       'autoDimensions': false,
-      'overlayColor': '#000',
-      'overlayOpacity': '0.6',
+      'height': 504,
+      'padding': 20,
+      'scrolling': 'no',
+      'showCloseButton': false,
+      'width': 750,
+      'overlayColor': '#000000',
+      'overlayOpacity': '0.8',
       
       'onStart': function() {
         $('#fancybox-outer').addClass('image_select_multiple');
@@ -20,8 +25,6 @@ $(document).ready(function() {
       },
       
       'onComplete': function() {
-        //$.fancybox.resize();
-        
         /* add image to selection */
         image_picker.find('li').live('click', function (event) {
           var item = $(this);
@@ -34,6 +37,10 @@ $(document).ready(function() {
           }
           event.preventDefault();
           return false;
+        });
+        
+        image_picker.find('.action.close').live('click', function(event) {
+          $.fancybox.close();
         });
       },
       
@@ -51,7 +58,7 @@ $(document).ready(function() {
     });
     
     /* filter */
-    image_picker.find('.filter input').live('change', function () {
+    image_picker.find('.filter input[type="text"]').live('change', function () {
       var q = $(this).val();
       var form = $(this).closest('form');
       image_picker.load(form.attr('action'), {'q': q});
@@ -67,15 +74,22 @@ $(document).ready(function() {
     });
     
     /* filter button */
-    /*image_picker.find('.action.filter').live('click', function (event) {
-      image_picker.find('.filter input').change();
+    image_picker.find('.action.filter').live('click', function (event) {
+      image_picker.find('.filter input[type="text"]').change();
       event.preventDefault();
       return false;
-    });*/
+    });
     
     /* reset */
     image_picker.find('.action.reset').live('click', function (event) {
       image_picker.load(image_picker_url);
+      event.preventDefault();
+      return false;
+    });
+    
+    /* reset */
+    image_picker.find('.action.new').live('click', function (event) {
+      alert('Not implemented.');
       event.preventDefault();
       return false;
     });

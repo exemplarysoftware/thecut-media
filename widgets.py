@@ -30,7 +30,7 @@ class ImageSelectMultiple(SelectMultiple):
         output = super(ImageSelectMultiple, self).render(*args, **kwargs)
         image_picker_url = reverse('media_image_picker', args={})
         output += mark_safe(
-            '<a class="action initiate_image_picker" href="%s">select images</a>\
+            '<a class="action initiate_image_picker" href="%s">Select Images</a>\
                 <div class="selected_images"></div>'
             %(image_picker_url))
         return output
