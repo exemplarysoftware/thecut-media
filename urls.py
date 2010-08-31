@@ -4,6 +4,8 @@ from django.conf.urls.defaults import *
 
 urlpatterns = patterns('media.views',
     url(r'^image-picker$', 'image_picker', name='media_image_picker'),
+    url(r'^gallery-picker$', 'gallery_picker', name='media_gallery_picker'),
+    url(r'^document-picker$', 'document_picker', name='media_document_picker'),
 )
 
 if getattr(settings, 'DEBUG', False):

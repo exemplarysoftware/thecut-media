@@ -42,7 +42,7 @@ class MediaSet(models.Model):
 
 
 class Document(models.Model):
-    name = models.CharField(max_length=200)
+    title = models.CharField(max_length=200)
     file = models.FileField(upload_to='uploads/documents')
     
     created_at = models.DateTimeField(auto_now_add=True,
@@ -56,10 +56,10 @@ class Document(models.Model):
     
     class Meta:
         get_latest_by = 'created_at'
-        ordering = ['name']
+        ordering = ['title']
     
     def __unicode__(self):
-        return self.name
+        return self.title
     
     def get_absolute_url(self):
         return self.file.url

@@ -1,0 +1,38 @@
+{% load thumbnail %}
+<span class="action close">Close</span>
+<h2>Select Documents</h2>
+
+{% comment %}
+<div class="pagination">
+  <span class="step-links">
+    <span class="current">
+      Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+    </span>
+    {% if page_obj.has_previous %}
+      <a href="{% url media_document_picker %}?page={{ page_obj.previous_page_number }}{% if q %}&amp;q={{ q }}{% endif %}" class="action paginate">previous</a>
+    {% endif %}
+    {% if page_obj.has_next %}
+      <a href="{% url media_document_picker %}?page={{ page_obj.next_page_number }}{% if q %}&amp;q={{ q }}{% endif %}" class="action paginate">next</a>
+    {% endif %}
+  </span>
+</div>
+{% endcomment %}
+
+<a href="" class="action new">Upload Document</a>
+<div class="filter">
+  <form action="{% url media_document_picker %}" method="post">
+    <span><input type="text" name="q" value="{{ q|default:"" }}" /><input type="image" src="{{ MEDIA_URL }}images/document_picker_search.gif" class="action filter" /></span>
+  </form>
+  <!--<a href="{% url media_document_picker %}" class="action reset">reset</a>-->
+</div>
+
+{% for document in document_list %}
+{% if forloop.first %}<ul>{% endif %}
+  <li id="document-{{ document.pk }}">
+    <img src="{% thumbnail document.file "100x75" crop="smart" %}" alt="{{ document }}" />
+    {{ document }}
+    <span class="action remove">[x] Remove</span>
+  </li>
+{% if forloop.last %}</ul>{% endif %}
+{% endfor %}
+
