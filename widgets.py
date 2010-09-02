@@ -64,8 +64,9 @@ class ImageSelectMultiple(SelectMultiple):
         css = {'all': ['stylesheets/image_select_multiple.css',
             'stylesheets/jquery.fancybox.css']}
         js = ['javascripts/jquery.js',
+            'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/jquery-ui.min.js',
             'javascripts/jquery.fancybox.js',
-            'javascripts/image_select_multiple.js']
+            'javascripts/image_select_multiple.js',]
     
     def __init__(self, *args, **kwargs):
         super(ImageSelectMultiple, self).__init__(*args, **kwargs)

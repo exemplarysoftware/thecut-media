@@ -30,10 +30,17 @@ $(document).ready(function() {
           var item = $(this);
           var selected_images_ul = selected_images.find('ul');
           var photo_value = parseInt(item.attr('id').match(/.*-(\d+)/)[1]);
-          select.children('option[value="' + photo_value + '"]').attr('selected', 'selected');
+          // select option, and place at end of list.
+          select.children('option[value="' + photo_value + '"]').remove().appendTo(select).attr('selected', 'selected');
           item.addClass('selected');
           if (!$(selected_images_ul).children('#' + item.attr('id')).length) {
-            item.clone().appendTo(selected_images_ul);
+            if ($(selected_images_ul).children('li').length) {
+              item.clone().appendTo(selected_images_ul);
+            }
+            else {
+              // ensure sortable is bound to list
+              select.change();
+            }
           }
           event.preventDefault();
           return false;
@@ -116,11 +123,26 @@ $(document).ready(function() {
     var image_picker_url = image_select.find('.action.initiate_image_picker').attr('href');
     if (select.val()) {
       var ids = select.val().toString();
-      selected_images.load(image_picker_url, {'ids': ids});
+      selected_images.load(image_picker_url, {'ids': ids}, function() {
+        selected_images.find('ul').sortable({
+          cursor: 'move',
+          
+          update: function(event, ui) {
+            // Update option order in select.
+            var order = $(this).sortable('toArray');
+            $.each(order.reverse(), function(index, item) {
+              var photo_value = parseInt(item.match(/.*-(\d+)/)[1]);
+              select.find('option[value="' + photo_value + '"]').remove().prependTo(select);
+            });
+          },
+          
+        });
+      });
     }
     else {
       selected_images.empty().append('<ul></ul>');
     }
+    
   });
   
   $('.image_select_multiple select').change();

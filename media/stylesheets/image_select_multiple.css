@@ -50,6 +50,10 @@
   list-style-type: none;
 }
 
+.image_select_multiple .selected_images li {
+  cursor: move;
+}
+
 .image_select_multiple .action,
 .image_select_multiple .image_picker li {
   cursor: pointer;
@@ -118,8 +122,11 @@
 .image_select_multiple .selected_images .action.remove {
   position: absolute;
   bottom: 0;
-  display: block;
+  display: none;
   width: 100px;
   color: #666666;
 }
-
+  
+  .image_select_multiple .selected_images li:hover .action.remove {
+    display: block;
+  }
