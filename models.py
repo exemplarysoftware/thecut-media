@@ -13,8 +13,8 @@ class MediaSet(models.Model):
     content_object = generic.GenericForeignKey('content_type',
         'object_id')
     
-    photos = models.ManyToManyField('photologue.Photo', null=True,
-        blank=True)
+    photos = models.ManyToManyField('photologue.Photo',
+        through='AttachedPhoto', null=True, blank=True)
     galleries = models.ManyToManyField('photologue.Gallery',
         null=True, blank=True)
     documents = models.ManyToManyField('Document', null=True,
@@ -35,10 +35,25 @@ class MediaSet(models.Model):
     @property
     def all_photos(self):
         """Return all photos and all gallery photos."""
-        photos = list(self.photos.all())
+        photos = list(self.photos.order_by('attachedphoto__order'))
         for gallery in self.galleries.all():
             photos += list(gallery.photos.all())
         return photos
+
+
+class AttachedPhoto(models.Model):
+    photo = models.ForeignKey('photologue.Photo')
+    mediaset = models.ForeignKey('MediaSet')
+    order = models.PositiveSmallIntegerField(default=0)
+    
+    class Meta:
+        ordering = ['order', '-photo__date_added']
+    
+    def __unicode__(self):
+        return self.photo.__unicode__()
+    
+    def get_absolute_url(self):
+        return self.photo.get_absolute_url()
 
 
 class Document(models.Model):
