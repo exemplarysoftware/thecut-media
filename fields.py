@@ -1,18 +1,20 @@
-from django.forms import ModelMultipleChoiceField
+from django.forms import ModelMultipleChoiceField, MultipleChoiceField
+from django.forms.util import ValidationError
+from django.utils.encoding import force_unicode
 from media.widgets import DocumentSelectMultiple, GallerySelectMultiple, ImageSelectMultiple
 
 
 class DocumentMultipleChoiceField(ModelMultipleChoiceField):
-    """ModelMultipleChoiceField select field with ajax document picker."""
+    """ModelMultipleChoiceField with ajax document picker."""
     widget = DocumentSelectMultiple()
 
 
 class GalleryMultipleChoiceField(ModelMultipleChoiceField):
-    """ModelMultipleChoiceField select field with ajax gallery picker."""
+    """ModelMultipleChoiceField with ajax gallery picker."""
     widget = GallerySelectMultiple()
 
 
-class ImageMultipleChoiceField(ModelMultipleChoiceField):
-    """ModelMultipleChoiceField select field with ajax image picker."""
+class ImageMultipleChoiceField(MultipleChoiceField):
+    """MultipleChoiceField with ajax image picker, and drag-and-drop ordering."""
     widget = ImageSelectMultiple()
 

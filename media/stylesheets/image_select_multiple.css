@@ -1,5 +1,5 @@
 
-/* hide/show elements depending if javascript is enbabled */
+/* hide/show elements depending if javascript is enabled */
 .action.initiate_image_picker {display: none;}
 .image_select_multiple.js-enabled select {display: none;}
 

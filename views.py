@@ -1,5 +1,7 @@
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 from django.views.generic.list_detail import object_list
 
 
@@ -12,7 +14,7 @@ def document_picker(request):
         return HttpResponseBadRequest('error')
     
     #TODO: Get the queryset specified passed to
-    # GalleryMultipleChoiceField? Form post/session?
+    # DocumentMultipleChoiceField? Form post/session?
     from media.models import Document
     queryset = Document.objects.all()#filter(is_public=True)
     
@@ -50,6 +52,7 @@ def gallery_picker(request):
     if ids:
        ids = ids.split(',')
        queryset = queryset.filter(pk__in=ids)
+       # Disable Pagination
        paginate_by = queryset.count()
     
     q = request.REQUEST.get('q', None)
@@ -74,20 +77,23 @@ def image_picker(request):
     
     paginate_by = PAGINATE_BY
     
+    q = request.REQUEST.get('q', None)
+    if q:
+        queryset = queryset.filter(title__icontains=q)
+    
     ids = request.REQUEST.get('ids', None)
     if ids:
        ids = ids.split(',')
        queryset = queryset.filter(pk__in=ids)
        paginate_by = queryset.count()
+       querylist = []
+       for pk in ids:
+           querylist += [queryset.get(pk=pk)]
+       queryset = querylist
     
-    q = request.REQUEST.get('q', None)
-    if q:
-        queryset = queryset.filter(title__icontains=q)
-    
-    return object_list(request, queryset, extra_context={'q': q},
-        paginate_by=paginate_by,
-        template_name='media/_image_picker.html',
-        template_object_name='photo')
+    return render_to_response('media/_image_picker.html',
+        {'photo_list': queryset, 'q': q},
+        context_instance=RequestContext(request))
 
 
 if getattr(settings, 'DEBUG', False):
