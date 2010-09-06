@@ -9,7 +9,7 @@ class MediaSet(models.Model):
     """A collection of media (photos/galleries/documents)."""
     # Generic relation to an object.
     content_type = models.ForeignKey(ContentType)
-    object_id = models.TextField()
+    object_id = models.IntegerField()
     content_object = generic.GenericForeignKey('content_type',
         'object_id')
     
