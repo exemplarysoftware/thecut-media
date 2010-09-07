@@ -1,8 +1,8 @@
+from django.forms import FileInput
 from django.forms.widgets import SelectMultiple
-from django.utils.safestring import mark_safe
-
 from django.forms.util import flatatt
 from django.utils.encoding import force_unicode
+from django.utils.safestring import mark_safe
 from django.utils.html import escape, conditional_escape
 from itertools import chain
 
@@ -83,4 +83,14 @@ class ImageSelectMultiple(SelectMultiple):
                 <div class="selected_images"></div>'
             %(image_picker_url))
         return output
+
+
+class ImageInput(FileInput):
+    """A FileInput Widget that shows a thumbnail."""
+    def render(self, *args, **kwargs):
+        output = super(AdminImageWidget, self).render(*args, **kwargs)
+        #if value and hasattr(value, "get_admin_thumbnail_url"):
+        value = args[1]
+        output = '<img src="%s" />' %(value.url) + output
+        return mark_safe(output)
 
