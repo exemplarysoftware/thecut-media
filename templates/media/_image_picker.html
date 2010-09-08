@@ -17,7 +17,7 @@
 </div>
 {% endcomment %}
 
-<a href="" class="action new">Upload Image</a>
+{% comment %}<a href="" class="action new">Upload Image</a>{% endcomment %}
 <div class="filter">
   <form action="{% url media_image_picker %}" method="post">
     <span><input type="text" name="q" value="{{ q|default:"" }}" /><input type="image" src="{{ MEDIA_URL }}images/image_picker_search.gif" class="action filter" /></span>
