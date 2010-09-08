@@ -5,9 +5,7 @@ from photologue.models import Photo, Gallery
 
 
 class MediaSetForm(ModelForm):
-    images = ImageMultipleChoiceField(
-        choices=[(p.pk, p.title) for p in Photo.objects.all()],
-        required=False)
+    images = ImageMultipleChoiceField(required=False)
     galleries = GalleryMultipleChoiceField(Gallery.objects.all(),
         required=False)
     documents = DocumentMultipleChoiceField(Document.objects.all(),
@@ -19,19 +17,21 @@ class MediaSetForm(ModelForm):
     
     def __init__(self, *args, **kwargs):
         super(MediaSetForm, self).__init__(*args, **kwargs)
+        image_choices = [(p.pk, p.title) for p in Photo.objects.all()]
+        self.fields['images'].choices = image_choices
+        
         if self.instance:
             # Set initial selections for choices, and reorder choice
             # options to reflect attached photo ordering.
             self.initial['images'] = [ap.photo.pk for ap in \
                 self.instance.attachedphoto_set.all()]
-            choices = self.fields['images'].choices
             for image_pk in self.initial['images']:
                 image = Photo.objects.get(pk=image_pk)
                 choice = (image.pk, image.title)
-                choice_index = choices.index(choice)
-                choices.pop(choice_index)
-                choices.append(choice)
-            self.fields['images'].choices = choices
+                choice_index = image_choices.index(choice)
+                image_choices.pop(choice_index)
+                image_choices.append(choice)
+            self.fields['images'].choices = image_choices
     
     def save(self, *args, **kwargs):
         mediaset = super(MediaSetForm, self).save(*args, **kwargs)
