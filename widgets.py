@@ -63,8 +63,7 @@ class ImageSelectMultiple(SelectMultiple):
     class Media:
         css = {'all': ['stylesheets/image_select_multiple.css',
             'stylesheets/jquery.fancybox.css']}
-        js = ['javascripts/jquery.js',
-            'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/jquery-ui.min.js',
+        js = ['javascripts/jquery.js', 'javascripts/jquery-ui.js',
             'javascripts/jquery.fancybox.js',
             'javascripts/image_select_multiple.js',]
     

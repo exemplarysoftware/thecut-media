@@ -13,8 +13,10 @@ class MediaSet(models.Model):
     content_object = generic.GenericForeignKey('content_type',
         'object_id')
     
-    photos = models.ManyToManyField('photologue.Photo',
-        through='AttachedPhoto', null=True, blank=True)
+    images = models.ManyToManyField('photologue.Photo',
+        null=True, blank=True)
+    image_order = models.CommaSeparatedIntegerField(max_length=250,
+        null=True, blank=True)
     galleries = models.ManyToManyField('photologue.Gallery',
         null=True, blank=True)
     documents = models.ManyToManyField('Document', null=True,
@@ -24,8 +26,29 @@ class MediaSet(models.Model):
         unique_together = ['content_type', 'object_id']
     
     @property
-    def photo(self):
-        """Return the first photo from all_photos, if one exists."""
+    def ordered_images(self):
+        """Return an ordered list of images.
+        
+        Ordered list is defined by the model's image_order field.
+        
+        """
+        images = list(self.images.all())
+        if self.image_order:
+            image_order = [int(pk) for pk in self.image_order.split(',')]
+            images = sorted(images, key=lambda image: image_order.index(image.pk))
+        return images
+    
+    @property
+    def all_images(self):
+        """Return all images and all gallery images."""
+        images = self.ordered_images
+        for gallery in self.galleries.all():
+            images += list(gallery.photos.all())
+        return images
+    
+    @property
+    def image(self):
+        """Return the first image from all_images, if one exists."""
         try:
             photo = self.all_photos[0]
         except IndexError:
@@ -33,27 +56,19 @@ class MediaSet(models.Model):
         return photo
     
     @property
+    def photo(self):
+        """Deprecated - instead use 'image'."""
+        return self.image
+    
+    @property
+    def photos(self):
+        """Deprecated - instead use 'images'."""
+        return self.images
+    
+    @property
     def all_photos(self):
-        """Return all photos and all gallery photos."""
-        photos = list(self.photos.order_by('attachedphoto__order'))
-        for gallery in self.galleries.all():
-            photos += list(gallery.photos.all())
-        return photos
-
-
-class AttachedPhoto(models.Model):
-    photo = models.ForeignKey('photologue.Photo')
-    mediaset = models.ForeignKey('MediaSet')
-    order = models.PositiveSmallIntegerField(default=0)
-    
-    class Meta:
-        ordering = ['order', '-photo__date_added']
-    
-    def __unicode__(self):
-        return self.photo.__unicode__()
-    
-    def get_absolute_url(self):
-        return self.photo.get_absolute_url()
+        """Deprecated - instead use 'all_images'."""
+        return self.all_images
 
 
 class Document(models.Model):

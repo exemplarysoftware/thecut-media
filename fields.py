@@ -1,6 +1,4 @@
 from django.forms import ModelMultipleChoiceField, MultipleChoiceField
-from django.forms.util import ValidationError
-from django.utils.encoding import force_unicode
 from media.widgets import DocumentSelectMultiple, GallerySelectMultiple, ImageSelectMultiple
 
 

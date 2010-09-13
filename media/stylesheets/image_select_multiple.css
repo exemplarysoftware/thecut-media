@@ -130,3 +130,8 @@
   .image_select_multiple .selected_images li:hover .action.remove {
     display: block;
   }
+
+.form-row.image_order {
+  display: none;
+}
+
