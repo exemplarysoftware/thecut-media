@@ -36,6 +36,7 @@ $(document).ready(function() {
           if (!$(selected_images_ul).children('#' + item.attr('id')).length) {
             if ($(selected_images_ul).children('li').length) {
               item.clone().appendTo(selected_images_ul);
+              $('.image_order input').val(select.val());
             }
             else {
               // ensure sortable is bound to list
@@ -134,6 +135,7 @@ $(document).ready(function() {
               var photo_value = parseInt(item.match(/.*-(\d+)/)[1]);
               select.find('option[value="' + photo_value + '"]').remove().prependTo(select);
             });
+            $('.image_order input').val(select.val());
           },
           
         });
