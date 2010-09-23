@@ -33,14 +33,14 @@ class MediaSet(models.Model):
         
         """
         images = list(self.images.all())
+
         if self.image_order:
+            image_order = [int(pk) for pk in self.image_order.split(',')]
             try:
-                image_order = [int(pk) for pk in self.image_order.split(',')]
+                images = sorted(images, key=lambda image: image_order.index(image.pk))
             except ValueError:
                 # image ordering has been corrupted
                 pass
-            else:
-                images = sorted(images, key=lambda image: image_order.index(image.pk))
         return images
     
     @property
