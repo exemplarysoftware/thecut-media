@@ -27,9 +27,9 @@
 
 {% for gallery in gallery_list %}
 {% if forloop.first %}<ul>{% endif %}
-  {% if gallery.photos %}
+  {% if gallery.images %}
   <li id="gallery-{{ gallery.pk }}">
-    <img src="{{ gallery.photos.latest.get_admin_thumbnail_url }}" alt="{{ gallery }}" />
+    <img src="{{ gallery.images.latest.get_admin_thumbnail_url }}" alt="{{ gallery }}" />
     {{ gallery }}
     <span class="action remove">[x] Remove</span>
   </li>

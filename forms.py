@@ -1,7 +1,8 @@
+from datetime import datetime
 from django.forms import CharField, HiddenInput, ModelForm
 from media.fields import DocumentMultipleChoiceField, GalleryMultipleChoiceField, ImageMultipleChoiceField
-from media.models import Document, MediaSet
-from photologue.models import Photo, Gallery
+from media.models import Document, Gallery, MediaSet
+from photologue.models import Photo
 
 
 class MediaSetForm(ModelForm):
@@ -30,16 +31,14 @@ class MediaSetForm(ModelForm):
                 image_choices.pop(choice_index)
                 image_choices.append(choice)
             self.fields['images'].choices = image_choices
+
+
+class GalleryForm(ModelForm):
+    #photos = ImageMultipleChoiceField(required=False)
+    def __init__(self, *args, **kwargs):
+        super(GalleryForm, self).__init__(*args, **kwargs)
+        self.fields['publish_at'].initial = datetime.now()
     
- #   def save(self, *args, **kwargs):
- #       mediaset = super(MediaSetForm, self).save(*args, **kwargs)
- #       image_pks = self.cleaned_data['images']
- #       image_order = ','.join(image_pks)
- #       mediaset.image_order = image_order
- #       if kwargs.get('commit', False):# and mediaset.pk:
- #           mediaset.save()
- #           print '----- saved order: %s' %(mediaset.image_order)
- #       else:
- #           print '----- unsaved order: %s' %(mediaset.image_order)
- #       return mediaset
+    class Meta:
+        model = Gallery
 

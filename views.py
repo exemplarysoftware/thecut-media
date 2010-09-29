@@ -43,8 +43,8 @@ def gallery_picker(request):
     
     #TODO: Get the queryset specified passed to
     # GalleryMultipleChoiceField? Form post/session?
-    from photologue.models import Gallery
-    queryset = Gallery.objects.filter(is_public=True)
+    from media.models import Gallery
+    queryset = Gallery.objects.active()
     
     paginate_by = PAGINATE_BY
     

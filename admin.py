@@ -1,12 +1,11 @@
 from django.contrib import admin
 from django.contrib.contenttypes.generic import GenericStackedInline
-from media.forms import MediaSetForm
-from media.models import Document, MediaSet
+from media.forms import MediaSetForm, GalleryForm
+from media.models import Document, Gallery, MediaSet
 
 
 class MediaSetInline(GenericStackedInline):
     extra = 1
-    filter_horizontal = ['galleries', 'documents']
     form = MediaSetForm
     max_num = 1
     model = MediaSet
@@ -20,6 +19,11 @@ class DocumentAdmin(admin.ModelAdmin):
         if not change: obj.created_by = request.user
         obj.updated_by = request.user
         obj.save()
-
 admin.site.register(Document, DocumentAdmin)
+
+
+class GalleryAdmin(admin.ModelAdmin):
+    form = GalleryForm
+    prepopulated_fields = {'slug': ['title']}
+admin.site.register(Gallery, GalleryAdmin)
 

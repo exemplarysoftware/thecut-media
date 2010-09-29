@@ -3,6 +3,8 @@ from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from mimetypes import guess_type
+from thecut.managers import QuerySetManager
+from thecut.models import AbstractSitesResourceWithSlug
 
 
 class MediaSet(models.Model):
@@ -17,7 +19,7 @@ class MediaSet(models.Model):
         null=True, blank=True)
     image_order = models.CommaSeparatedIntegerField(max_length=250,
         null=True, blank=True)
-    galleries = models.ManyToManyField('photologue.Gallery',
+    galleries = models.ManyToManyField('media.Gallery',
         null=True, blank=True)
     documents = models.ManyToManyField('Document', null=True,
         blank=True)
@@ -48,17 +50,17 @@ class MediaSet(models.Model):
         """Return all images and all gallery images."""
         images = self.ordered_images
         for gallery in self.galleries.all():
-            images += list(gallery.photos.all())
+            images += list(gallery.images.all())
         return images
     
     @property
     def image(self):
         """Return the first image from all_images, if one exists."""
         try:
-            photo = self.all_photos[0]
+            image = self.all_images[0]
         except IndexError:
-            photo = None
-        return photo
+            image = None
+        return image
     
     @property
     def photo(self):
@@ -103,4 +105,31 @@ class Document(models.Model):
     def mime_type(self):
         """Guess the MIME type of this document."""
         return guess_type(self.file.path)[0]
+
+
+class Gallery(AbstractSitesResourceWithSlug):
+    """Image gallery."""
+    images = models.ManyToManyField('photologue.Photo',
+        null=True, blank=True)
+    #TODO: Image ordering
+    
+    objects = QuerySetManager()
+    
+    class Meta(AbstractSitesResourceWithSlug.Meta):
+        verbose_name_plural = 'galleries'
+    
+    @property
+    def image(self):
+        """Return the first image from all_images, if one exists."""
+        try:
+            #image = self.all_images[0]
+            image = self.images.all()[0]
+        except IndexError:
+            image = None
+        return image
+    
+    @property
+    def photos(self):
+        """Deprecated - instead use 'images'."""
+        return self.images
 
