@@ -34,10 +34,13 @@ class MediaSetForm(ModelForm):
 
 
 class GalleryForm(ModelForm):
-    #photos = ImageMultipleChoiceField(required=False)
     def __init__(self, *args, **kwargs):
         super(GalleryForm, self).__init__(*args, **kwargs)
         self.fields['publish_at'].initial = datetime.now()
+        image_choices = [(p.pk, p.title) for p in Photo.objects.all()]
+        self.fields['images'].choices = image_choices
+    
+    images = ImageMultipleChoiceField(required=False)
     
     class Meta:
         model = Gallery
