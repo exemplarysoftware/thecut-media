@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}{{ gallery.title }}{% endblock %}
+
+{% block extra_head %}
+{% if not gallery.is_indexable %}<meta name="robots" content="noindex" />{% endif %}
+{% if gallery.meta_description %}<meta name="description" content="{{ gallery.meta_description }}" />{% endif %}
+{% endblock %}
+
+{% block content %}
+  
+  <h1>{{ gallery.heading }}</h1>
+  <div>
+    {{ gallery.content|safe }}
+  </div>
+  
+  {% if gallery.images.all %}
+  <h2>Images</h2>
+  <ul>
+    {% for image in gallery.images.all %}
+      <li><img src="{{ image.get_display_url }}" /></li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  
+  {% if gallery.call_to_actions %}
+  <h2>Actions</h2>
+  <ul>
+    {% for cta in gallery.call_to_actions %}
+    <li><a href="{{ cta.get_absolute_url }}">{{ cta }}</a></li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  
+  {% if gallery.tags %}
+  <h2>Tags</h2>
+  <ul>
+    {% load tagging_tags %}
+    {% tags_for_object gallery as tag_list %}
+    {% for tag in tag_list %}
+      <li>{{ tag }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+{% endblock %}
+
