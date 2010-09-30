@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
+from django.core.urlresolvers import reverse
 from django.db import models
 from mimetypes import guess_type
 from thecut.managers import QuerySetManager
@@ -117,6 +118,9 @@ class Gallery(AbstractSitesResourceWithSlug):
     
     class Meta(AbstractSitesResourceWithSlug.Meta):
         verbose_name_plural = 'galleries'
+    
+    def get_absolute_url(self):
+        return reverse('gallery_detail', kwargs={'slug': self.slug})
     
     @property
     def image(self):
