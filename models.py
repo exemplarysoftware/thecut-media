@@ -6,6 +6,7 @@ from django.db import models
 from mimetypes import guess_type
 from thecut.managers import QuerySetManager
 from thecut.models import AbstractSitesResourceWithSlug
+import warnings
 
 
 class MediaSet(models.Model):
@@ -51,7 +52,7 @@ class MediaSet(models.Model):
         """Return all images and all gallery images."""
         images = self.ordered_images
         for gallery in self.galleries.all():
-            images += list(gallery.images.all())
+            images += gallery.all_images
         return images
     
     @property
@@ -66,16 +67,22 @@ class MediaSet(models.Model):
     @property
     def photo(self):
         """Deprecated - instead use 'image'."""
+        warnings.warn("Deprecated - use 'image' property.",
+            DeprecationWarning)
         return self.image
     
     @property
     def photos(self):
         """Deprecated - instead use 'images'."""
+        warnings.warn("Deprecated - use 'images' property.",
+            DeprecationWarning)
         return self.images
     
     @property
     def all_photos(self):
         """Deprecated - instead use 'all_images'."""
+        warnings.warn("Deprecated - use 'all_images' property.",
+            DeprecationWarning)
         return self.all_images
 
 
@@ -112,7 +119,8 @@ class Gallery(AbstractSitesResourceWithSlug):
     """Image gallery."""
     images = models.ManyToManyField('photologue.Photo',
         null=True, blank=True)
-    #TODO: Image ordering
+    image_order = models.CommaSeparatedIntegerField(max_length=250,
+        null=True, blank=True)
     
     objects = QuerySetManager()
     
@@ -124,17 +132,55 @@ class Gallery(AbstractSitesResourceWithSlug):
         return reverse('gallery_detail', kwargs={'slug': self.slug})
     
     @property
+    def ordered_images(self):
+        """Return an ordered list of images.
+        
+        Ordered list is defined by the model's image_order field.
+        
+        """
+        images = list(self.images.all())
+
+        if self.image_order:
+            image_order = [int(pk) for pk in self.image_order.split(',')]
+            try:
+                images = sorted(images, key=lambda image: image_order.index(image.pk))
+            except ValueError:
+                # image ordering has been corrupted
+                pass
+        return images
+    
+    @property
+    def all_images(self):
+        """Return all images."""
+        return self.ordered_images
+    
+    @property
     def image(self):
         """Return the first image from all_images, if one exists."""
         try:
-            #image = self.all_images[0]
-            image = self.images.all()[0]
+            image = self.all_images[0]
         except IndexError:
             image = None
         return image
     
     @property
+    def photo(self):
+        """Deprecated - instead use 'image'."""
+        warnings.warn("Deprecated - use 'image' property.",
+            DeprecationWarning)
+        return self.image
+    
+    @property
     def photos(self):
         """Deprecated - instead use 'images'."""
+        warnings.warn("Deprecated - use 'images' property.",
+            DeprecationWarning)
         return self.images
+    
+    @property
+    def all_photos(self):
+        """Deprecated - instead use 'all_images'."""
+        warnings.warn("Deprecated - use 'all_images' property.",
+            DeprecationWarning)
+        return self.all_images
 
