@@ -117,6 +117,7 @@ class Gallery(AbstractSitesResourceWithSlug):
     objects = QuerySetManager()
     
     class Meta(AbstractSitesResourceWithSlug.Meta):
+        ordering = ['-publish_at', 'title']
         verbose_name_plural = 'galleries'
     
     def get_absolute_url(self):
