@@ -131,9 +131,9 @@ class Gallery(AbstractSitesResourceWithSlug):
     class QuerySet(AbstractSitesResourceWithSlug.QuerySet):
         def active(self):
             """Return active objects containg at least one image."""
-            return super(AbstractSitesResourceWithSlug.QuerySet,
-                self).active().annotate(num_images=models.Count(
-                'images')).filter(num_images__gte=1)
+            return super(Gallery.QuerySet, self).active().annotate(
+                num_images=models.Count('images')).filter(
+                num_images__gte=1)
     
     def get_absolute_url(self):
         return reverse('gallery_detail', kwargs={'slug': self.slug})
