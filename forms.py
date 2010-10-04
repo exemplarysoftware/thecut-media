@@ -39,6 +39,16 @@ class GalleryForm(ModelForm):
         self.fields['publish_at'].initial = datetime.now()
         image_choices = [(p.pk, p.title) for p in Photo.objects.all()]
         self.fields['images'].choices = image_choices
+        
+        if self.instance.image_order:
+            # Reorder choice options to reflect image ordering.
+            image_order = self.instance.ordered_images
+            for image in image_order:
+                choice = (image.pk, image.title)
+                choice_index = image_choices.index(choice)
+                image_choices.pop(choice_index)
+                image_choices.append(choice)
+            self.fields['images'].choices = image_choices
     
     images = ImageMultipleChoiceField(required=False)
     

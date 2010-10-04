@@ -14,10 +14,10 @@
     {{ gallery.content|safe }}
   </div>
   
-  {% if gallery.images.all %}
+  {% if gallery.all_images %}
   <h2>Images</h2>
   <ul>
-    {% for image in gallery.images.all %}
+    {% for image in gallery.all_images %}
       <li><img src="{{ image.get_display_url }}" /></li>
     {% endfor %}
   </ul>
