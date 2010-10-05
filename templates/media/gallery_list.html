@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Galleries{% endblock %}
+
+{% block content %}
+  <h1>Galleries</h1>
+	{% for gallery in gallery_list %}
+	{% if forloop.first %}<ul>{% endif %}
+	<li>
+		<a href="{{ gallery.get_absolute_url }}">
+		  {% if gallery.image %}<img src="{{ gallery.image.get_thumbnail_url }}" />{% endif %}
+		  {{ gallery.publish_at }}
+			{{ gallery }}
+		</a>
+	</li>
+	{% if forloop.last %}</ul>{% endif %}
+	{% empty %}
+	No galleries to display.
+	{% endfor %}
+
+<div class="pagination">
+  <span class="step-links">
+    <span class="current">
+      Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+    </span>
+    {% if page_obj.has_previous %}
+      <a href="{% url paginated_gallery_list page_obj.previous_page_number %}">previous</a>
+    {% endif %}
+    {% if page_obj.has_next %}
+      <a href="{% url paginated_gallery_list page_obj.next_page_number %}">next</a>
+    {% endif %}
+  </span>
+</div>
+
+{% endblock %}
+

@@ -1,8 +1,12 @@
 from django.contrib.auth.models import User
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
+from django.core.urlresolvers import reverse
 from django.db import models
 from mimetypes import guess_type
+from thecut.managers import QuerySetManager
+from thecut.models import AbstractSitesResourceWithSlug
+import warnings
 
 
 class MediaSet(models.Model):
@@ -17,7 +21,7 @@ class MediaSet(models.Model):
         null=True, blank=True)
     image_order = models.CommaSeparatedIntegerField(max_length=250,
         null=True, blank=True)
-    galleries = models.ManyToManyField('photologue.Gallery',
+    galleries = models.ManyToManyField('media.Gallery',
         null=True, blank=True)
     documents = models.ManyToManyField('Document', null=True,
         blank=True)
@@ -48,31 +52,37 @@ class MediaSet(models.Model):
         """Return all images and all gallery images."""
         images = self.ordered_images
         for gallery in self.galleries.all():
-            images += list(gallery.photos.all())
+            images += gallery.all_images
         return images
     
     @property
     def image(self):
         """Return the first image from all_images, if one exists."""
         try:
-            photo = self.all_photos[0]
+            image = self.all_images[0]
         except IndexError:
-            photo = None
-        return photo
+            image = None
+        return image
     
     @property
     def photo(self):
         """Deprecated - instead use 'image'."""
+        warnings.warn("Deprecated - use 'image' property.",
+            DeprecationWarning)
         return self.image
     
     @property
     def photos(self):
         """Deprecated - instead use 'images'."""
+        warnings.warn("Deprecated - use 'images' property.",
+            DeprecationWarning)
         return self.images
     
     @property
     def all_photos(self):
         """Deprecated - instead use 'all_images'."""
+        warnings.warn("Deprecated - use 'all_images' property.",
+            DeprecationWarning)
         return self.all_images
 
 
@@ -103,4 +113,81 @@ class Document(models.Model):
     def mime_type(self):
         """Guess the MIME type of this document."""
         return guess_type(self.file.path)[0]
+
+
+class Gallery(AbstractSitesResourceWithSlug):
+    """Image gallery."""
+    images = models.ManyToManyField('photologue.Photo',
+        null=True, blank=True)
+    image_order = models.CommaSeparatedIntegerField(max_length=250,
+        null=True, blank=True)
+    
+    objects = QuerySetManager()
+    
+    class Meta(AbstractSitesResourceWithSlug.Meta):
+        ordering = ['-publish_at', 'title']
+        verbose_name_plural = 'galleries'
+    
+    class QuerySet(AbstractSitesResourceWithSlug.QuerySet):
+        def active(self):
+            """Return active objects containg at least one image."""
+            return super(Gallery.QuerySet, self).active().annotate(
+                num_images=models.Count('images')).filter(
+                num_images__gte=1)
+    
+    def get_absolute_url(self):
+        return reverse('gallery_detail', kwargs={'slug': self.slug})
+    
+    @property
+    def ordered_images(self):
+        """Return an ordered list of images.
+        
+        Ordered list is defined by the model's image_order field.
+        
+        """
+        images = list(self.images.all())
+
+        if self.image_order:
+            image_order = [int(pk) for pk in self.image_order.split(',')]
+            try:
+                images = sorted(images, key=lambda image: image_order.index(image.pk))
+            except ValueError:
+                # image ordering has been corrupted
+                pass
+        return images
+    
+    @property
+    def all_images(self):
+        """Return all images."""
+        return self.ordered_images
+    
+    @property
+    def image(self):
+        """Return the first image from all_images, if one exists."""
+        try:
+            image = self.all_images[0]
+        except IndexError:
+            image = None
+        return image
+    
+    @property
+    def photo(self):
+        """Deprecated - instead use 'image'."""
+        warnings.warn("Deprecated - use 'image' property.",
+            DeprecationWarning)
+        return self.image
+    
+    @property
+    def photos(self):
+        """Deprecated - instead use 'images'."""
+        warnings.warn("Deprecated - use 'images' property.",
+            DeprecationWarning)
+        return self.images
+    
+    @property
+    def all_photos(self):
+        """Deprecated - instead use 'all_images'."""
+        warnings.warn("Deprecated - use 'all_images' property.",
+            DeprecationWarning)
+        return self.all_images
 

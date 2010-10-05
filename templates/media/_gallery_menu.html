@@ -1,0 +1,5 @@
+{% for gallery in gallery_list %}
+{% if forloop.first %}<ul class="menu">{% endif %}
+<li{% ifequal path gallery.get_absolute_url %} class="active"{% endifequal %}><a href="{{ gallery.get_absolute_url }}">{{ gallery }}</a></li>
+{% if forloop.last %}</ul>{% endif %}
+{% endfor %}
