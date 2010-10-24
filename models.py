@@ -95,6 +95,9 @@ class Document(AbstractBaseResource):
     class Meta(AbstractBaseResource.Meta):
         ordering = ['-publish_at', 'title']
     
+    def __unicode__(self):
+        return self.title
+    
     def get_absolute_url(self):
         return self.file.url
     
