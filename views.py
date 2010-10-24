@@ -7,6 +7,7 @@ from media.models import Gallery
 
 
 PAGINATE_BY = getattr(settings, 'MEDIA_PAGINATE_BY', 100)
+NO_IMAGE_404 = getattr(settings, 'MEDIA_NO_IMAGE_404', True)
 
 
 def gallery_list(request, page=None):
@@ -21,7 +22,10 @@ def gallery_list(request, page=None):
 
 
 def gallery_detail(request, slug):
-    queryset = Gallery.objects.current_site().active()
+    if NO_IMAGE_404:
+        queryset = Gallery.objects.current_site().active().with_images()
+    else:
+        queryset = Gallery.objects.current_site().active()
     if 'facebook' in settings.INSTALLED_APPS:
         template_name = 'media/gallery_detail_facebook.html'
     else:

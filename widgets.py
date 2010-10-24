@@ -11,11 +11,11 @@ from django.core.urlresolvers import reverse
 
 class DocumentSelectMultiple(SelectMultiple):
     class Media:
-        css = {'all': ['stylesheets/document_select_multiple.css',
+        css = {'all': ['media/document_select_multiple.css',
             'stylesheets/jquery.fancybox.css']}
         js = ['javascripts/jquery.js',
             'javascripts/jquery.fancybox.js',
-            'javascripts/document_select_multiple.js']
+            'media/document_select_multiple.js']
     
     def __init__(self, *args, **kwargs):
         super(DocumentSelectMultiple, self).__init__(*args, **kwargs)
@@ -36,11 +36,11 @@ class DocumentSelectMultiple(SelectMultiple):
 
 class GallerySelectMultiple(SelectMultiple):
     class Media:
-        css = {'all': ['stylesheets/gallery_select_multiple.css',
+        css = {'all': ['media/gallery_select_multiple.css',
             'stylesheets/jquery.fancybox.css']}
         js = ['javascripts/jquery.js',
             'javascripts/jquery.fancybox.js',
-            'javascripts/gallery_select_multiple.js']
+            'media/gallery_select_multiple.js']
     
     def __init__(self, *args, **kwargs):
         super(GallerySelectMultiple, self).__init__(*args, **kwargs)
@@ -61,11 +61,11 @@ class GallerySelectMultiple(SelectMultiple):
 
 class ImageSelectMultiple(SelectMultiple):
     class Media:
-        css = {'all': ['stylesheets/image_select_multiple.css',
+        css = {'all': ['media/image_select_multiple.css',
             'stylesheets/jquery.fancybox.css']}
         js = ['javascripts/jquery.js', 'javascripts/jquery-ui.js',
             'javascripts/jquery.fancybox.js',
-            'javascripts/image_select_multiple.js',]
+            'media/image_select_multiple.js',]
     
     def __init__(self, *args, **kwargs):
         super(ImageSelectMultiple, self).__init__(*args, **kwargs)

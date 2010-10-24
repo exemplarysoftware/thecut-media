@@ -20,7 +20,7 @@
 {% comment %}<a href="" class="action new">Upload Gallery</a>{% endcomment %}
 <div class="filter">
   <form action="{% url media_gallery_picker %}" method="post">
-    <span><input type="text" name="q" value="{{ q|default:"" }}" /><input type="image" src="{{ MEDIA_URL }}images/gallery_picker_search.gif" class="action filter" /></span>
+    <span><input type="text" name="q" value="{{ q|default:"" }}" /><input type="image" src="{{ MEDIA_URL }}media/gallery_picker_search.gif" class="action filter" /></span>
   </form>
   <!--<a href="{% url media_gallery_picker %}" class="action reset">reset</a>-->
 </div>
