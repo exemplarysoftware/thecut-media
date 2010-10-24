@@ -121,9 +121,9 @@ class Gallery(AbstractSitesResourceWithSlug):
         verbose_name_plural = 'galleries'
     
     class QuerySet(AbstractSitesResourceWithSlug.QuerySet):
-        def active(self):
+        def with_images(self):
             """Return active objects containg at least one image."""
-            return super(Gallery.QuerySet, self).active().annotate(
+            return self.annotate(
                 num_images=models.Count('images')).filter(
                 num_images__gte=1)
     
