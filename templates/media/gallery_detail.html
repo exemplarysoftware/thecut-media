@@ -1,8 +1,8 @@
-{% extends "base.html" %}
+{% extends "media/base.html" %}
 
 {% block title %}{{ gallery.title }}{% endblock %}
 
-{% block extra_head %}
+{% block extrahead %}
 {% if not gallery.is_indexable %}<meta name="robots" content="noindex" />{% endif %}
 {% if gallery.meta_description %}<meta name="description" content="{{ gallery.meta_description }}" />{% endif %}
 {% endblock %}
