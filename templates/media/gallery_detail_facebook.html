@@ -3,7 +3,7 @@
 
 {% block extra_ns %}xmlns:fb="http://www.facebook.com/2008/fbml"{% endblock %}
 
-{% block extra_head %}
+{% block extrahead %}
   {{ block.super }}
   {% open_graph_tags gallery.heading 'article' '' gallery.image.image %}
 {% endblock %}
