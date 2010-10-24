@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from mimetypes import guess_type
 from thecut.managers import QuerySetManager
-from thecut.models import AbstractSitesResourceWithSlug
+from thecut.models import AbstractBaseResource, AbstractSitesResourceWithSlug
 import warnings
 
 
@@ -86,25 +86,14 @@ class MediaSet(models.Model):
         return self.all_images
 
 
-class Document(models.Model):
+class Document(AbstractBaseResource):
     title = models.CharField(max_length=200)
     file = models.FileField(upload_to='uploads/documents')
     
-    created_at = models.DateTimeField(auto_now_add=True,
-        editable=False)
-    created_by = models.ForeignKey(User, editable=False,
-        related_name='document_created_by_user')
+    objects = QuerySetManager()
     
-    updated_at = models.DateTimeField(auto_now=True, editable=False)
-    updated_by = models.ForeignKey(User, editable=False,
-        related_name='document_updated_by_user')
-    
-    class Meta:
-        get_latest_by = 'created_at'
-        ordering = ['title']
-    
-    def __unicode__(self):
-        return self.title
+    class Meta(AbstractBaseResource.Meta):
+        ordering = ['-publish_at', 'title']
     
     def get_absolute_url(self):
         return self.file.url
