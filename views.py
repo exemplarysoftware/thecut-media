@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.generic.list_detail import object_detail, object_list
-from media.models import Gallery
+from media.models import Gallery, Video
 
 
 PAGINATE_BY = getattr(settings, 'MEDIA_PAGINATE_BY', 100)
@@ -31,8 +31,30 @@ def gallery_detail(request, slug):
     else:
         template_name = None
     return object_detail(request, queryset, slug=slug,
-        template_name=template_name, #template_name_field='template',
+        template_name=template_name, template_name_field='template',
         template_object_name='gallery')
+
+
+def video_list(request, page=None):
+    if page == '1':
+        return redirect(reverse('video_list'))
+    if page is None:
+        page = 1
+    queryset = Video.objects.current_site().active()
+    
+    return object_list(request, queryset, paginate_by=PAGINATE_BY,
+        page=page, template_object_name='video')
+
+
+def video_detail(request, slug):
+    queryset = Video.objects.current_site().active()
+    if 'facebook' in settings.INSTALLED_APPS:
+        template_name = 'media/video_detail_facebook.html'
+    else:
+        template_name = None
+    return object_detail(request, queryset, slug=slug,
+        template_name=template_name, template_name_field='template',
+        template_object_name='video')
 
 
 def document_picker(request):
