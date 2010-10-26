@@ -183,3 +183,47 @@ class Gallery(AbstractSitesResourceWithSlug):
             DeprecationWarning)
         return self.all_images
 
+
+class Video(AbstractSitesResourceWithSlug):
+    file = models.FileField(upload_to='uploads/videos')
+    thumbnail = models.ImageField(upload_to='uploads/videos/thumbnails',
+        null=True, blank=True)
+    
+    objects = QuerySetManager()
+    
+    class Meta(AbstractSitesResourceWithSlug.Meta):
+        ordering = ['-publish_at', 'title']
+    
+    def get_absolute_url(self):
+        return reverse('video_detail', kwargs={'slug': self.slug})
+    
+    def generate_thumbnail(self):
+        if self.thumbnail:
+            self.thumbnail.delete()
+        import subprocess
+        from django.conf import settings
+        from django.core.files.images import ImageFile
+        from django.template.defaultfilters import slugify
+        file_name = slugify(self.title)
+        file_path = '%s/%s.jpg' %('uploads/videos/thumbnails', file_name)
+        command_line = 'ffmpegthumbnailer -i %s -o %s/%s -s %d' % (self.file.path, settings.MEDIA_ROOT, file_path, 720)
+        subprocess.check_call(command_line, shell=True)#, stderr=subprocess.STDOUT)
+        thumbnail = file_path#ImageFile(open(file_path, 'rb'))
+        self.thumbnail = thumbnail
+        self.save()
+    
+    @property
+    def image(self):
+        return self.thumbnail
+    
+    @property
+    def mime_type(self):
+        """Guess the MIME type of this video."""
+        return guess_type(self.file.path)[0]
+    
+    def save(self, *args, **kwargs):
+        response = super(Video, self).save(*args, **kwargs)
+        if not self.thumbnail:
+            self.generate_thumbnail()
+        return response
+
