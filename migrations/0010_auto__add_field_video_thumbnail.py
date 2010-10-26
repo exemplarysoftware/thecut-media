@@ -57,7 +57,6 @@ class Migration(SchemaMigration):
         },
         'media.document': {
             'Meta': {'ordering': "['-publish_at', 'title']", 'object_name': 'Document'},
-            'company': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'created_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'document_created_by_user'", 'to': "orm['auth.User']"}),
             'file': ('django.db.models.fields.files.FileField', [], {'max_length': '100'}),
