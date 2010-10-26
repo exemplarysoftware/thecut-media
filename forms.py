@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.forms import CharField, HiddenInput, ModelForm
 from media.fields import DocumentMultipleChoiceField, GalleryMultipleChoiceField, ImageMultipleChoiceField
-from media.models import Document, Gallery, MediaSet
+from media.models import Document, Gallery, MediaSet, Video
 from photologue.models import Photo
 
 
@@ -63,4 +63,13 @@ class MediaSetForm(ModelForm):
                 image_choices.pop(choice_index)
                 image_choices.append(choice)
             self.fields['images'].choices = image_choices
+
+
+class VideoAdminForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(VideoAdminForm, self).__init__(*args, **kwargs)
+        self.fields['publish_at'].initial = datetime.now()
+    
+    class Meta:
+        model = Video
 
