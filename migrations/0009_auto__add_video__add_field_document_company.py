@@ -39,9 +39,6 @@ class Migration(SchemaMigration):
         ))
         db.create_unique('media_video_sites', ['video_id', 'site_id'])
 
-        # Adding field 'Document.company'
-        db.add_column('media_document', 'company', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True), keep_default=False)
-
 
     def backwards(self, orm):
         
@@ -50,9 +47,6 @@ class Migration(SchemaMigration):
 
         # Removing M2M table for field sites on 'Video'
         db.delete_table('media_video_sites')
-
-        # Deleting field 'Document.company'
-        db.delete_column('media_document', 'company')
 
 
     models = {
@@ -94,7 +88,6 @@ class Migration(SchemaMigration):
         },
         'media.document': {
             'Meta': {'ordering': "['-publish_at', 'title']", 'object_name': 'Document'},
-            'company': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'created_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'document_created_by_user'", 'to': "orm['auth.User']"}),
             'file': ('django.db.models.fields.files.FileField', [], {'max_length': '100'}),
