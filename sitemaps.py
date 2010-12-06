@@ -1,5 +1,5 @@
 from django.contrib.sitemaps import Sitemap
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import NoReverseMatch, reverse
 from media.models import Gallery, Video
 
 
@@ -32,7 +32,13 @@ class View(object):
 
 class MediaSitemap(Sitemap):
     def items(self):
-        return [View('gallery_list'), View('video_list')]
+        views = [View('gallery_list'), View('video_list')]
+        for view in views:
+            try:
+                view.get_absolute_url()
+            except NoReverseMatch:
+                views.remove(view)
+        return views
 
 
 sitemaps = {'media': MediaSitemap, 'galleries': GallerySitemap,
