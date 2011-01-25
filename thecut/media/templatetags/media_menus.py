@@ -1,5 +1,5 @@
 from django import template
-from media.models import Gallery
+from thecut.media.models import Gallery
 
 
 register = template.Library()

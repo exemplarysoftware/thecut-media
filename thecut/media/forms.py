@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.forms import CharField, HiddenInput, ModelForm
-from media.fields import DocumentMultipleChoiceField, GalleryMultipleChoiceField, ImageMultipleChoiceField
-from media.models import Document, Gallery, MediaSet, Video
+from thecut.media.fields import DocumentMultipleChoiceField, GalleryMultipleChoiceField, ImageMultipleChoiceField
+from thecut.media.models import Document, Gallery, MediaSet, Video
 from photologue.models import Photo
 
 

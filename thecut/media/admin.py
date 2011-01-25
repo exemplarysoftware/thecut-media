@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.contenttypes.generic import GenericStackedInline
-from media.forms import DocumentAdminForm, GalleryAdminForm, MediaSetForm, VideoAdminForm
-from media.models import Document, Gallery, MediaSet, Video
+from thecut.media.forms import DocumentAdminForm, GalleryAdminForm, MediaSetForm, VideoAdminForm
+from thecut.media.models import Document, Gallery, MediaSet, Video
 
 
 class MediaSetInline(GenericStackedInline):

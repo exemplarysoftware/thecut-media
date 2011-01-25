@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
-from django.core.urlresolvers import reverse
 from django.db import models
 from mimetypes import guess_type
 from thecut.managers import QuerySetManager
@@ -127,8 +126,9 @@ class Gallery(AbstractSitesResourceWithSlug):
                 num_images=models.Count('images')).filter(
                 num_images__gte=1)
     
+    @models.permalink
     def get_absolute_url(self):
-        return reverse('gallery_detail', kwargs={'slug': self.slug})
+        return ('gallery_detail', [], {'slug': self.slug})
     
     @property
     def ordered_images(self):
@@ -194,8 +194,9 @@ class Video(AbstractSitesResourceWithSlug):
     class Meta(AbstractSitesResourceWithSlug.Meta):
         ordering = ['-publish_at', 'title']
     
+    @models.permalink
     def get_absolute_url(self):
-        return reverse('video_detail', kwargs={'slug': self.slug})
+        return ('video_detail', [], {'slug': self.slug})
     
     def generate_thumbnail(self):
         if self.thumbnail:
