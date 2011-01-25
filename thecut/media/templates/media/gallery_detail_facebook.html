@@ -1,11 +1,11 @@
-{% extends "media/video_detail.html" %}
+{% extends "media/gallery_detail.html" %}
 {% load xfbml %}
 
 {% block extra_ns %}xmlns:fb="http://www.facebook.com/2008/fbml"{% endblock %}
 
-{% block extrahead %}
+{% block extra_head %}
   {{ block.super }}
-  {% open_graph_tags video.heading 'article' '' video.image %}
+  {% open_graph_tags gallery.heading 'article' '' gallery.image.image %}
 {% endblock %}
 
 {% block content %}

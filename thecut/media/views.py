@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.generic.list_detail import object_detail, object_list
-from media.models import Gallery, Video
+from thecut.media.models import Gallery, Video
 
 
 PAGINATE_BY = getattr(settings, 'MEDIA_PAGINATE_BY', 100)
@@ -64,7 +64,7 @@ def document_picker(request):
     
     #TODO: Get the queryset specified passed to
     # DocumentMultipleChoiceField? Form post/session?
-    from media.models import Document
+    from thecut.media.models import Document
     queryset = Document.objects.all()#filter(is_public=True)
     
     paginate_by = PAGINATE_BY
@@ -92,7 +92,7 @@ def gallery_picker(request):
     
     #TODO: Get the queryset specified passed to
     # GalleryMultipleChoiceField? Form post/session?
-    from media.models import Gallery
+    from thecut.media.models import Gallery
     queryset = Gallery.objects.active()
     
     paginate_by = PAGINATE_BY
@@ -150,7 +150,7 @@ if getattr(settings, 'DEBUG', False):
         from django.forms import Form, ModelMultipleChoiceField
         from django.shortcuts import render_to_response
         from django.template import RequestContext
-        from media.fields import ImageMultipleChoiceField
+        from thecut.media.fields import ImageMultipleChoiceField
         from photologue.models import Photo
         
         class TestForm(Form):
