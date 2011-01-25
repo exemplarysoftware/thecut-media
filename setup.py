@@ -8,6 +8,7 @@ setup(name='media',
     version=get_git_version(),
     packages=find_packages(),
     include_package_data=True,
-    install_requires=['distribute', 'PIL', 'django-photologue'],
+    install_requires=['distribute', 'PIL==1.1.7',
+        'django-photologue==2.3', 'sorl-thumbnail==3.2.5'],
     )
 
