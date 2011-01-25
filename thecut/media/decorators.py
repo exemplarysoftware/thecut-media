@@ -1,4 +1,4 @@
-from media.utils import media as mediaset
+from thecut.media.utils import media as mediaset
 
 
 def attach_mediaset(obj):

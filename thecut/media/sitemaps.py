@@ -1,6 +1,6 @@
 from django.contrib.sitemaps import Sitemap
 from django.core.urlresolvers import NoReverseMatch, reverse
-from media.models import Gallery, Video
+from thecut.media.models import Gallery, Video
 
 
 class GallerySitemap(Sitemap):

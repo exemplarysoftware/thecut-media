@@ -1,5 +1,5 @@
 from django.forms import ModelMultipleChoiceField, MultipleChoiceField
-from media.widgets import DocumentSelectMultiple, GallerySelectMultiple, ImageSelectMultiple
+from thecut.media.widgets import DocumentSelectMultiple, GallerySelectMultiple, ImageSelectMultiple
 
 
 class DocumentMultipleChoiceField(ModelMultipleChoiceField):

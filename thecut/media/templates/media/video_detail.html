@@ -2,7 +2,7 @@
 
 {% block title %}{{ video.title }}{% endblock %}
 
-{% block extrahead %}
+{% block extra_head %}
 {% if not video.is_indexable %}<meta name="robots" content="noindex" />{% endif %}
 {% if video.meta_description %}<meta name="description" content="{{ video.meta_description }}" />{% endif %}
 
