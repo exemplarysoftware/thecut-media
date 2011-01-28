@@ -9,6 +9,7 @@
 }
 
 .image_select_multiple.js-enabled .action.initiate_image_picker,
+.image_select_multiple.js-enabled .action.initiate_image_upload,
 .image_select_multiple .image_picker .action.new {
   display: block;
   float: left;
@@ -22,15 +23,11 @@
   line-height: 30px;
 }
 
-.image_select_multiple.js-enabled .action.initiate_image_picker {
-  float: left;
-}
-
 .image_select_multiple .image_picker .action.new {
   float: right;
 }
 
-.image_select_multiple .image_picker ul {
+.image_select_multiple .image_picker > ul {
   clear: both;
   height: 390px;
   margin: 0;
@@ -39,7 +36,7 @@
 }
 
 .image_select_multiple .selected_images li,
-.image_select_multiple .image_picker li {
+.image_select_multiple .image_picker > ul li {
   display: block;
   float: left;
   overflow: hidden;
@@ -50,7 +47,7 @@
   list-style-type: none;
 }
 
-.image_select_multiple .selected_images li {
+.image_select_multiple .selected_images > ul li {
   cursor: move;
 }
 
@@ -132,6 +129,12 @@
   }
 
 .form-row.image_order {
+  display: none;
+}
+
+
+
+.image_select_multiple.js-enabled .action.initiate_image_upload {
   display: none;
 }
 

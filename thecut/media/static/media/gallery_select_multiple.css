@@ -30,7 +30,7 @@
   float: right;
 }
 
-.gallery_select_multiple .gallery_picker ul {
+.gallery_select_multiple .gallery_picker > ul {
   clear: both;
   height: 390px;
   margin: 0;
@@ -39,7 +39,7 @@
 }
 
 .gallery_select_multiple .selected_galleries li,
-.gallery_select_multiple .gallery_picker li {
+.gallery_select_multiple .gallery_picker > ul li {
   display: block;
   float: left;
   overflow: hidden;
@@ -51,7 +51,7 @@
 }
 
 .gallery_select_multiple .action,
-.gallery_select_multiple .gallery_picker li {
+.gallery_select_multiple .gallery_picker > ul li {
   cursor: pointer;
 }
 

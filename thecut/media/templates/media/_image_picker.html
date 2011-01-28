@@ -17,7 +17,7 @@
 </div>
 {% endcomment %}
 
-{% comment %}<a href="" class="action new">Upload Image</a>{% endcomment %}
+<a href="{% url media_image_upload %}" class="action new">Upload Image</a>
 <div class="filter">
   <form action="{% url media_image_picker %}" method="post">
     <span><input type="text" name="q" value="{{ q|default:"" }}" /><input type="image" src="{{ MEDIA_URL }}media/image_picker_search.gif" class="action filter" /></span>
@@ -26,7 +26,7 @@
 </div>
 
 {% for photo in photo_list %}
-{% if forloop.first %}<ul>{% endif %}
+{% if forloop.first %}<ul class="images">{% endif %}
   <li id="photo-{{ photo.pk }}">
     <img src="{{ photo.get_admin_thumbnail_url }}" alt="{{ photo }}" />
     {{ photo }}

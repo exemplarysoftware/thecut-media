@@ -1,8 +1,10 @@
 from django.conf import settings
+from django.contrib.auth.decorators import permission_required
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.generic.list_detail import object_detail, object_list
+from thecut.media.forms import DocumentUploadForm, ImageUploadForm
 from thecut.media.models import Gallery, Video
 
 
@@ -85,6 +87,24 @@ def document_picker(request):
         template_object_name='document')
 
 
+@permission_required('media.add_document')
+def document_upload(request):
+    """Document upload."""
+    if request.method == 'POST':
+        form = DocumentUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            document = form.save()
+            return render_to_response(
+                'media/_document_upload_complete.html',
+                {'document': document},
+                context_instance=RequestContext(request))
+    else:
+        form = DocumentUploadForm()
+    return render_to_response('media/_document_upload.html',
+        {'form': form},
+        context_instance=RequestContext(request))
+
+
 def gallery_picker(request):
     """Gallery picker."""
     if not request.is_ajax():
@@ -121,8 +141,8 @@ def image_picker(request):
     
     #TODO: Get the queryset specified passed to
     # ImageMultipleChoiceField? Form post/session?
-    from photologue.models import Photo
-    queryset = Photo.objects.filter(is_public=True)
+    from thecut.media.models import Image
+    queryset = Image.objects.filter(is_public=True)
     
     paginate_by = PAGINATE_BY
     
@@ -145,17 +165,34 @@ def image_picker(request):
         context_instance=RequestContext(request))
 
 
+@permission_required('photologue.add_photo')
+def image_upload(request):
+    """Image upload."""
+    if request.method == 'POST':
+        form = ImageUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            image = form.save()
+            return render_to_response(
+                'media/_image_upload_complete.html', {'image': image},
+                context_instance=RequestContext(request))
+    else:
+        form = ImageUploadForm()
+    return render_to_response('media/_image_upload.html',
+        {'form': form},
+        context_instance=RequestContext(request))
+
+
 if getattr(settings, 'DEBUG', False):
     def image_picker_test(request):
         from django.forms import Form, ModelMultipleChoiceField
         from django.shortcuts import render_to_response
         from django.template import RequestContext
         from thecut.media.fields import ImageMultipleChoiceField
-        from photologue.models import Photo
+        from thecut.media.models import Image
         
         class TestForm(Form):
-            photos1 = ImageMultipleChoiceField(Photo.objects.all())
-            photos2 = ImageMultipleChoiceField(Photo.objects.all())
+            photos1 = ImageMultipleChoiceField(Image.objects.all())
+            photos2 = ImageMultipleChoiceField(Image.objects.all())
         
         form = TestForm()
         

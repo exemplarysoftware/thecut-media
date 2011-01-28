@@ -1,0 +1,5 @@
+<li id="photo-{{ image.pk }}">
+  <img src="{{ image.get_admin_thumbnail_url }}" alt="{{ image }}" />
+  {{ image }}
+  <span class="action remove">[x] Remove</span>
+</li>

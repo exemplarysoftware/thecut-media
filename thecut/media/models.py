@@ -3,13 +3,15 @@ from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from mimetypes import guess_type
+from photologue.models import Photo
 from thecut.managers import QuerySetManager
+from thecut.media.utils import generate_unique_image_slug
 from thecut.models import AbstractBaseResource, AbstractSitesResourceWithSlug
 import warnings
 
 
 class MediaSet(models.Model):
-    """A collection of media (photos/galleries/documents)."""
+    """A collection of media (images/galleries/documents)."""
     # Generic relation to an object.
     content_type = models.ForeignKey(ContentType)
     object_id = models.IntegerField()
@@ -83,6 +85,16 @@ class MediaSet(models.Model):
         warnings.warn("Deprecated - use 'all_images' property.",
             DeprecationWarning)
         return self.all_images
+
+
+class Image(Photo):
+    class Meta(Photo.Meta):
+        proxy = True
+    
+    def save(self, *args, **kwargs):
+        if not self.title_slug:
+            self.title_slug = generate_unique_image_slug(self.title)
+        super(Image, self).save(*args, **kwargs)
 
 
 class Document(AbstractBaseResource):

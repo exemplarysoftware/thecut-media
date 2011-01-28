@@ -27,10 +27,12 @@ class DocumentSelectMultiple(SelectMultiple):
     def render(self, *args, **kwargs):
         output = super(DocumentSelectMultiple, self).render(*args, **kwargs)
         document_picker_url = reverse('media_document_picker', args={})
+        document_upload_url = reverse('media_document_upload', args={})
         output += mark_safe(
-            '<a class="action initiate_document_picker" href="%s">Select Documents</a>\
+            '<a class="action initiate_document_upload" href="%s">Upload Document</a>\
+                <a class="action initiate_document_picker" href="%s">Select Documents</a>\
                 <div class="selected_documents"></div>'
-            %(document_picker_url))
+            %(document_upload_url, document_picker_url))
         return output
 
 
@@ -64,7 +66,7 @@ class ImageSelectMultiple(SelectMultiple):
         css = {'all': ['media/image_select_multiple.css',
             'stylesheets/jquery.fancybox.css']}
         js = ['javascripts/jquery.js', 'javascripts/jquery-ui.js',
-            'javascripts/jquery.fancybox.js',
+            'javascripts/jquery.form.js', 'javascripts/jquery.fancybox.js',
             'media/image_select_multiple.js',]
     
     def __init__(self, *args, **kwargs):
@@ -77,10 +79,12 @@ class ImageSelectMultiple(SelectMultiple):
     def render(self, *args, **kwargs):
         output = super(ImageSelectMultiple, self).render(*args, **kwargs)
         image_picker_url = reverse('media_image_picker', args={})
+        image_upload_url = reverse('media_image_upload', args={})
         output += mark_safe(
-            '<a class="action initiate_image_picker" href="%s">Select Images</a>\
+            '<a class="action initiate_image_upload" href="%s">Upload Image</a>\
+            <a class="action initiate_image_picker" href="%s">Select Images</a>\
                 <div class="selected_images"></div>'
-            %(image_picker_url))
+            %(image_upload_url, image_picker_url))
         return output
 
 

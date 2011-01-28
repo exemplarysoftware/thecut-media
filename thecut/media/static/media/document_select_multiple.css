@@ -9,6 +9,7 @@
 }
 
 .document_select_multiple.js-enabled .action.initiate_document_picker,
+.document_select_multiple.js-enabled .action.initiate_document_upload,
 .document_select_multiple .document_picker .action.new {
   display: block;
   float: left;
@@ -30,7 +31,7 @@
   float: right;
 }
 
-.document_select_multiple .document_picker ul {
+.document_select_multiple .document_picker > ul {
   clear: both;
   height: 390px;
   margin: 0;
@@ -39,7 +40,7 @@
 }
 
 .document_select_multiple .selected_documents li,
-.document_select_multiple .document_picker li {
+.document_select_multiple .document_picker > ul li {
   display: block;
   float: left;
   overflow: hidden;
@@ -51,7 +52,7 @@
 }
 
 .document_select_multiple .action,
-.document_select_multiple .document_picker li {
+.document_select_multiple .document_picker > ul li {
   cursor: pointer;
 }
 
@@ -122,4 +123,11 @@
   width: 100px;
   color: #666666;
 }
+
+
+
+.document_select_multiple.js-enabled .action.initiate_document_upload {
+  display: none;
+}
+
 

@@ -1,7 +1,13 @@
 from django.contrib import admin
 from django.contrib.contenttypes.generic import GenericStackedInline
+from photologue.admin import PhotoAdmin
+from photologue import models as photologue_models
 from thecut.media.forms import DocumentAdminForm, GalleryAdminForm, MediaSetForm, VideoAdminForm
-from thecut.media.models import Document, Gallery, MediaSet, Video
+from thecut.media.models import Document, Gallery, Image, MediaSet, Video
+
+
+admin.site.unregister(photologue_models.Photo)
+admin.site.unregister(photologue_models.Gallery)
 
 
 class MediaSetInline(GenericStackedInline):
@@ -51,6 +57,12 @@ class GalleryAdmin(admin.ModelAdmin):
         obj.updated_by = request.user
         obj.save()
 admin.site.register(Gallery, GalleryAdmin)
+
+
+class ImageAdmin(PhotoAdmin):
+    list_display = ['title', 'date_taken', 'date_added', 'is_public',
+        'tags', 'view_count']
+admin.site.register(Image, ImageAdmin)
 
 
 class VideoAdmin(admin.ModelAdmin):

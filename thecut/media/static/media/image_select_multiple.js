@@ -7,6 +7,7 @@ $(document).ready(function() {
     var selected_images = image_select.find('.selected_images');
     var image_picker = $('#fancybox-inner');
     var image_picker_url = image_select.find('.action.initiate_image_picker').attr('href');
+    var image_upload_url = image_select.find('.action.initiate_image_upload').attr('href');
     
     /* initiate image picker / fancybox */
     $(this).fancybox({
@@ -58,6 +59,31 @@ $(document).ready(function() {
       
     });
     
+    /* initiate image upload / fancybox */
+    image_select.find('.action.initiate_image_upload').fancybox({
+      'autoDimensions': false,
+      'height': 504,
+      'padding': 20,
+      'scrolling': 'no',
+      'showCloseButton': false,
+      'width': 750,
+      'overlayColor': '#000000',
+      'overlayOpacity': '0.8',
+      
+      'onStart': function() {
+        $('#fancybox-outer').addClass('image_select_multiple');
+        $('#fancybox-inner').addClass('image_picker');
+      },
+      
+      'onComplete': function() {
+        /* add image to selection */
+        image_picker.find('.action.close').live('click', function(event) {
+          $.fancybox.close();
+        });
+      },
+      
+    });
+    
     /* pagination */
     image_picker.find('a.action.paginate').live('click', function (event) {
       image_picker.load($(this).attr('href'));
@@ -95,9 +121,31 @@ $(document).ready(function() {
       return false;
     });
     
-    /* reset */
+    /* upload */
     image_picker.find('.action.new').live('click', function (event) {
-      alert('Not implemented.');
+      //alert('Not implemented.');
+      image_picker.load($(this).attr('href'));
+      event.preventDefault();
+      return false;
+    });
+  
+    // Upload form
+    $('form[name="image_upload"]').live('submit', function(event) {
+      $(this).ajaxSubmit({
+        success: function(data) {
+          image_picker.html(data);
+          if (!(image_picker.find('form').length)) {
+            item = image_picker.find('li');
+            var image_value = parseInt(item.attr('id').match(/.*-(\d+)/)[1]);
+            var image_name = item.find('img').attr('alt');
+            select.append('<option value="' + image_value + '" selected="selected">' + image_name + '</option>')
+            //select.val(image_value);
+            $('.image_order input').val(select.val());
+            select.change();
+            $.fancybox.close();
+          }
+        },
+      });
       event.preventDefault();
       return false;
     });
