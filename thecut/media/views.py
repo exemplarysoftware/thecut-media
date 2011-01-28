@@ -95,6 +95,7 @@ def document_upload(request):
         if form.is_valid():
             document = form.save(commit=False)
             document.created_by = document.updated_by = request.user
+            document.save()
             return render_to_response(
                 'media/_document_upload_complete.html',
                 {'document': document},
