@@ -1,0 +1,9 @@
+<span class="action close">Close</span>
+<h2>Upload Document</h2>
+<form action="{% url media_document_upload %}" method="post" enctype="multipart/form-data" name="document_upload">
+{% csrf_token %}
+<div>
+  {{ form.as_p }}
+  <p><input type="submit" value="Upload" /></p>
+</div>
+</form>

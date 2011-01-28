@@ -18,7 +18,7 @@
 </div>
 {% endcomment %}
 
-{% comment %}<a href="" class="action new">Upload Document</a>{% endcomment %}
+<a href="{% url media_document_upload %}" class="action new">Upload Document</a>
 <div class="filter">
   <form action="{% url media_document_picker %}" method="post">
     <span><input type="text" name="q" value="{{ q|default:"" }}" /><input type="image" src="{{ MEDIA_URL }}media/document_picker_search.gif" class="action filter" /></span>

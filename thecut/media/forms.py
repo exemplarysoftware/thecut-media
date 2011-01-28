@@ -1,11 +1,10 @@
 from datetime import datetime
-from django.forms import CharField, HiddenInput, ModelForm
+from django import forms
 from thecut.media.fields import DocumentMultipleChoiceField, GalleryMultipleChoiceField, ImageMultipleChoiceField
-from thecut.media.models import Document, Gallery, MediaSet, Video
-from photologue.models import Photo
+from thecut.media.models import Document, Gallery, Image, MediaSet, Video
 
 
-class DocumentAdminForm(ModelForm):
+class DocumentAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(DocumentAdminForm, self).__init__(*args, **kwargs)
         self.fields['publish_at'].initial = datetime.now()
@@ -14,11 +13,11 @@ class DocumentAdminForm(ModelForm):
         model = Document
 
 
-class GalleryAdminForm(ModelForm):
+class GalleryAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(GalleryAdminForm, self).__init__(*args, **kwargs)
         self.fields['publish_at'].initial = datetime.now()
-        image_choices = [(p.pk, p.title) for p in Photo.objects.all()]
+        image_choices = [(i.pk, i.title) for i in Image.objects.all()]
         self.fields['images'].choices = image_choices
         
         if self.instance.image_order:
@@ -37,7 +36,7 @@ class GalleryAdminForm(ModelForm):
         model = Gallery
 
 
-class MediaSetForm(ModelForm):
+class MediaSetForm(forms.ModelForm):
     images = ImageMultipleChoiceField(required=False)
     galleries = GalleryMultipleChoiceField(Gallery.objects.all(),
         required=False)
@@ -51,7 +50,7 @@ class MediaSetForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(MediaSetForm, self).__init__(*args, **kwargs)
         
-        image_choices = [(p.pk, p.title) for p in Photo.objects.all()]
+        image_choices = [(i.pk, i.title) for i in Image.objects.all()]
         self.fields['images'].choices = image_choices
         
         if self.instance.image_order:
@@ -65,11 +64,23 @@ class MediaSetForm(ModelForm):
             self.fields['images'].choices = image_choices
 
 
-class VideoAdminForm(ModelForm):
+class VideoAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(VideoAdminForm, self).__init__(*args, **kwargs)
         self.fields['publish_at'].initial = datetime.now()
     
     class Meta:
         model = Video
+
+
+class DocumentUploadForm(forms.ModelForm):
+    class Meta:
+        fields = ['title', 'file']
+        model = Document
+
+
+class ImageUploadForm(forms.ModelForm):
+    class Meta:
+        fields = ['title', 'image']
+        model = Image
 

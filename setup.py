@@ -10,5 +10,6 @@ setup(name='media',
     include_package_data=True,
     install_requires=['distribute', 'PIL==1.1.7',
         'django-photologue==2.3', 'sorl-thumbnail==3.2.5'],
+    #obsoletes=['thecut<0.01-5-gcfad22b']
     )
 
