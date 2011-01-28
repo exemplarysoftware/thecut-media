@@ -6,6 +6,7 @@ from mimetypes import guess_type
 from photologue.models import Photo
 from thecut.managers import QuerySetManager
 from thecut.media.utils import generate_unique_image_slug
+from thecut.media.signals import set_publish_at
 from thecut.models import AbstractBaseResource, AbstractSitesResourceWithSlug
 import warnings
 
@@ -116,6 +117,8 @@ class Document(AbstractBaseResource):
     def mime_type(self):
         """Guess the MIME type of this document."""
         return guess_type(self.file.path)[0]
+
+models.signals.post_init.connect(set_publish_at, sender=Document)
 
 
 class Gallery(AbstractSitesResourceWithSlug):
