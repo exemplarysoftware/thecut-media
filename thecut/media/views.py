@@ -93,7 +93,8 @@ def document_upload(request):
     if request.method == 'POST':
         form = DocumentUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            document = form.save()
+            document = form.save(commit=False)
+            document.created_by = document.updated_by = request.user
             return render_to_response(
                 'media/_document_upload_complete.html',
                 {'document': document},
