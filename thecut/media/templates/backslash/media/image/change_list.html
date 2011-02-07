@@ -1,0 +1,13 @@
+{% extends "backslash/change_list.html" %}
+
+{% block result_list %}
+{% for result in cl.result_list %}
+  {% if forloop.first %}<ul class="thumbnails">{% endif %}
+  <li><a href="{% url admin:media_image_change result.pk %}">
+    <img src="{{ result.get_admin_thumbnail_url }}" alt="{{ result }}" />
+    {{ result }}
+  </a></li>
+  {% if forloop.last %}</ul>{% endif %}
+{% endfor %}
+{% endblock %}
+
