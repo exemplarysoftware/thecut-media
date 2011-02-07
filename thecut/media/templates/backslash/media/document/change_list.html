@@ -1,0 +1,14 @@
+{% extends "backslash/change_list.html" %}
+{% load thumbnail %}
+
+{% block result_list %}
+{% for result in cl.result_list %}
+  {% if forloop.first %}<ul class="thumbnails">{% endif %}
+  <li><a href="{% url admin:media_document_change result.pk %}">
+    <img src="{% thumbnail result.file "100x75" crop="smart" %}" alt="{{ result }}" />
+    {{ result }}
+  </a></li>
+  {% if forloop.last %}</ul>{% endif %}
+{% endfor %}
+{% endblock %}
+

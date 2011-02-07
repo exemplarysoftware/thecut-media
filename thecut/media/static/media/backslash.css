@@ -1,0 +1,25 @@
+body.change-list .thumbnails {
+  margin: 0;
+  padding: 0;
+}
+  
+  body.change-list .thumbnails li {
+    display: block;
+    float: left;
+    overflow: hidden;
+    width: 100px;
+    height: 100px;
+    margin: 0;
+    padding: 17px;
+    font-weight: bold;
+    list-style-type: none;
+  }
+    
+    body.change-list .thumbnails li a {
+      display: block;
+    }
+
+body.change-list .paginator {
+  clear: both;
+}
+
