@@ -61,7 +61,7 @@ $(document).ready(function() {
     gallery_picker.find('.filter input[type="text"]').live('change', function () {
       var q = $(this).val();
       var form = $(this).closest('form');
-      gallery_picker.load(form.attr('action'), {'q': q});
+      gallery_picker.load(form.attr('action') + '?q=' + q);
     });
     
     /* prevent parent form submission when pressing enter in filter field */
@@ -83,13 +83,6 @@ $(document).ready(function() {
     /* reset */
     gallery_picker.find('.action.reset').live('click', function (event) {
       gallery_picker.load(gallery_picker_url);
-      event.preventDefault();
-      return false;
-    });
-    
-    /* reset */
-    gallery_picker.find('.action.new').live('click', function (event) {
-      alert('Not implemented.');
       event.preventDefault();
       return false;
     });
@@ -116,7 +109,13 @@ $(document).ready(function() {
     var gallery_picker_url = gallery_select.find('.action.initiate_gallery_picker').attr('href');
     if (select.val()) {
       var ids = select.val().toString();
-      selected_galleries.load(gallery_picker_url, {'ids': ids});
+      $.ajax({
+        url: gallery_picker_url,
+        data: {'ids': ids},
+        success: function(data, textStatus, jqXHR) {
+          selected_galleries.html(data);
+        },
+      });
     }
     else {
       selected_galleries.empty().append('<ul></ul>');

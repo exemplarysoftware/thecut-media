@@ -95,7 +95,7 @@ $(document).ready(function() {
     image_picker.find('.filter input[type="text"]').live('change', function () {
       var q = $(this).val();
       var form = $(this).closest('form');
-      image_picker.load(form.attr('action'), {'q': q});
+      image_picker.load(form.attr('action') + '?q=' + q);
     });
     
     /* prevent parent form submission when pressing enter in filter field */
@@ -172,21 +172,27 @@ $(document).ready(function() {
     var image_picker_url = image_select.find('.action.initiate_image_picker').attr('href');
     if (select.val()) {
       var ids = select.val().toString();
-      selected_images.load(image_picker_url, {'ids': ids}, function() {
-        selected_images.find('ul').sortable({
-          cursor: 'move',
+      $.ajax({
+        url: image_picker_url,
+        data: {'ids': ids},
+        success: function(data, textStatus, jqXHR) {
+          selected_images.html(data);
           
-          update: function(event, ui) {
-            // Update option order in select.
-            var order = $(this).sortable('toArray');
-            $.each(order.reverse(), function(index, item) {
-              var photo_value = parseInt(item.match(/.*-(\d+)/)[1]);
-              select.find('option[value="' + photo_value + '"]').remove().prependTo(select);
-            });
-            $('.image_order input').val(select.val());
-          },
+          selected_images.find('ul').sortable({
+            cursor: 'move',
+            
+            update: function(event, ui) {
+              // Update option order in select.
+              var order = $(this).sortable('toArray');
+              $.each(order.reverse(), function(index, item) {
+                var photo_value = parseInt(item.match(/.*-(\d+)/)[1]);
+                select.find('option[value="' + photo_value + '"]').remove().prependTo(select);
+              });
+              $('.image_order input').val(select.val());
+            },
+          });
           
-        });
+        },
       });
     }
     else {

@@ -15,7 +15,7 @@ class DocumentSelectMultiple(SelectMultiple):
             'stylesheets/jquery.fancybox.css']}
         js = ['javascripts/jquery.js',
             'javascripts/jquery.fancybox.js',
-            'media/document_select_multiple.js']
+            'media/document_select_multiple.js', 'media/csrf.js']
     
     def __init__(self, *args, **kwargs):
         super(DocumentSelectMultiple, self).__init__(*args, **kwargs)
@@ -42,7 +42,7 @@ class GallerySelectMultiple(SelectMultiple):
             'stylesheets/jquery.fancybox.css']}
         js = ['javascripts/jquery.js',
             'javascripts/jquery.fancybox.js',
-            'media/gallery_select_multiple.js']
+            'media/gallery_select_multiple.js', 'media/csrf.js']
     
     def __init__(self, *args, **kwargs):
         super(GallerySelectMultiple, self).__init__(*args, **kwargs)
@@ -67,7 +67,7 @@ class ImageSelectMultiple(SelectMultiple):
             'stylesheets/jquery.fancybox.css']}
         js = ['javascripts/jquery.js', 'javascripts/jquery-ui.js',
             'javascripts/jquery.form.js', 'javascripts/jquery.fancybox.js',
-            'media/image_select_multiple.js',]
+            'media/image_select_multiple.js', 'media/csrf.js']
     
     def __init__(self, *args, **kwargs):
         super(ImageSelectMultiple, self).__init__(*args, **kwargs)
