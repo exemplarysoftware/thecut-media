@@ -86,7 +86,7 @@ $(document).ready(function() {
     document_picker.find('.filter input[type="text"]').live('change', function () {
       var q = $(this).val();
       var form = $(this).closest('form');
-      document_picker.load(form.attr('action'), {'q': q});
+      document_picker.load(form.attr('action') + '?q=' + q);
     });
     
     /* prevent parent form submission when pressing enter in filter field */
@@ -160,7 +160,13 @@ $(document).ready(function() {
     var document_picker_url = document_select.find('.action.initiate_document_picker').attr('href');
     if (select.val()) {
       var ids = select.val().toString();
-      selected_documents.load(document_picker_url, {'ids': ids});
+      $.ajax({
+        url: document_picker_url,
+        data: {'ids': ids},
+        success: function(data, textStatus, jqXHR) {
+          selected_documents.html(data);
+        },
+      });
     }
     else {
       selected_documents.empty().append('<ul></ul>');
