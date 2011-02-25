@@ -8,14 +8,16 @@ class Migration(DataMigration):
 
     def forwards(self, orm):
         # Create initial galleries from existing photologue galleries
-        user = orm['auth.user'].objects.all()[0]
-        for plg in orm['photologue.gallery'].objects.all():
-            gallery = orm.Gallery(publish_at=plg.date_added,
-                is_enabled=plg.is_public, slug=plg.title_slug,
-                content=plg.description, pk=plg.pk, title=plg.title,
-                created_by=user, updated_by=user)
-            gallery.save()
-            gallery.images = plg.photos.all()
+        users = orm['auth.user'].objects.all()
+        if users:
+            user = users[0]
+            for plg in orm['photologue.gallery'].objects.all():
+                gallery = orm.Gallery(publish_at=plg.date_added,
+                    is_enabled=plg.is_public, slug=plg.title_slug,
+                    content=plg.description, pk=plg.pk,
+                    title=plg.title, created_by=user, updated_by=user)
+                gallery.save()
+                gallery.images = plg.photos.all()
 
 
     def backwards(self, orm):
