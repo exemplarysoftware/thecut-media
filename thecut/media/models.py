@@ -1,245 +1,173 @@
-from django.contrib.auth.models import User
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from mimetypes import guess_type
-from photologue.models import Photo
-from thecut.managers import QuerySetManager
-from thecut.media.utils import generate_unique_image_slug
-from thecut.media.signals import set_publish_at
-from thecut.models import AbstractBaseResource, AbstractSitesResourceWithSlug
+from functools import partial
+from tagging.fields import TagField
+from thecut.core.managers import QuerySetManager
+from thecut.core.models import AbstractBaseResource
 import warnings
 
 
+class AbstractMediaItem(AbstractBaseResource):
+    title = models.CharField(max_length=200)
+    caption = models.TextField(null=True, blank=True)
+    content = models.TextField(null=True, blank=True)
+    tags = TagField(null=True, blank=True, help_text='Separate tags \
+        with spaces, put quotes around multiple-word tags.')
+    
+    objects = QuerySetManager()
+    
+    class Meta(AbstractBaseResource.Meta):
+        abstract = True
+    
+    def __unicode__(self):
+        return self.title
+
+
 class MediaSet(models.Model):
-    """A collection of media (images/galleries/documents)."""
     # Generic relation to an object.
     content_type = models.ForeignKey(ContentType)
     object_id = models.IntegerField()
     content_object = generic.GenericForeignKey('content_type',
         'object_id')
     
-    images = models.ManyToManyField('photologue.Photo',
-        null=True, blank=True)
-    image_order = models.CommaSeparatedIntegerField(max_length=250,
-        null=True, blank=True)
-    galleries = models.ManyToManyField('media.Gallery',
-        null=True, blank=True)
-    documents = models.ManyToManyField('Document', null=True,
-        blank=True)
-    
     class Meta:
         unique_together = ['content_type', 'object_id']
     
-    @property
-    def ordered_images(self):
-        """Return an ordered list of images.
-        
-        Ordered list is defined by the model's image_order field.
-        
-        """
-        images = list(self.images.all())
-
-        if self.image_order:
-            image_order = [int(pk) for pk in self.image_order.split(',')]
-            try:
-                images = sorted(images, key=lambda image: image_order.index(image.pk))
-            except ValueError:
-                # image ordering has been corrupted
-                pass
-        return images
+    def get_image(self):
+        #return self.items.all()[0].get_image()
+        return self.items.images()[0].get_image()
+    
+    ## Deprecated properties
     
     @property
     def all_images(self):
-        """Return all images and all gallery images."""
-        images = self.ordered_images
-        for gallery in self.galleries.all():
-            images += gallery.all_images
-        return images
-    
-    @property
-    def image(self):
-        """Return the first image from all_images, if one exists."""
-        try:
-            image = self.all_images[0]
-        except IndexError:
-            image = None
-        return image
-    
-    @property
-    def photo(self):
-        """Deprecated - instead use 'image'."""
-        warnings.warn("Deprecated - use 'image' property.",
-            DeprecationWarning)
-        return self.image
-    
-    @property
-    def photos(self):
-        """Deprecated - instead use 'images'."""
-        warnings.warn("Deprecated - use 'images' property.",
-            DeprecationWarning)
-        return self.images
+        """Deprecated - instead use 'items.images()'."""
+        warnings.warn('all_images property is deprecated - use '
+            '\'items.images()\' method.', DeprecationWarning,
+            stacklevel=2)
+        return self.items.images()
     
     @property
     def all_photos(self):
-        """Deprecated - instead use 'all_images'."""
-        warnings.warn("Deprecated - use 'all_images' property.",
-            DeprecationWarning)
-        return self.all_images
-
-
-class Image(Photo):
-    class Meta(Photo.Meta):
-        proxy = True
+        """Deprecated - instead use 'items.images()'."""
+        warnings.warn('all_photos property is deprecated - use '
+            '\'items.images()\' method.', DeprecationWarning,
+            stacklevel=2)
+        return self.items.images()
     
-    def save(self, *args, **kwargs):
-        if not self.title_slug:
-            self.title_slug = generate_unique_image_slug(self.title)
-        super(Image, self).save(*args, **kwargs)
+    @property
+    def documents(self):
+        """Deprecated - instead use 'items.documents()'."""
+        warnings.warn('documents property is deprecated - use '
+            '\'items.documents()\' method.', DeprecationWarning,
+            stacklevel=2)
+        documents = self.items.documents
+        class proxy(object):
+            def all(self):
+                return documents()
+        return proxy()
+    
+    @property
+    def galleries(self):
+        """Deprecated. Galleries cannot be attached to MediaSets."""
+        warnings.warn('Galleries can no longer be attached to '
+            'MediaSets.', DeprecationWarning, stacklevel=2)
+        class proxy(object):
+            def all(self):
+                return None
+        return proxy()
+    
+    @property
+    def image(self):
+        """Deprecated - instead use 'get_image()'."""
+        warnings.warn('image property is deprecated - use '
+            '\'get_image()\' method.', DeprecationWarning,
+            stacklevel=2)
+        return self.get_image()
+    
+    @property
+    def image_order(self):
+        """Deprecated. Ordering is now managed by AttachedMediaItem."""
+        warnings.warn('Ordering is now managed by AttachedMediaItem '
+            'model.', DeprecationWarning, stacklevel=2)
+        return [image.pk for image in self.items.images()]
+    
+    @property
+    def images(self):
+        """Deprecated - instead use 'items.images()'."""
+        warnings.warn('images property is deprecated - use '
+            '\'items.images()\' method.', DeprecationWarning,
+            stacklevel=2)
+        images = self.items.images
+        class proxy(object):
+            def all(self):
+                return images()
+        return proxy()
+    
+    @property
+    def ordered_images(self):
+        """Deprecated - instead use 'items.images()'."""
+        warnings.warn('ordered_images property is deprecated - use '
+            '\'items.images()\' method.', DeprecationWarning,
+            stacklevel=2)
+        return self.items.images()
+    
+    @property
+    def photo(self):
+        """Deprecated - instead use 'get_image()'."""
+        warnings.warn('photo property is deprecated - use '
+            '\'get_image()\' method.', DeprecationWarning,
+            stacklevel=2)
+        return self.get_image()
+    
+    @property
+    def photos(self):
+        """Deprecated - instead use 'items.images()'."""
+        warnings.warn('photos property is deprecated - use '
+            '\'items.images()\' method.', DeprecationWarning,
+            stacklevel=2)
+        photos = self.items.images
+        class proxy(object):
+            def all(self):
+                return photos()
+        return proxy()
 
 
-class Document(AbstractBaseResource):
-    title = models.CharField(max_length=200)
-    file = models.FileField(upload_to='uploads/documents')
+class AttachedMediaItem(models.Model):
+    # Generic relation to an object.
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.IntegerField()
+    content_object = generic.GenericForeignKey('content_type',
+        'object_id')
+    
+    mediaset = models.ForeignKey('media.MediaSet',
+        related_name='items')
+    order = models.PositiveIntegerField(default=0)
     
     objects = QuerySetManager()
     
-    class Meta(AbstractBaseResource.Meta):
-        ordering = ['-publish_at', 'title']
+    class QuerySet(models.query.QuerySet):
+        def __init__(self, *args, **kwargs):
+            # TODO: Optimisation/caching
+            from thecut.media import MEDIA_SOURCE_CLASSES
+            for class_ in MEDIA_SOURCE_CLASSES:
+                plural_name = class_._meta.verbose_name_plural.replace(
+                    ' ', '')
+                content_type = ContentType.objects.get_for_model(class_)
+                objects = partial(self.get_objects_for_content_type,
+                    content_type=content_type)
+                setattr(self, plural_name, objects)
+            super(AttachedMediaItem.QuerySet, self).__init__(*args,
+                **kwargs)
+        
+        def get_objects_for_content_type(self, content_type):
+            # TODO: Optimisation/caching/queryset?
+            items = self.filter(content_type=content_type)
+            return [item.content_object for item in items]
     
     def __unicode__(self):
-        return self.title
-    
-    def get_absolute_url(self):
-        return self.file.url
-    
-    @property
-    def mime_type(self):
-        """Guess the MIME type of this document."""
-        return guess_type(self.file.path)[0]
-
-models.signals.post_init.connect(set_publish_at, sender=Document)
-
-
-class Gallery(AbstractSitesResourceWithSlug):
-    """Image gallery."""
-    images = models.ManyToManyField('photologue.Photo',
-        null=True, blank=True)
-    image_order = models.CommaSeparatedIntegerField(max_length=250,
-        null=True, blank=True)
-    
-    objects = QuerySetManager()
-    
-    class Meta(AbstractSitesResourceWithSlug.Meta):
-        ordering = ['-publish_at', 'title']
-        verbose_name_plural = 'galleries'
-    
-    class QuerySet(AbstractSitesResourceWithSlug.QuerySet):
-        def with_images(self):
-            """Return active objects containg at least one image."""
-            return self.annotate(
-                num_images=models.Count('images')).filter(
-                num_images__gte=1)
-    
-    @models.permalink
-    def get_absolute_url(self):
-        return ('gallery_detail', [], {'slug': self.slug})
-    
-    @property
-    def ordered_images(self):
-        """Return an ordered list of images.
-        
-        Ordered list is defined by the model's image_order field.
-        
-        """
-        images = list(self.images.all())
-
-        if self.image_order:
-            image_order = [int(pk) for pk in self.image_order.split(',')]
-            try:
-                images = sorted(images, key=lambda image: image_order.index(image.pk))
-            except ValueError:
-                # image ordering has been corrupted
-                pass
-        return images
-    
-    @property
-    def all_images(self):
-        """Return all images."""
-        return self.ordered_images
-    
-    @property
-    def image(self):
-        """Return the first image from all_images, if one exists."""
-        try:
-            image = self.all_images[0]
-        except IndexError:
-            image = None
-        return image
-    
-    @property
-    def photo(self):
-        """Deprecated - instead use 'image'."""
-        warnings.warn("Deprecated - use 'image' property.",
-            DeprecationWarning)
-        return self.image
-    
-    @property
-    def photos(self):
-        """Deprecated - instead use 'images'."""
-        warnings.warn("Deprecated - use 'images' property.",
-            DeprecationWarning)
-        return self.images
-    
-    @property
-    def all_photos(self):
-        """Deprecated - instead use 'all_images'."""
-        warnings.warn("Deprecated - use 'all_images' property.",
-            DeprecationWarning)
-        return self.all_images
-
-
-class Video(AbstractSitesResourceWithSlug):
-    file = models.FileField(upload_to='uploads/videos')
-    thumbnail = models.ImageField(upload_to='uploads/videos/thumbnails',
-        null=True, blank=True)
-    
-    objects = QuerySetManager()
-    
-    class Meta(AbstractSitesResourceWithSlug.Meta):
-        ordering = ['-publish_at', 'title']
-    
-    @models.permalink
-    def get_absolute_url(self):
-        return ('video_detail', [], {'slug': self.slug})
-    
-    def generate_thumbnail(self):
-        if self.thumbnail:
-            self.thumbnail.delete()
-        import subprocess
-        from django.conf import settings
-        from django.core.files.images import ImageFile
-        from django.template.defaultfilters import slugify
-        file_name = slugify(self.title)
-        file_path = '%s/%s.jpg' %('uploads/videos/thumbnails', file_name)
-        command_line = 'ffmpegthumbnailer -i %s -o %s/%s -s %d' % (self.file.path, settings.MEDIA_ROOT, file_path, 720)
-        subprocess.check_call(command_line, shell=True)#, stderr=subprocess.STDOUT)
-        thumbnail = file_path#ImageFile(open(file_path, 'rb'))
-        self.thumbnail = thumbnail
-        self.save()
-    
-    @property
-    def image(self):
-        return self.thumbnail
-    
-    @property
-    def mime_type(self):
-        """Guess the MIME type of this video."""
-        return guess_type(self.file.path)[0]
-    
-    def save(self, *args, **kwargs):
-        response = super(Video, self).save(*args, **kwargs)
-        if not self.thumbnail:
-            self.generate_thumbnail()
-        return response
+        return '%(order)s - %(model)s: %(object)s' %(
+            {'order': self.order, 'model': self.content_type,
+            'object': self.content_object})
 

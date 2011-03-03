@@ -1,38 +1,26 @@
+from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
-from django.template.defaultfilters import slugify
 
 
-def get_mediaset(instance):
-    """Returns MediaSet for the instance provided."""
+def get_mediaset_for_object(obj):
+    """Returns MediaSet for the object provided."""
     from thecut.media.models import MediaSet
-    content_type = ContentType.objects.get_for_model(instance)
-    try:
-        media = MediaSet.objects.get(content_type=content_type,
-        object_id=instance.id)
-    except MediaSet.DoesNotExist:
-        media = None
-    return media
+    content_type = ContentType.objects.get_for_model(obj)
+    return MediaSet.objects.get(content_type=content_type,
+        object_id=obj.id)
 
 
-@property
-def media(self):
-    """Property for adding to classes - returns MediaSet instance."""
-    return get_mediaset(instance=self)
-
-
-def generate_unique_image_slug(text, iteration=0):
-    """Generate a unique slug for an image from the provided text."""
-    from thecut.media.models import Image
-    queryset = Image.objects
-    slug = slugify(text)
-    if iteration > 0:
-        slug = '%s-%s' %(iteration, slug)
-    slug = slug[:50]
-    try:
-        queryset.get(title_slug=slug)
-    except Image.DoesNotExist:
-        return slug
-    else:
-        iteration += 1
-        return generate_unique_slug(text, iteration=iteration)
+def get_media_source_classes(model_list=None):
+    """Returns classes for the each string in list."""
+    from thecut.media.models import AbstractMediaItem
+    model_list = model_list or getattr(settings, 'MEDIA_SOURCES', [])
+    source_classes = []
+    for import_string in model_list:
+        module_string = '.'.join(import_string.split('.')[:-1])
+        class_string = import_string.split('.')[-1]
+        module = __import__(module_string, globals(), locals(), [class_string])
+        class_ = getattr(module, class_string)
+        if issubclass(class_, AbstractMediaItem):
+            source_classes += [class_]
+    return source_classes
 
