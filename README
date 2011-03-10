@@ -1,2 +1,4 @@
 The Cut Django App: Media
 
+sudo apt-get install libgraphicsmagick++-dev libboost-python-dev
+
