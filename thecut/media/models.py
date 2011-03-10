@@ -24,125 +24,20 @@ class AbstractMediaItem(AbstractBaseResource):
         return self.title
 
 
-class MediaSet(models.Model):
-    # Generic relation to an object.
-    content_type = models.ForeignKey(ContentType)
-    object_id = models.IntegerField()
-    content_object = generic.GenericForeignKey('content_type',
-        'object_id')
-    
-    class Meta:
-        unique_together = ['content_type', 'object_id']
-    
-    def get_image(self):
-        #return self.items.all()[0].get_image()
-        return self.items.images()[0].get_image()
-    
-    ## Deprecated properties
-    
-    @property
-    def all_images(self):
-        """Deprecated - instead use 'items.images()'."""
-        warnings.warn('all_images property is deprecated - use '
-            '\'items.images()\' method.', DeprecationWarning,
-            stacklevel=2)
-        return self.items.images()
-    
-    @property
-    def all_photos(self):
-        """Deprecated - instead use 'items.images()'."""
-        warnings.warn('all_photos property is deprecated - use '
-            '\'items.images()\' method.', DeprecationWarning,
-            stacklevel=2)
-        return self.items.images()
-    
-    @property
-    def documents(self):
-        """Deprecated - instead use 'items.documents()'."""
-        warnings.warn('documents property is deprecated - use '
-            '\'items.documents()\' method.', DeprecationWarning,
-            stacklevel=2)
-        documents = self.items.documents
-        class proxy(object):
-            def all(self):
-                return documents()
-        return proxy()
-    
-    @property
-    def galleries(self):
-        """Deprecated. Galleries cannot be attached to MediaSets."""
-        warnings.warn('Galleries can no longer be attached to '
-            'MediaSets.', DeprecationWarning, stacklevel=2)
-        class proxy(object):
-            def all(self):
-                return None
-        return proxy()
-    
-    @property
-    def image(self):
-        """Deprecated - instead use 'get_image()'."""
-        warnings.warn('image property is deprecated - use '
-            '\'get_image()\' method.', DeprecationWarning,
-            stacklevel=2)
-        return self.get_image()
-    
-    @property
-    def image_order(self):
-        """Deprecated. Ordering is now managed by AttachedMediaItem."""
-        warnings.warn('Ordering is now managed by AttachedMediaItem '
-            'model.', DeprecationWarning, stacklevel=2)
-        return [image.pk for image in self.items.images()]
-    
-    @property
-    def images(self):
-        """Deprecated - instead use 'items.images()'."""
-        warnings.warn('images property is deprecated - use '
-            '\'items.images()\' method.', DeprecationWarning,
-            stacklevel=2)
-        images = self.items.images
-        class proxy(object):
-            def all(self):
-                return images()
-        return proxy()
-    
-    @property
-    def ordered_images(self):
-        """Deprecated - instead use 'items.images()'."""
-        warnings.warn('ordered_images property is deprecated - use '
-            '\'items.images()\' method.', DeprecationWarning,
-            stacklevel=2)
-        return self.items.images()
-    
-    @property
-    def photo(self):
-        """Deprecated - instead use 'get_image()'."""
-        warnings.warn('photo property is deprecated - use '
-            '\'get_image()\' method.', DeprecationWarning,
-            stacklevel=2)
-        return self.get_image()
-    
-    @property
-    def photos(self):
-        """Deprecated - instead use 'items.images()'."""
-        warnings.warn('photos property is deprecated - use '
-            '\'items.images()\' method.', DeprecationWarning,
-            stacklevel=2)
-        photos = self.items.images
-        class proxy(object):
-            def all(self):
-                return photos()
-        return proxy()
-
-
 class AttachedMediaItem(models.Model):
-    # Generic relation to an object.
+    # Generic relation to media object.
     content_type = models.ForeignKey(ContentType)
     object_id = models.IntegerField()
     content_object = generic.GenericForeignKey('content_type',
         'object_id')
     
-    mediaset = models.ForeignKey('media.MediaSet',
-        related_name='items')
+    # Generic relation to another object.
+    parent_content_type = models.ForeignKey(ContentType,
+        related_name='attachedmediaitem_parent_set', blank=True, null=True)
+    parent_object_id = models.IntegerField(blank=True, null=True)
+    parent_content_object = generic.GenericForeignKey(
+        'parent_content_type', 'parent_object_id')
+    
     order = models.PositiveIntegerField(default=0)
     
     objects = QuerySetManager()
@@ -163,8 +58,113 @@ class AttachedMediaItem(models.Model):
         
         def get_objects_for_content_type(self, content_type):
             # TODO: Optimisation/caching/queryset?
+            # Maybe return an iterator? Direct SQL?
             items = self.filter(content_type=content_type)
             return [item.content_object for item in items]
+        
+        def get_image(self):
+            #TODO: Decide if this should only return the first image
+            # from an image, or if it should return the first image
+            # from any object (e.g. document/video).
+            #return self.all()[0].content_object.get_image()
+            return self.images()[0].get_image()
+        
+        ## Deprecated properties (from previous MediaSet model)
+        
+        @property
+        def all_images(self):
+            """Deprecated - instead use 'images()'."""
+            warnings.warn('all_images property is deprecated - use '
+                '\'images()\' method.', DeprecationWarning,
+                stacklevel=2)
+            return self.images()
+        
+        @property
+        def all_photos(self):
+            """Deprecated - instead use 'images()'."""
+            warnings.warn('all_photos property is deprecated - use '
+                '\'images()\' method.', DeprecationWarning,
+                stacklevel=2)
+            return self.images()
+        
+        # Clashes with new documents() method added during __init__().
+        #@property
+        #def documents(self):
+        #    """Deprecated - instead use 'documents()'."""
+        #    warnings.warn('documents property is deprecated - use '
+        #        '\'documents()\' method.', DeprecationWarning,
+        #        stacklevel=2)
+        #    documents = self.documents
+        #    class proxy(object):
+        #        def all(self):
+        #            return documents()
+        #    return proxy()
+        
+        @property
+        def galleries(self):
+            """Deprecated. Galleries cannot be attached to MediaSets."""
+            warnings.warn('Galleries can no longer be attached to '
+                'MediaSets.', DeprecationWarning, stacklevel=2)
+            class proxy(object):
+                def all(self):
+                    return None
+            return proxy()
+        
+        @property
+        def image(self):
+            """Deprecated - instead use 'get_image()'."""
+            warnings.warn('image property is deprecated - use '
+                '\'get_image()\' method.', DeprecationWarning,
+                stacklevel=2)
+            return self.get_image()
+        
+        @property
+        def image_order(self):
+            """Deprecated. Ordering is now managed by AttachedMediaItem."""
+            warnings.warn('Ordering is now managed by AttachedMediaItem '
+                'model.', DeprecationWarning, stacklevel=2)
+            return [image.pk for image in self.images()]
+        
+        # Clashes with new images() method added during __init__().
+        #@property
+        #def images(self):
+        #    """Deprecated - instead use 'images()'."""
+        #    warnings.warn('images property is deprecated - use '
+        #        '\'images()\' method.', DeprecationWarning,
+        #        stacklevel=2)
+        #    images = self.images
+        #    class proxy(object):
+        #        def all(self):
+        #            return images()
+        #    return proxy()
+        
+        @property
+        def ordered_images(self):
+            """Deprecated - instead use 'images()'."""
+            warnings.warn('ordered_images property is deprecated - use '
+                '\'images()\' method.', DeprecationWarning,
+                stacklevel=2)
+            return self.images()
+        
+        @property
+        def photo(self):
+            """Deprecated - instead use 'get_image()'."""
+            warnings.warn('photo property is deprecated - use '
+                '\'get_image()\' method.', DeprecationWarning,
+                stacklevel=2)
+            return self.get_image()
+        
+        @property
+        def photos(self):
+            """Deprecated - instead use 'images()'."""
+            warnings.warn('photos property is deprecated - use '
+                '\'images()\' method.', DeprecationWarning,
+                stacklevel=2)
+            photos = self.images
+            class proxy(object):
+                def all(self):
+                    return photos()
+            return proxy()
     
     def __unicode__(self):
         return '%(order)s - %(model)s: %(object)s' %(
