@@ -120,15 +120,17 @@ $(document).ready(function() {
     });
     
     // Upload form
-    $('form[name="document_upload"]').live('submit', function(event) {
+    $('form[name="document_upload"]').die('submit').live('submit', function(event) {
       $(this).ajaxSubmit({
         success: function(data) {
           document_picker.html(data);
           if (!(document_picker.find('form').length)) {
-            item = document_picker.find('li');
+            var item = document_picker.find('li');
             var document_value = parseInt(item.attr('id').match(/.*-(\d+)/)[1]);
             var document_name = item.find('img').attr('alt');
-            select.append('<option value="' + document_value + '" selected="selected">' + document_name + '</option>')
+            var select = $('.document_select_multiple select');
+            var options = select.attr('options');
+            options[options.length] = new Option(document_name, document_value, true, true);
             select.change();
             $.fancybox.close();
           }

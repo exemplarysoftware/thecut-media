@@ -130,16 +130,17 @@ $(document).ready(function() {
     });
   
     // Upload form
-    $('form[name="image_upload"]').live('submit', function(event) {
+    $('form[name="image_upload"]').die('submit').live('submit', function(event) {
       $(this).ajaxSubmit({
         success: function(data) {
           image_picker.html(data);
           if (!(image_picker.find('form').length)) {
-            item = image_picker.find('li');
+            var item = image_picker.find('li');
             var image_value = parseInt(item.attr('id').match(/.*-(\d+)/)[1]);
             var image_name = item.find('img').attr('alt');
-            select.append('<option value="' + image_value + '" selected="selected">' + image_name + '</option>')
-            //select.val(image_value);
+            var select = $('.image_select_multiple select');
+            var options = select.attr('options');
+            options[options.length] = new Option(image_name, image_value, true, true);
             $('.image_order input').val(select.val());
             select.change();
             $.fancybox.close();
