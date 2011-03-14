@@ -12,7 +12,7 @@ class AbstractMediaItem(AbstractBaseResource):
     title = models.CharField(max_length=200)
     caption = models.TextField(null=True, blank=True)
     content = models.TextField(null=True, blank=True)
-    tags = TagField(null=True, blank=True, help_text='Separate tags \
+    tags = TagField(blank=True, null=True, help_text='Separate tags \
         with spaces, put quotes around multiple-word tags.')
     
     objects = QuerySetManager()
@@ -58,7 +58,7 @@ class AttachedMediaItem(models.Model):
         
         def get_objects_for_content_type(self, content_type):
             # TODO: Optimisation/caching/queryset?
-            # Maybe return an iterator? Direct SQL?
+            # Maybe return an iterator? Direct SQL for ordering?
             items = self.filter(content_type=content_type)
             return [item.content_object for item in items]
         
