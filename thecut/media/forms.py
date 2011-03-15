@@ -19,8 +19,8 @@ class AttachedMediaItemInlineForm(forms.ModelForm):
         
     class Media:
         css = {'all': ['media/admin.css']}
-        js = ['media/jquery.js', 'media/jquery.init.js',
-            'media/csrf.js', 'media/admin.js']
+        js = ['media/jquery.js', 'media/jquery-ui.js',
+            'media/jquery.init.js', 'media/csrf.js', 'media/admin.js']
     
     class Meta:
         model = AttachedMediaItem

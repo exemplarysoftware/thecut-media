@@ -33,6 +33,9 @@ class AttachedMediaItemMixin(admin.ModelAdmin):
                 'admin_contenttype_list'),
             url(r'^\d+/media/contenttype/(?P<content_type_pk>\d+)/$',
                 'admin_contenttype_object_list'),
+            url(r'^\d+/media/contenttype/(?P<content_type_pk>\d+)/'
+                '(?P<object_pk>\d+)$',
+                'admin_contenttype_object_detail'),
         )
         urlpatterns += super(AttachedMediaItemMixin, self).get_urls()
         return urlpatterns

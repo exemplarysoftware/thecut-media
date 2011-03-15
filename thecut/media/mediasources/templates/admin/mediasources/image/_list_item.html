@@ -1,0 +1,7 @@
+<li id="{{ content_type.pk }}-{{ image.pk }}" class="thumbnail image">
+  {% load thumbnail %}
+  {% thumbnail image.get_image "140x106" crop="center" as thumb %}
+  <img src="{{ thumb.url }}" alt="{{ image }}" title="{{ image }}" />
+  {% endthumbnail %}
+  <span class="action remove" title="Remove">Remove</span>
+</li>
