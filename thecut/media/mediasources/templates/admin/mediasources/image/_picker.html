@@ -1,0 +1,30 @@
+{% load thumbnail %}
+
+<div class="media-filter_objects">
+
+</div>
+
+<div class="media-available_objects">
+  <h2>Images</h2>
+  {% for image in image_list %}
+  {% if forloop.first %}<ul class="media-available_object_list">{% endif %}
+  <li id="{{ content_type.pk }}-{{ image.pk }}" class="image">
+    {% thumbnail image.get_image "60x45" crop="center" as thumb %}<img src="{{ thumb.url }}" alt="{{ image }}" />{% endthumbnail %}
+    <div class="name">{{ image }}</div>
+    <div class="content">{{ image.content }}</div>
+    <div class="publish_at">{{ image.publish_at }}</div>
+    <span class="action add">Add +</span><span class="action remove">Remove</span>
+  </li>
+  {% if forloop.last %}</ul>{% endif %}
+  {% endfor %}
+</div>
+
+<div class="media-selected_objects">
+  <h2>Selected Images</h2>
+  <ul class="media-selected_object_list"></ul>
+  
+  <span class="action cancel">Cancel</span>
+  <span class="action confirm">Confirm</span>
+  
+</div>
+

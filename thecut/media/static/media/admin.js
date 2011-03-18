@@ -31,9 +31,13 @@ media.jQuery(document).ready(function($) {
     };
     
     
+    function getSeletedContentType() {
+        return inline_group.find('.media-content_type_list li.active a').attr('rel');
+    }
+    
     function getObjectPksForContentType(content_type_pk) {
         var object_pks = new Array();
-        inline_group.find('.inline-related .form-row.content_type select option[value="' + content_type_pk + '"][selected="selected"]').each(function(index, Element) {
+        inline_group.find('.inline-related .form-row.content_type select option[value="' + content_type_pk + '"]:selected').each(function(index, Element) {
             if (!($(Element).closest('.inline-related').find('.delete input').is(':checked'))) {
               object_pk = $(Element).closest('fieldset').find('.form-row.object_id input').val();
               object_pks += object_pk;
@@ -83,21 +87,27 @@ media.jQuery(document).ready(function($) {
         
         object_list.appendTo(inline_group);
         
+        var selected_content_type = inline_group.find('.media-content_type_list li.active:first a');
+        inline_group.find('.action.select').remove();
+        var select = $('<a class="action select" rel="' + selected_content_type.attr('rel') + '" href="' + selected_content_type.attr('href') + '">Select ' + selected_content_type.text() + '</a>');
+        object_list.after(select);
     };
     
     
     function getFormFieldsForObject(content_type_pk, object_pk) {
         var fields = new Array()
-        inline_group.find('.inline-related .form-row.content_type select option[value="' + content_type_pk + '"][selected="selected"]').each(function(index, Element) {
+        inline_group.find('.inline-related .form-row.content_type select option[value="' + content_type_pk + '"]:selected').each(function(index, Element) {
             var inline_related = $(Element).closest('.inline-related');
-            var input = inline_related.find('.form-row.object_id input[value="' + object_pk + '"]');
-            if (input.length) {
+            //var input = inline_related.find('.form-row.object_id input[value="' + object_pk + '"]');
+            inline_related.find('.form-row.object_id input').each(function(index, input) {
+            if ($(input).val() == object_pk) {
                 /* we have a match */
                 fields.delete = inline_related.find('.delete input');
                 fields.content_type = inline_related.find('.form-row.content_type select');
                 fields.object_id = inline_related.find('.form-row.object_id input');
                 fields.order = inline_related.find('.form-row.order input');
             }
+            });
         });
         return fields;        
     }
@@ -125,6 +135,10 @@ media.jQuery(document).ready(function($) {
     function orderObject(content_type_pk, object_pk, order) {
         var fields = getFormFieldsForObject(content_type_pk, object_pk);
         fields.order.val(order);
+        
+        // Nasty hack - come back and fix this
+        var empty_inline_related = inline_group.find('.inline-related.empty-form');
+        fields.content_type.closest('.inline-related').insertBefore(empty_inline_related);
     }
     
     function removeObject(content_type_pk, object_pk) {
@@ -135,11 +149,11 @@ media.jQuery(document).ready(function($) {
     
     
     function hideObjectInList(content_type_pk, object_pk) {
-        inline_group.find('.media-object_list li#' + content_type_pk + '-' + object_pk).fadeOut();
+        inline_group.find('.media-object_list li#' + content_type_pk + '-' + object_pk + ':visible:first').fadeOut();
     }
     
     function showObjectInList(content_type_pk, object_pk) {
-        inline_group.find('.media-object_list li#' + content_type_pk + '-' + object_pk).fadeIn();
+        inline_group.find('.media-object_list li#' + content_type_pk + '-' + object_pk + ':hidden:first').fadeIn();
     }
     
     
@@ -155,8 +169,61 @@ media.jQuery(document).ready(function($) {
         }
     });
     
+    $('.action.select').live('click', function(event) {
+      var content_type_pk = $(this).attr('rel');
+      
+      $.ajax({
+          url: $(this).attr('href'),
+          success: function(data, textStatus, jqXHR) {
+              var div = $('<div class="media-picker" />');
+              div.html(data);
+              div.dialog({
+              dialogClass: 'media-attachedmediaitems',
+              draggable: false,
+              modal: true,
+              height: 500,
+              width: 960,
+              open: function() {
+                  var object_pks = getObjectPksForContentType(content_type_pk);
+                  $.each(object_pks, function(index, object_pk) {
+                      div.find('.media-available_object_list #' + content_type_pk + '-' + object_pk).addClass('selected');
+                  });
+              }
+              });
+          },
+      });
+      
+      event.preventDefault();
+      return false;
+    });
+    
+    $('.media-attachedmediaitems .media-picker .media-available_object_list li .action.add').live('click', function() {
+        $(this).closest('li').clone().appendTo('.media-attachedmediaitems .media-picker .media-selected_object_list');
+        $(this).closest('li').addClass('selected');
+    });
+    
+    $('.media-attachedmediaitems .media-picker .media-selected_object_list li .action.remove').live('click', function() {
+        var li = $(this).closest('li');
+        li.closest('.media-picker').find('.media-available_object_list li#' + li.attr('id')).removeClass('selected');
+        li.remove();
+    });
+    
+    $('.media-attachedmediaitems .media-picker .action.confirm').live('click', function() {
+        $(this).closest('.media-picker').find('.media-selected_object_list li').each(function(index, Element) {
+            var content_type_pk = parseInt($(Element).attr('id').match(/(\d+)\-(\d+)/)[1]);
+            var object_pk = parseInt($(Element).attr('id').match(/(\d+)\-(\d+)/)[2]);
+            var order = getObjectPksForContentType(content_type_pk).length
+            addObject(content_type_pk, object_pk, order);
+        });
+        $(this).closest('.media-picker').dialog('close');
+        inline_group.find('.media-content_type_list li.active a').click();
+    });
+    
+    $('.media-attachedmediaitems .media-picker .action.cancel').live('click', function() {
+        $(this).closest('.media-picker').dialog('close');
+    });
+    
     inline_group.addClass('media-attachedmediaitems');
     loadContentTypeList();
     
-    $('#41-1').live('click', function() {addObject('34', '1', '5');});
 });
