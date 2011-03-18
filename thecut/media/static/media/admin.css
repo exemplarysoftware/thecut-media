@@ -262,8 +262,14 @@
   }
     
     .media-attachedmediaitems .media-picker .media-available_object_list li.selected {
+      -moz-opacity: 0.5;
       opacity: 0.5;
+      filter: alpha(opacity = 50);
     }
+      
+      .media-attachedmediaitems .media-picker .media-available_object_list li.selected img {
+        filter: alpha(opacity = 50);
+      }
     
     .media-attachedmediaitems .media-picker .media-available_object_list li img,
     .media-attachedmediaitems .media-picker .media-selected_object_list li img {
@@ -274,7 +280,7 @@
     
     .media-attachedmediaitems .media-picker .media-available_object_list li.document,
     .media-attachedmediaitems .media-picker .media-selected_object_list li.document {
-      background-image: url("media-object_list-document.png");
+      background-image: url("media-object_list-document_thumbnail.png");
     }
     
     .media-attachedmediaitems .media-picker .media-available_object_list li .action.add {

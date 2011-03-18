@@ -102,7 +102,7 @@ media.jQuery(document).ready(function($) {
             inline_related.find('.form-row.object_id input').each(function(index, input) {
             if ($(input).val() == object_pk) {
                 /* we have a match */
-                fields.delete = inline_related.find('.delete input');
+                fields.del = inline_related.find('.delete input');
                 fields.content_type = inline_related.find('.form-row.content_type select');
                 fields.object_id = inline_related.find('.form-row.object_id input');
                 fields.order = inline_related.find('.form-row.order input');
@@ -143,7 +143,7 @@ media.jQuery(document).ready(function($) {
     
     function removeObject(content_type_pk, object_pk) {
         var fields = getFormFieldsForObject(content_type_pk, object_pk);
-        fields.delete.attr('checked', 'checked');
+        fields.del.attr('checked', 'checked');
         hideObjectInList(content_type_pk, object_pk);
     }
     
