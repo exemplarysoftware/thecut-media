@@ -15,7 +15,7 @@
     {{ gallery.content|safe }}
   </div>
   
-  {% for image in gallery.media.items.images %}
+  {% for image in gallery.media.images %}
   {% if forloop.first %}<h2>Images</h2><ul>{% endif %}
     {% thumbnail image.get_image "200x200" crop="center" as thumb %}
     <li><a href="{{ image.get_absolute_url }}"><img src="{{ thumb.url }}" alt="{{ image }}" /></a></li>
@@ -23,7 +23,7 @@
   {% if forloop.last %}</ul>{% endif %}
   {% endfor %}
   
-  {% for document in gallery.media.items.documents %}
+  {% for document in gallery.media.documents %}
   {% if forloop.first %}<h2>Documents</h2><ul>{% endif %}
     {% thumbnail document.get_image "200x200" crop="0% 0%" as thumb %}
     <li><a href="{{ document.get_absolute_url }}"><img src="{{ thumb.url }}" alt="{{ document }}" /></a></li>
@@ -33,7 +33,7 @@
   {% if forloop.last %}</ul>{% endif %}
   {% endfor %}
   
-  {% for video in gallery.media.items.videos %}
+  {% for video in gallery.media.videos %}
   {% if forloop.first %}<h2>Videos</h2><ul>{% endif %}
     {% thumbnail video.get_image "200x200" crop="center" as thumb %}
     <li><a href="{{ video.get_absolute_url }}"><img src="{{ thumb.url }}" alt="{{ video }}" /></a></li>
@@ -43,7 +43,7 @@
   {% if forloop.last %}</ul>{% endif %}
   {% endfor %}
   
-  {% for video in gallery.media.items.youtubevideos %}
+  {% for video in gallery.media.youtubevideos %}
   {% if forloop.first %}<h2>YouTube Videos</h2><ul>{% endif %}
     {% thumbnail video.get_image "200x200" crop="center" as thumb %}
     <li><a href="{{ video.get_absolute_url }}"><img src="{{ thumb.url }}" alt="{{ video }}" /></a></li>

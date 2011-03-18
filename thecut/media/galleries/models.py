@@ -25,19 +25,19 @@ class Gallery(AbstractSitesResourceWithSlug):
     
     @property
     def all_images(self):
-        """Deprecated - instead use 'media.items.images()'."""
+        """Deprecated - instead use 'media.images()'."""
         warnings.warn('all_images property is deprecated - use '
-            '\'media.items.images()\' method.', DeprecationWarning,
+            '\'media.images()\' method.', DeprecationWarning,
             stacklevel=2)
-        return self.media.items.images()
+        return self.media.images()
     
     @property
     def all_photos(self):
-        """Deprecated - instead use 'media.items.images()'."""
+        """Deprecated - instead use 'media.images()'."""
         warnings.warn('all_photos property is deprecated - use '
-            '\'media.items.images()\' method.', DeprecationWarning,
+            '\'media.images()\' method.', DeprecationWarning,
             stacklevel=2)
-        return self.media.items.images()
+        return self.media.images()
     
     @property
     def image(self):
@@ -52,15 +52,15 @@ class Gallery(AbstractSitesResourceWithSlug):
         """Deprecated. Ordering is now managed by AttachedMediaItem."""
         warnings.warn('Ordering is now managed by AttachedMediaItem '
             'model.', DeprecationWarning, stacklevel=2)
-        return [image.pk for image in self.items.images()]
+        return [image.pk for image in self.images()]
     
     @property
     def images(self):
-        """Deprecated - instead use 'media.items.images()'."""
+        """Deprecated - instead use 'media.images()'."""
         warnings.warn('images property is deprecated - use '
-            '\'media.items.images()\' method.', DeprecationWarning,
+            '\'media.images()\' method.', DeprecationWarning,
             stacklevel=2)
-        images = self.media.items.images
+        images = self.media.images
         class proxy(object):
             def all(self):
                 return images()
@@ -68,11 +68,11 @@ class Gallery(AbstractSitesResourceWithSlug):
     
     @property
     def ordered_images(self):
-        """Deprecated - instead use 'media.items.images()'."""
+        """Deprecated - instead use 'media.images()'."""
         warnings.warn('ordered_images property is deprecated - use '
-            '\'media.items.images()\' method.', DeprecationWarning,
+            '\'media.images()\' method.', DeprecationWarning,
             stacklevel=2)
-        return self.media.items.images()
+        return self.media.images()
     
     @property
     def photo(self):
@@ -84,11 +84,11 @@ class Gallery(AbstractSitesResourceWithSlug):
     
     @property
     def photos(self):
-        """Deprecated - instead use 'media.items.images()'."""
+        """Deprecated - instead use 'media.images()'."""
         warnings.warn('photos property is deprecated - use '
-            '\'media.items.images()\' method.', DeprecationWarning,
+            '\'media.images()\' method.', DeprecationWarning,
             stacklevel=2)
-        photos = self.media.items.images
+        photos = self.media.images
         class proxy(object):
             def all(self):
                 return photos()
