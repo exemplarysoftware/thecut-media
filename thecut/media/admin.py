@@ -29,11 +29,11 @@ class AttachedMediaItemMixin(admin.ModelAdmin):
     
     def get_urls(self):
         urlpatterns = patterns('thecut.media.views',
-            url(r'^\d+/media/contenttype/$',
+            url(r'^(?:\d+|add)/media/contenttype/$',
                 'admin_contenttype_list'),
-            url(r'^\d+/media/contenttype/(?P<content_type_pk>\d+)/$',
+            url(r'^(?:\d+|add)/media/contenttype/(?P<content_type_pk>\d+)/$',
                 'admin_contenttype_object_list'),
-            url(r'^\d+/media/contenttype/(?P<content_type_pk>\d+)/'
+            url(r'^(?:\d+|add)/media/contenttype/(?P<content_type_pk>\d+)/'
                 '(?P<object_pk>\d+)$',
                 'admin_contenttype_object_detail'),
         )
