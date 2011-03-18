@@ -3,34 +3,9 @@ from django.contrib import admin
 from django.contrib.contenttypes.generic import GenericTabularInline
 from sorl.thumbnail import get_thumbnail
 from thecut.core.admin import ModelAdmin
+from thecut.media.admin import AttachedMediaItemMixin
 from thecut.media.galleries.forms import GalleryAdminForm
 from thecut.media.galleries.models import Gallery
-
-
-GALLERY_INLINES = []
-
-if 'thecut.media' in settings.INSTALLED_APPS:
-    try:
-        from thecut.media.admin import MediaSetInline
-    except ImportError:
-        pass
-    else:
-        GALLERY_INLINES += [MediaSetInline]
-
-
-if 'ctas' in settings.INSTALLED_APPS:
-    try:
-        from ctas.models import AttachedCallToAction
-    except ImportError:
-        pass
-    else:
-        class GalleryCallToActionInline(GenericTabularInline):
-            extra = 1
-            max_num = 1
-            model = AttachedCallToAction
-            exclude = ['order']
-        
-        GALLERY_INLINES += [GalleryCallToActionInline]
 
 
 def preview_image(obj):
@@ -44,7 +19,7 @@ preview_image.short_description = 'Preview'
 preview_image.allow_tags = True
 
 
-class GalleryAdmin(ModelAdmin):
+class GalleryAdmin(AttachedMediaItemMixin, ModelAdmin):
     date_hierarchy = 'publish_at'
     fieldsets = [
         (None, {'fields': ['title', 'headline', 'content',
@@ -57,7 +32,6 @@ class GalleryAdmin(ModelAdmin):
             'classes': ['collapse']}),
     ]
     form = GalleryAdminForm
-    inlines = GALLERY_INLINES
     list_display = ['title', 'publish_at', 'is_enabled',
         'is_featured', 'is_indexable', preview_image]
     list_filter = ['publish_at', 'is_enabled', 'is_featured',

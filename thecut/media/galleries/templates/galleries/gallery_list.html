@@ -16,7 +16,7 @@
 	<li>
 		<a href="{{ gallery.get_absolute_url }}">
 		  {% thumbnail gallery.media.get_image "200x200" crop="center" as thumb %}
-		  <img src="{{ thumb.url }}" alt="{{ gallery.media.image }}" />
+		  <img src="{{ thumb.url }}" alt="{{ gallery.media.get_image }}" />
 		  {% endthumbnail %}
 		  {{ gallery.publish_at }}
 			{{ gallery }}
