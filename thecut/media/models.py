@@ -67,7 +67,8 @@ class AttachedMediaItem(OrderMixin, models.Model):
             # from an image, or if it should return the first image
             # from any object (e.g. document/video).
             #return self.all()[0].content_object.get_image()
-            return self.images()[0].get_image()
+            images = self.images()
+            return images and images[0].get_image() or None
         
         ## Deprecated properties (from previous MediaSet model)
         
