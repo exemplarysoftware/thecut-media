@@ -4,7 +4,7 @@ from django.db import models
 from functools import partial
 from tagging.fields import TagField
 from thecut.core.managers import QuerySetManager
-from thecut.core.models import AbstractBaseResource, OrderMixin
+from thecut.core.models import AbstractBaseResource, AbstractResource, OrderMixin
 import warnings
 
 
@@ -171,4 +171,10 @@ class AttachedMediaItem(OrderMixin, models.Model):
         return '%(order)s - %(model)s: %(object)s' %(
             {'order': self.order, 'model': self.content_type,
             'object': self.content_object})
+
+
+AbstractResource.add_to_class('media', generic.GenericRelation(
+    'media.AttachedMediaItem',
+    content_type_field='parent_content_type',
+    object_id_field='parent_object_id'))
 
