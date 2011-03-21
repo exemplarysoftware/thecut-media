@@ -1,10 +1,9 @@
-from django.contrib.contenttypes.generic import GenericRelation
+import warnings
 
 
 def attach_mediaset(obj):
-    obj.add_to_class('media', GenericRelation(
-        'media.AttachedMediaItem',
-        content_type_field='parent_content_type',
-        object_id_field='parent_object_id'))
+    """Deprecated. Media is now added to AbstractResource."""
+    warnings.warn('Media is now directly added to the AbstractResource'
+        'class.', DeprecationWarning, stacklevel=2)
     return obj
 

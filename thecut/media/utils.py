@@ -1,13 +1,4 @@
 from django.conf import settings
-#from django.contrib.contenttypes.models import ContentType
-
-
-#def get_mediaset_for_object(obj):
-#    """Returns MediaSet for the object provided."""
-#    from thecut.media.models import MediaSet
-#    content_type = ContentType.objects.get_for_model(obj)
-#    return MediaSet.objects.get(content_type=content_type,
-#        object_id=obj.id)
 
 
 def get_media_source_classes(model_list=None):
