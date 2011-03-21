@@ -9,6 +9,6 @@ setup(name='media',
     packages=find_packages(),
     include_package_data=True,
     install_requires=['distribute', 'PIL==1.1.7',
-        'sorl-thumbnail==11.01', 'pgmagick==0.3.2'],
+        'sorl-thumbnail==11.01'],
     )
 

@@ -1,4 +1,6 @@
 The Cut Django App: Media
 
-sudo apt-get install libgraphicsmagick++-dev libboost-python-dev
+If pgmagick is to be used then the libgraphicsmagick++-dev and
+libboost-python-dev packages need to be installed before installing
+'pgmagick==0.3.2' using pip.
 
