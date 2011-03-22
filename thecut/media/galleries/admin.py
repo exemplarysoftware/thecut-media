@@ -9,9 +9,9 @@ from thecut.media.galleries.models import Gallery
 
 
 def preview_image(obj):
-    if hasattr(obj.media, 'get_image'):
-        thumb = get_thumbnail(obj.media.get_image(), '100x75',
-            crop='center')
+    image = obj.media.get_image()
+    if image:
+        thumb = get_thumbnail(image, '100x75', crop='center')
         return u'<img src="%s" alt="%s" />' %(thumb.url, str(obj))
     else:
         return u''
