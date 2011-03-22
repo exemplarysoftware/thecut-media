@@ -59,7 +59,7 @@ class AttachedMediaItem(OrderMixin, models.Model):
         def get_objects_for_content_type(self, content_type):
             # TODO: Optimisation/caching/queryset?
             # Maybe return an iterator? Direct SQL for ordering?
-            items = self.filter(content_type=content_type)
+            items = self.filter(content_type=content_type).select_related()
             return [item.content_object for item in items]
         
         def get_image(self):
@@ -69,6 +69,30 @@ class AttachedMediaItem(OrderMixin, models.Model):
             #return self.all()[0].content_object.get_image()
             images = self.images()
             return images and images[0].get_image() or None
+        
+        def select_related(self):
+            queryset = super(
+                AttachedMediaItem.QuerySet, self).select_related()
+            
+            # Simulating select_related() on GenericForeignKey
+            # http://blog.roseman.org.uk/2010/02/22/django-patterns-part-4-forwards-generic-relations/
+            generics = {}
+            for item in queryset:
+                generics.setdefault(item.content_type_id, set()).add(
+                    item.object_id)
+            
+            content_types = ContentType.objects.in_bulk(generics.keys())
+            
+            relations = {}
+            for ct, fk_list in generics.items():
+                ct_model = content_types[ct].model_class()
+                relations[ct] = ct_model.objects.in_bulk(list(fk_list))
+            
+            for item in queryset:
+                setattr(item, '_content_object_cache',
+                        relations[item.content_type_id][item.object_id])
+            
+            return queryset
         
         ## Deprecated properties (from previous MediaSet model)
         
