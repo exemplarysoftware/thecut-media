@@ -9,7 +9,7 @@ import warnings
 
 
 class AbstractMediaItem(AbstractBaseResource):
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=200, db_index=True)
     caption = models.TextField(null=True, blank=True)
     content = models.TextField(null=True, blank=True)
     tags = TagField(blank=True, null=True, help_text='Separate tags \
