@@ -33,12 +33,10 @@ class AttachedMediaItem(OrderMixin, models.Model):
     
     # Generic relation to another object.
     parent_content_type = models.ForeignKey(ContentType,
-        related_name='attachedmediaitem_parent_set', blank=True, null=True)
-    parent_object_id = models.IntegerField(blank=True, null=True)
+        related_name='attachedmediaitem_parent_set')
+    parent_object_id = models.IntegerField()
     parent_content_object = generic.GenericForeignKey(
         'parent_content_type', 'parent_object_id')
-    
-    #order = models.PositiveIntegerField(default=0)
     
     objects = QuerySetManager()
     

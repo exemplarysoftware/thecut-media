@@ -14,8 +14,8 @@ class Migration(SchemaMigration):
             ('order', self.gf('django.db.models.fields.PositiveIntegerField')(default=0)),
             ('content_type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['contenttypes.ContentType'])),
             ('object_id', self.gf('django.db.models.fields.IntegerField')()),
-            ('parent_content_type', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='attachedmediaitem_parent_set', null=True, to=orm['contenttypes.ContentType'])),
-            ('parent_object_id', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
+            ('parent_content_type', self.gf('django.db.models.fields.related.ForeignKey')(related_name='attachedmediaitem_parent_set', to=orm['contenttypes.ContentType'])),
+            ('parent_object_id', self.gf('django.db.models.fields.IntegerField')()),
         ))
         db.send_create_signal('media', ['AttachedMediaItem'])
 
@@ -40,8 +40,8 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'object_id': ('django.db.models.fields.IntegerField', [], {}),
             'order': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'}),
-            'parent_content_type': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'attachedmediaitem_parent_set'", 'null': 'True', 'to': "orm['contenttypes.ContentType']"}),
-            'parent_object_id': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'})
+            'parent_content_type': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'attachedmediaitem_parent_set'", 'to': "orm['contenttypes.ContentType']"}),
+            'parent_object_id': ('django.db.models.fields.IntegerField', [], {})
         }
     }
 
