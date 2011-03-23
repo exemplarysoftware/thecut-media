@@ -64,14 +64,5 @@
   </ul>
   {% endif %}
   
-  {% if gallery.call_to_actions %}
-  <h2>Actions</h2>
-  <ul>
-    {% for cta in gallery.call_to_actions %}
-    <li><a href="{{ cta.get_absolute_url }}">{{ cta }}</a></li>
-    {% endfor %}
-  </ul>
-  {% endif %}
-  
 {% endblock %}
 

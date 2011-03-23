@@ -11,23 +11,23 @@
   
   <h1>Galleries</h1>
   
-	{% for gallery in gallery_list %}
-	{% if forloop.first %}<ul class="gallery-list">{% endif %}
-	<li>
-		<a href="{{ gallery.get_absolute_url }}">
-		  {% thumbnail gallery.media.get_image "200x200" crop="center" as thumb %}
-		  <img src="{{ thumb.url }}" alt="{{ gallery.media.get_image }}" />
-		  {% endthumbnail %}
-		  {{ gallery.publish_at }}
-			{{ gallery }}
-			{{ gallery.summary }}
-		</a>
-	</li>
-	{% if forloop.last %}</ul>{% endif %}
-	{% empty %}
-	<p>No galleries to display.</p>
-	{% endfor %}
-	
+  {% for gallery in gallery_list %}
+  {% if forloop.first %}<ul class="gallery-list">{% endif %}
+  <li>
+    <a href="{{ gallery.get_absolute_url }}">
+      {% thumbnail gallery.media.get_image "200x200" crop="center" as thumb %}
+      <img src="{{ thumb.url }}" alt="{{ gallery.media.get_image }}" />
+      {% endthumbnail %}
+      {{ gallery.publish_at }}
+      {{ gallery }}
+      {{ gallery.summary }}
+    </a>
+  </li>
+  {% if forloop.last %}</ul>{% endif %}
+  {% empty %}
+  <p>No galleries to display.</p>
+  {% endfor %}
+  
   {% if page_obj.paginator.num_pages > 1 %}
   <div class="pagination">
     <span class="step-links">
