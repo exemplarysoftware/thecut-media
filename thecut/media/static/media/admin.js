@@ -95,20 +95,27 @@ media.jQuery(document).ready(function($) {
     };
     
     
-    function getFormFieldsForObject(content_type_pk, object_pk) {
-        var fields = new Array()
+    function getInlineRelatedForObject(content_type_pk, object_pk) {
+        var result = false;
         inline_group.find('.inline-related .form-row.content_type select option[value="' + content_type_pk + '"]:selected').each(function(index, Element) {
             var inline_related = $(Element).closest('.inline-related');
             inline_related.find('.form-row.object_id input').each(function(index, input) {
             if ($(input).val() == object_pk) {
                 /* we have a match */
-                fields.del = inline_related.find('.delete input');
-                fields.content_type = inline_related.find('.form-row.content_type select');
-                fields.object_id = inline_related.find('.form-row.object_id input');
-                fields.order = inline_related.find('.form-row.order input');
+                result = inline_related;
             }
             });
         });
+        return result;
+    }
+    
+    function getFormFieldsForObject(content_type_pk, object_pk) {
+        var fields = new Array();
+        var inline_related = getInlineRelatedForObject(content_type_pk, object_pk);
+        fields.del = inline_related.find('.delete input');
+        fields.content_type = inline_related.find('.form-row.content_type select');
+        fields.object_id = inline_related.find('.form-row.object_id input');
+        fields.order = inline_related.find('.form-row.order input');
         return fields;
     }
     
@@ -141,9 +148,17 @@ media.jQuery(document).ready(function($) {
         fields.content_type.closest('.inline-related').insertBefore(empty_inline_related);
     }
     
+    
     function removeObject(content_type_pk, object_pk) {
         var fields = getFormFieldsForObject(content_type_pk, object_pk);
-        fields.del.attr('checked', 'checked');
+        if (fields.del.length) {
+            fields.del.attr('checked', 'checked');
+        }
+        else {
+            getInlineRelatedForObject(content_type_pk, object_pk).remove();
+            var total_forms = inline_group.find('#id_media-attachedmediaitem-parent_content_type-parent_object_id-TOTAL_FORMS');
+            total_forms.val(parseInt(total_forms.val()) - 1);
+        }
         hideObjectInList(content_type_pk, object_pk);
     }
     
