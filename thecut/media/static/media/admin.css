@@ -227,7 +227,7 @@
 .media-attachedmediaitems .media-picker .media-filter_objects,
 .media-attachedmediaitems .media-picker .media-available_objects,
 .media-attachedmediaitems .media-picker .media-selected_objects {
-  height: 654px;
+  height: 510px;
   overflow: auto;
   padding: 15px;
 }

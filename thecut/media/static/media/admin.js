@@ -209,7 +209,7 @@ media.jQuery(document).ready(function($) {
               dialogClass: 'media-attachedmediaitems',
                   draggable: false,
                   modal: true,
-                  height: 684,
+                  height: 540,
                   width: 960,
                   open: function(event, ui) {
                       markSelectedObjects();
