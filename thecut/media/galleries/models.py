@@ -19,7 +19,7 @@ class Gallery(AbstractSitesResourceWithSlug):
     
     @models.permalink
     def get_absolute_url(self):
-        return ('galleries:gallery_detail', [], {'slug': self.slug})
+        return ('galleries:gallery_media_list', [], {'slug': self.slug})
     
     ## Deprecated properties
     
