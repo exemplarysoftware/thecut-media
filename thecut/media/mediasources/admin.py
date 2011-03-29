@@ -14,11 +14,15 @@ def conditionally_register(model, adminclass):
 
 
 def preview_image(obj):
+    html = u''
     if hasattr(obj, 'get_image'):
-        thumb = get_thumbnail(obj.get_image(), '100x75', crop='center')
-        return u'<img src="%s" alt="%s" />' %(thumb.url, str(obj))
-    else:
-        return u''
+        try:
+            thumb = get_thumbnail(obj.get_image(), '100x75', crop='center')
+        except:
+            pass
+        else:
+            html = u'<img src="%s" alt="%s" />' %(thumb.url, str(obj))
+    return html
 preview_image.short_description = 'Preview'
 preview_image.allow_tags = True
 
