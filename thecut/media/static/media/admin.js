@@ -41,7 +41,7 @@ media.jQuery(document).ready(function($) {
         inline_group.find('.inline-related .form-row.content_type select option[value="' + content_type_pk + '"]:selected').each(function(index, Element) {
             if (!($(Element).closest('.inline-related').find('.delete input').is(':checked'))) {
               object_pk = $(Element).closest('fieldset').find('.form-row.object_id input').val();
-              object_pks += object_pk;
+              object_pks.push(object_pk);
             }
         });
         return object_pks;
@@ -60,7 +60,7 @@ media.jQuery(document).ready(function($) {
                 success: function(data, textStatus, jqXHR) {
                     $(data).appendTo(object_list);
                     object_list.find('li').each(function(index, Element) {
-                        var object_pk = parseInt($(this).attr('id').match(/(\d+)\-(\d+)/)[2]);
+                        var object_pk = parseInt($(Element).attr('id').match(/(\d+)\-(\d+)/)[2]);
                         $(this).find('.action.remove').click(function() {
                             removeObject(content_type_pk, object_pk);
                         });
