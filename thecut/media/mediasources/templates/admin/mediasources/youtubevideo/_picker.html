@@ -23,7 +23,7 @@
   <li id="{{ content_type.pk }}-{{ youtubevideo.pk }}" class="video">
     {% thumbnail youtubevideo.get_image "60x45" crop="center" as thumb %}<img src="{{ thumb.url }}" alt="{{ youtubevideo }}" />{% endthumbnail %}
     <div class="name">{{ youtubevideo }}</div>
-    <div class="content">{{ youtubevideo.content }}</div>
+    <div class="content">{{ youtubevideo.caption }}</div>
     <div class="publish_at">{{ youtubevideo.publish_at }}</div>
     <span class="action add">Add +</span><span class="action remove">Remove</span>
   </li>

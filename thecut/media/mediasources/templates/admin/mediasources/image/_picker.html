@@ -23,7 +23,7 @@
   <li id="{{ content_type.pk }}-{{ image.pk }}" class="image">
     {% thumbnail image.get_image "60x45" crop="center" as thumb %}<img src="{{ thumb.url }}" alt="{{ image }}" />{% endthumbnail %}
     <div class="name">{{ image }}</div>
-    <div class="content">{{ image.content }}</div>
+    <div class="content">{{ image.caption }}</div>
     <div class="publish_at">{{ image.publish_at }}</div>
     <span class="action add">Add +</span><span class="action remove">Remove</span>
   </li>
