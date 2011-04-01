@@ -287,9 +287,16 @@
     
     .media-attachedmediaitems .media-picker .media-available_object_list li img,
     .media-attachedmediaitems .media-picker .media-selected_object_list li img {
+      display: block;
       position: absolute;
       top: 9px;
       left: 0;
+    }
+    
+    .media-attachedmediaitems .media-picker .media-available_object_list li.image img,
+    .media-attachedmediaitems .media-picker .media-selected_object_list li.image img {
+      height: 45px;
+      width: 60px;
     }
     
     .media-attachedmediaitems .media-picker .media-available_object_list li.document,
@@ -324,8 +331,21 @@
       color: #767676;
       text-transform: uppercase;
     }
-
-
+    
+    .media-attachedmediaitems .media-picker .media-available_object_list li .name,
+    .media-attachedmediaitems .media-picker .media-available_object_list li .content,
+    .media-attachedmediaitems .media-picker .media-available_object_list li .publish_at,
+    .media-attachedmediaitems .media-picker .media-available_object_list li .action.add {
+      overflow: hidden;
+      height: 14px;
+    }
+    
+    .media-attachedmediaitems .media-picker .media-available_object_list li .name,
+    .media-attachedmediaitems .media-picker .media-available_object_list li .content,
+    .media-attachedmediaitems .media-picker .media-available_object_list li .publish_at {
+      margin-right: 40px;
+    }
+    
     .media-attachedmediaitems .media-picker .media-selected_object_list li .content,
     .media-attachedmediaitems .media-picker .media-selected_object_list li .publish_at,
     .media-attachedmediaitems .media-picker .media-selected_object_list li .action.add {
