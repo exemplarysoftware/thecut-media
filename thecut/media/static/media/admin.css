@@ -123,6 +123,10 @@
   line-height: 8px;
 }
   
+  .media-attachedmediaitems .media-object_list li.list.audio {
+    background-image: url("media-object_list-audio.png");
+  }
+  
   .media-attachedmediaitems .media-object_list li.list.document {
     background-image: url("media-object_list-document.png");
   }
@@ -297,6 +301,11 @@
     .media-attachedmediaitems .media-picker .media-selected_object_list li.image img {
       height: 45px;
       width: 60px;
+    }
+    
+    .media-attachedmediaitems .media-picker .media-available_object_list li.audio,
+    .media-attachedmediaitems .media-picker .media-selected_object_list li.audio {
+      background-image: url("media-object_list-audio_thumbnail.png");
     }
     
     .media-attachedmediaitems .media-picker .media-available_object_list li.document,

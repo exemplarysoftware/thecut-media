@@ -1,5 +1,11 @@
 from thecut.core.forms import ModelAdminForm
-from thecut.media.mediasources.models import Document, Image, Video, YoutubeVideo
+from thecut.media.mediasources.models import Audio, Document, Image, Video, \
+    YoutubeVideo
+
+
+class AudioAdminForm(ModelAdminForm):
+    class Meta:
+        model = Audio
 
 
 class DocumentAdminForm(ModelAdminForm):

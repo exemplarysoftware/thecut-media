@@ -136,3 +136,16 @@ class YoutubeVideo(AbstractMediaItem):
         if match:
             return match.groups()[0]
 
+
+class Audio(AbstractMediaItem):
+    file = models.FileField(
+        upload_to='uploads/media/audios/%Y/%m/%d')
+    
+    objects = QuerySetManager()
+    
+    def get_absolute_url(self):
+        return self.file.url
+    
+    def get_mime_type(self):
+        return guess_type(self.file.path)[0]
+

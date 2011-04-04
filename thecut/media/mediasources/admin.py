@@ -2,8 +2,10 @@ from django.conf import settings
 from django.contrib import admin
 from sorl.thumbnail import get_thumbnail
 from thecut.core.admin import ModelAdmin
-from thecut.media.mediasources.forms import DocumentAdminForm, ImageAdminForm, VideoAdminForm, YoutubeVideoAdminForm
-from thecut.media.mediasources.models import Document, Image, Video, YoutubeVideo
+from thecut.media.mediasources.forms import AudioAdminForm, \
+    DocumentAdminForm, ImageAdminForm, VideoAdminForm, YoutubeVideoAdminForm
+from thecut.media.mediasources.models import Audio, Document, Image, Video, \
+    YoutubeVideo
 
 
 def conditionally_register(model, adminclass):
@@ -25,6 +27,28 @@ def preview_image(obj):
     return html
 preview_image.short_description = 'Preview'
 preview_image.allow_tags = True
+
+
+class AudioAdmin(ModelAdmin):
+    fieldsets = [
+        (None, {'fields': ['file', 'title', 'caption', 'content',
+            'tags']}),
+        ('Publishing', {'fields': [('publish_at', 'is_enabled'),
+            'expire_at', 'publish_by', 'is_featured',
+            ('created_at', 'created_by'),
+            ('updated_at', 'updated_by')],
+            'classes': ['collapse']}),
+    ]
+    form = AudioAdminForm
+    list_display = ['title', 'publish_at', 'is_enabled', 'is_featured',
+        preview_image]
+    list_filter = ['publish_at', 'is_enabled', 'is_featured']
+    #prepopulated_fields = {'title': ['file']}
+    readonly_fields = ['created_at', 'created_by',
+        'updated_at', 'updated_by']
+    search_fields = ['title']
+
+conditionally_register(Audio, AudioAdmin)
 
 
 class DocumentAdmin(ModelAdmin):

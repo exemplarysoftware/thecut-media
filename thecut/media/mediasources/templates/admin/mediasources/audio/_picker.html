@@ -16,13 +16,13 @@
       {% if page_obj.has_next %}<a href="media/contenttype/{{ content_type.pk }}/?page={{ page_obj.next_page_number }}">next &gt;&gt;</a>{% endif %}
   </div>
   
-  <h2>Documents</h2>
-  {% for document in document_list %}
+  <h2>Audios</h2>
+  {% for audio in audio_list %}
   {% if forloop.first %}<ul class="media-available_object_list">{% endif %}
-  <li id="{{ content_type.pk }}-{{ document.pk }}" class="document">
-    <div class="name">{{ document }}</div>
-    <div class="content">{{ document.caption }}</div>
-    <div class="publish_at">{{ document.publish_at }}</div>
+  <li id="{{ content_type.pk }}-{{ audio.pk }}" class="audio">
+    <div class="name">{{ audio }}</div>
+    <div class="content">{{ audio.caption }}</div>
+    <div class="publish_at">{{ audio.publish_at }}</div>
     <span class="action add">Add +</span><span class="action remove">Remove</span>
   </li>
   {% if forloop.last %}</ul>{% endif %}
@@ -31,7 +31,7 @@
 </div>
 
 <div class="media-selected_objects">
-  <h2>Selected Documents</h2>
+  <h2>Selected Audios</h2>
   <ul class="media-selected_object_list"></ul>
   
   <span class="action cancel">Cancel</span>
