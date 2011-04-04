@@ -21,7 +21,7 @@
   {% if forloop.first %}<ul class="media-available_object_list">{% endif %}
   <li id="{{ content_type.pk }}-{{ document.pk }}" class="document">
     <div class="name">{{ document }}</div>
-    <div class="content">{{ document.caption }}</div>
+    <div class="content">{{ document.caption|default_if_none:"" }}</div>
     <div class="publish_at">{{ document.publish_at }}</div>
     <span class="action add">Add +</span><span class="action remove">Remove</span>
   </li>

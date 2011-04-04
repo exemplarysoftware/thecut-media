@@ -21,7 +21,7 @@
   {% if forloop.first %}<ul class="media-available_object_list">{% endif %}
   <li id="{{ content_type.pk }}-{{ audio.pk }}" class="audio">
     <div class="name">{{ audio }}</div>
-    <div class="content">{{ audio.caption }}</div>
+    <div class="content">{{ audio.caption|default_if_none:"" }}</div>
     <div class="publish_at">{{ audio.publish_at }}</div>
     <span class="action add">Add +</span><span class="action remove">Remove</span>
   </li>
