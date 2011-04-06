@@ -50,7 +50,7 @@ def admin_contenttype_object_list(request, content_type_pk,
         
         q = form.cleaned_data.get('q', None)
         if q:
-            queryset = queryset.filter(title__contains=q)
+            queryset = queryset.filter(title__icontains=q)
         
         selected_tag_pks = form.cleaned_data.get('tags', None)
         if selected_tag_pks:
