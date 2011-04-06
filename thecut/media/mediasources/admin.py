@@ -23,7 +23,7 @@ def preview_image(obj):
         except:
             pass
         else:
-            html = u'<img src="%s" alt="%s" />' %(thumb.url, str(obj))
+            html = u'<img src="%s" alt="%s" style="width:100px; height: 75px;" />' %(thumb.url, str(obj))
     return html
 preview_image.short_description = 'Preview'
 preview_image.allow_tags = True
