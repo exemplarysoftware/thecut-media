@@ -16,7 +16,10 @@ class Document(AbstractMediaItem):
         return self.file.url
     
     def get_image(self):
-        image = get_thumbnail(self.file, '1000x1000', upscale=False)
+        try:
+            image = get_thumbnail(self.file, '1000x1000', upscale=False)
+        except:
+            image = None
         return image
     
     def get_mime_type(self):
