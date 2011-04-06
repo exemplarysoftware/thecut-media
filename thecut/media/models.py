@@ -64,9 +64,9 @@ class AttachedMediaItem(OrderMixin, models.Model):
             #TODO: Decide if this should only return the first image
             # from an image, or if it should return the first image
             # from any object (e.g. document/video).
-            #return self.all()[0].content_object.get_image()
-            images = self.images()
-            return images and images[0].get_image() or None
+            return self.all()[0].content_object.get_image()
+            #images = self.images()
+            #return images and images[0].get_image() or None
         
         def select_related(self):
             queryset = super(
