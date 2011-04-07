@@ -251,10 +251,12 @@ media.jQuery(document).ready(function($) {
     });
     
     $('.media-attachedmediaitems .media-picker .media-available_objects .pagination a').live('click', function(event) {
+        form = $(this).closest('.media-picker').find(' .media-filter_objects form');
         var a = $(this);
         var available_objects = a.closest('.media-available_objects');
         $.ajax({
             url: a.attr('href'),
+            data: form.serialize() + '&page=' + a.data('page'),
             //type: 'POST',
             success: function(data, textStatus, jqXHR) {
                 var picker = $('<div />').html(data);

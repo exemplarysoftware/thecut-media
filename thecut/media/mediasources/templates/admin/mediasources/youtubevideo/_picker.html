@@ -13,8 +13,8 @@
 <div class="media-available_objects">
   <div class="pagination">
       <div>showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }}</div>
-      {% if page_obj.has_previous %}<a href="media/contenttype/{{ content_type.pk }}/?page={{ page_obj.previous_page_number }}">&lt;&lt; previous</a>{% endif %}
-      {% if page_obj.has_next %}<a href="media/contenttype/{{ content_type.pk }}/?page={{ page_obj.next_page_number }}">next &gt;&gt;</a>{% endif %}
+      {% if page_obj.has_previous %}<a data-page="{{ page_obj.previous_page_number }}" href="media/contenttype/{{ content_type.pk }}/?page={{ page_obj.previous_page_number }}">&lt;&lt; previous</a>{% endif %}
+      {% if page_obj.has_next %}<a data-page="{{ page_obj.next_page_number }}" href="media/contenttype/{{ content_type.pk }}/?page={{ page_obj.next_page_number }}">next &gt;&gt;</a>{% endif %}
   </div>
   
   <h2>YouTube Videos</h2>
