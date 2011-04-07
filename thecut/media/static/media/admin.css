@@ -307,7 +307,9 @@ body.ajax-loading, body.ajax-loading * {
     }
     
     .media-attachedmediaitems .media-picker .media-available_object_list li.image img,
-    .media-attachedmediaitems .media-picker .media-selected_object_list li.image img {
+    .media-attachedmediaitems .media-picker .media-selected_object_list li.image img,
+    .media-attachedmediaitems .media-picker .media-available_object_list li.video img,
+    .media-attachedmediaitems .media-picker .media-selected_object_list li.video img {
       height: 45px;
       width: 60px;
     }
