@@ -1,5 +1,5 @@
-body.ajax-loading {
-    cursor: wait;
+body.ajax-loading, body.ajax-loading * {
+    cursor: wait !important;
 }
 
 #container #content .media-attachedmediaitems {
