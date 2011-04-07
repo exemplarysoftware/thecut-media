@@ -445,8 +445,10 @@ body.ajax-loading {
       .media-attachedmediaitems .media-picker .media-filter_objects form ul li label {
         position: relative;
         display: block;
-        padding: 0 5px;
-        margin: 10px 20px 0 0;
+        overflow: hidden;
+        height: 18px;
+        padding: 0 25px 0 5px;
+        margin: 10px 0 0 0;
         background-color: #272727;
         color: #898888;
         font-size: 8px;
@@ -459,22 +461,18 @@ body.ajax-loading {
           position: absolute;
           content: " ";
           display: block;
-          right: -18px;
+          right: 0;
           top: 0;
           height: 0;
           width: 0;
-          border: solid 9px transparent;
-          border-left: solid 9px #272727;
+          border: solid 9px #000000;
+          border-left: solid 9px transparent;
         }
         
         .media-attachedmediaitems .media-picker .media-filter_objects form ul li.active label {
           background-color: #898888;
           color: #272727;
         }
-          
-          .media-attachedmediaitems .media-picker .media-filter_objects form ul li.active label:after {
-            border-left-color: #898888;
-          }
         
         .media-attachedmediaitems .media-picker .media-filter_objects form ul li label input {
           display: none;
