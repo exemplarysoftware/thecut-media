@@ -50,27 +50,27 @@ media.jQuery(document).ready(function($) {
     
     function loadObjectListForContentType(content_type_pk) {
         inline_group.find('.media-object_list').slideUp().remove();
-        var object_list = $('<ul class="media-object_list" />');
-        var base_url = 'media/contenttype/' + content_type_pk + '/';
+        var object_list = $('<ul class="media-object_list" /></ul>');
+        var url = 'media/contenttype/' + content_type_pk + '/list';
         var object_pks = getObjectPksForContentType(content_type_pk);
-        $.each(object_pks, function(index, object_pk) {
-            $.ajax({
-                url: base_url + object_pk,
-                //type: 'POST',
-                success: function(data, textStatus, jqXHR) {
-                    $(data).appendTo(object_list);
-                    object_list.find('li').each(function(index, Element) {
-                        var object_pk = parseInt($(Element).attr('id').match(/(\d+)\-(\d+)/)[2]);
-                        $(this).find('.action.remove').click(function() {
-                            removeObject(content_type_pk, object_pk);
-                        });
+        $.ajax({
+            url: url,
+            data: 'pks=' + object_pks,
+            type: 'POST',
+            success: function(data, textStatus, jqXHR) {
+                object_list.html(data);
+                object_list.find('li').each(function(index, Element) {
+                    var object_pk = parseInt($(Element).attr('id').match(/(\d+)\-(\d+)/)[2]);
+                    $(this).find('.action.remove').click(function() {
+                        removeObject(content_type_pk, object_pk);
                     });
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    var list_item = $('<li />');
-                    list_item.html('error').appendTo(object_list);
-                },
-            });
+                });
+                
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                var list_item = $('<li />');
+                list_item.html('error').appendTo(object_list);
+            },
         });
         
         object_list.sortable({
@@ -255,7 +255,7 @@ media.jQuery(document).ready(function($) {
         var a = $(this);
         var available_objects = a.closest('.media-available_objects');
         $.ajax({
-            url: a.attr('href'),
+            url: form.attr('action'),
             data: form.serialize() + '&page=' + a.data('page'),
             //type: 'POST',
             success: function(data, textStatus, jqXHR) {

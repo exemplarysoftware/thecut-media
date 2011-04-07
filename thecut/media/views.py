@@ -30,6 +30,8 @@ def admin_contenttype_list(request):
 
 @cache_control(no_cache=True)
 @cache_page(0)
+@user_passes_test(lambda u: u.has_perm('media.add_attachedmediaitem') or \
+    u.has_perm('media.change_attachedmediaitem'))
 def admin_contenttype_object_list(request, content_type_pk,
     queryset=None, **kwargs):
     if request.is_ajax() or settings.DEBUG:
@@ -65,9 +67,7 @@ def admin_contenttype_object_list(request, content_type_pk,
         extra_context = {'content_type': content_type, 'form': form}
         kwargs.update({'extra_context': extra_context})
         
-        #if kwargs.get('page', None) == '1':
-        #    return redirect('../')
-        kwdefaults = {'paginate_by': PAGINATE_BY, #'page': 1,
+        kwdefaults = {'paginate_by': PAGINATE_BY,
             'template_name': template_name,
             'template_object_name': object_name}
         kwdefaults.update(kwargs)
@@ -81,19 +81,24 @@ def admin_contenttype_object_list(request, content_type_pk,
 @cache_page(0)
 @user_passes_test(lambda u: u.has_perm('media.add_attachedmediaitem') or \
     u.has_perm('media.change_attachedmediaitem'))
-def admin_contenttype_object_detail(request, content_type_pk,
-    object_pk):
+def admin_contenttype_selected_object_list(request, content_type_pk):
     if request.is_ajax() or settings.DEBUG:
         content_type = get_object_or_404(ContentType,
             pk=content_type_pk)
         model_class = content_type.model_class()
         object_name = model_class._meta.object_name.lower()
-        obj = get_object_or_404(model_class.objects.active(),
-            pk=object_pk)
-        template = 'admin/%s/%s/_list_item.html' %(
+        template_name = 'admin/%s/%s/_list.html' %(
             content_type.app_label, object_name)
-        return render_to_response(template, {object_name: obj,
-            'content_type': content_type})
+        
+        pks = request.REQUEST.get('pks', None)
+        pks = pks and pks.split(',') or []
+        object_dictionary = pks and model_class.objects.active().in_bulk(
+            pks) or {}
+        
+        objects = [object_dictionary.get(int(pk)) for pk in pks]
+        
+        return render_to_response(template_name,
+            {'%s_list' %(object_name): objects, 'content_type': content_type})
     else:
-        return HttpResponseBadRequest('bad request')
+        return HttpResponseBadRequest('Bad request.')
 

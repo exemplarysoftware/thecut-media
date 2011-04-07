@@ -1,6 +1,8 @@
+{% for document in document_list %}
 <li id="{{ content_type.pk }}-{{ document.pk }}" class="list document">
   <div class="name">{{ document }}</div>
   <div class="content">{{ document.caption|default_if_none:"" }}</div>
   <div class="publish_at">{{ document.publish_at }}</div>
   <span class="action remove">Remove</span>
 </li>
+{% endfor %}

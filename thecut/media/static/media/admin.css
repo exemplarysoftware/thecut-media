@@ -73,9 +73,9 @@ body.ajax-loading {
         content: ' ';
       }
 
-/*.media-attachedmediaitems .inline-related, .media-attachedmediaitems .add-row {
+.media-attachedmediaitems .inline-related, .media-attachedmediaitems .add-row {
   display: none;
-}*/
+}
 
 .media-attachedmediaitems .media-object_list {
   margin: 0 0 20px -20px;

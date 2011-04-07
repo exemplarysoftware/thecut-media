@@ -1,7 +1,9 @@
+{% load thumbnail %}
+{% for youtubevideo in youtubevideo_list %}
 <li id="{{ content_type.pk }}-{{ youtubevideo.pk }}" class="thumbnail video">
-  {% load thumbnail %}
   {% thumbnail youtubevideo.get_image "140x106" as thumb %}
   <img src="{{ thumb.url }}" alt="{{ youtubevideo }}" title="{{ youtubevideo }}" />
   {% endthumbnail %}
   <span class="action remove" title="Remove">Remove</span>
 </li>
+{% endfor %}

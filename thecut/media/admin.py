@@ -31,11 +31,10 @@ class AttachedMediaItemMixin(admin.ModelAdmin):
         urlpatterns = patterns('thecut.media.views',
             url(r'^(?:\d+|add)/media/contenttype/$',
                 'admin_contenttype_list'),
-            url(r'^(?:\d+|add)/media/contenttype/(?P<content_type_pk>\d+)/$',
+            url(r'^(?:\d+|add)/media/contenttype/(?P<content_type_pk>\d+)/picker$',
                 'admin_contenttype_object_list'),
-            url(r'^(?:\d+|add)/media/contenttype/(?P<content_type_pk>\d+)/'
-                '(?P<object_pk>\d+)$',
-                'admin_contenttype_object_detail'),
+            url(r'^(?:\d+|add)/media/contenttype/(?P<content_type_pk>\d+)/list$',
+                'admin_contenttype_selected_object_list'),
         )
         urlpatterns += super(AttachedMediaItemMixin, self).get_urls()
         return urlpatterns

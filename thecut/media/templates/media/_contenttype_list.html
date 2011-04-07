@@ -1,5 +1,5 @@
 {% for content_type in content_type_list %}
 {% if forloop.first %}<ul class="media-content_type_list">{% endif %}
-<li{% if forloop.first %} class="active"{% endif %}><a href="media/contenttype/{{ content_type.pk }}/" rel="{{ content_type.pk }}">{{ content_type }}s</a></li>
+<li{% if forloop.first %} class="active"{% endif %}><a href="media/contenttype/{{ content_type.pk }}/picker" rel="{{ content_type.pk }}">{{ content_type }}s</a></li>
 {% if forloop.last%}</ul>{% endif %}
 {% endfor %}
