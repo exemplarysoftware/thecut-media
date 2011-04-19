@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from mimetypes import guess_type
 from sorl.thumbnail import get_thumbnail
@@ -11,6 +12,13 @@ class Document(AbstractMediaItem):
     file = models.FileField(max_length=250,
         upload_to='uploads/media/documents/%Y/%m/%d')
     objects = QuerySetManager()
+    
+    def clean(self, *args, **kwargs):
+        super(Image, self).clean(*args, **kwargs)
+        if not self.pk and self.file.field.generate_filename(
+            self, self.file.name) > self.file.field.max_length:
+            raise ValidationError('Document filename is too long, please ' \
+                'rename the file to a shorter name before uploading.')
     
     def get_absolute_url(self):
         return self.file.url
@@ -40,6 +48,13 @@ class Image(AbstractMediaItem):
     file = models.ImageField(max_length=250,
         upload_to='uploads/media/images/%Y/%m/%d')
     objects = QuerySetManager()
+    
+    def clean(self, *args, **kwargs):
+        super(Image, self).clean(*args, **kwargs)
+        if not self.pk and self.file.field.generate_filename(
+            self, self.file.name) > self.file.field.max_length:
+            raise ValidationError('Image filename is too long, please ' \
+                'rename the file to a shorter name before uploading.')
     
     def get_absolute_url(self):
         return self.file.url
@@ -85,6 +100,13 @@ class Video(AbstractMediaItem):
     #    upload_to='uploads/media/videos/%Y/%m/%d',
     #    blank=True, null=True)
     objects = QuerySetManager()
+    
+    def clean(self, *args, **kwargs):
+        super(Image, self).clean(*args, **kwargs)
+        if not self.pk and self.file.field.generate_filename(
+            self, self.file.name) > self.file.field.max_length:
+            raise ValidationError('Video filename is too long, please ' \
+                'rename the file to a shorter name before uploading.')
     
     def get_absolute_url(self):
         return self.file.url
@@ -143,8 +165,14 @@ class YoutubeVideo(AbstractMediaItem):
 class Audio(AbstractMediaItem):
     file = models.FileField(max_length=250,
         upload_to='uploads/media/audios/%Y/%m/%d')
-    
     objects = QuerySetManager()
+    
+    def clean(self, *args, **kwargs):
+        super(Image, self).clean(*args, **kwargs)
+        if not self.pk and self.file.field.generate_filename(
+            self, self.file.name) > self.file.field.max_length:
+            raise ValidationError('Audio filename is too long, please ' \
+                'rename the file to a shorter name before uploading.')
     
     def get_absolute_url(self):
         return self.file.url
