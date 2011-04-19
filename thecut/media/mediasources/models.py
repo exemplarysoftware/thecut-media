@@ -8,7 +8,7 @@ import warnings
 
 
 class Document(AbstractMediaItem):
-    file = models.FileField(
+    file = models.FileField(max_length=250,
         upload_to='uploads/media/documents/%Y/%m/%d')
     objects = QuerySetManager()
     
@@ -37,7 +37,7 @@ class Document(AbstractMediaItem):
 
 
 class Image(AbstractMediaItem):
-    file = models.ImageField(
+    file = models.ImageField(max_length=250,
         upload_to='uploads/media/images/%Y/%m/%d')
     objects = QuerySetManager()
     
@@ -79,7 +79,7 @@ class Image(AbstractMediaItem):
 
 
 class Video(AbstractMediaItem):
-    file = models.FileField(
+    file = models.FileField(max_length=250,
         upload_to='uploads/media/videos/%Y/%m/%d')
     #image = models.ImageField(
     #    upload_to='uploads/media/videos/%Y/%m/%d',
@@ -141,7 +141,7 @@ class YoutubeVideo(AbstractMediaItem):
 
 
 class Audio(AbstractMediaItem):
-    file = models.FileField(
+    file = models.FileField(max_length=250,
         upload_to='uploads/media/audios/%Y/%m/%d')
     
     objects = QuerySetManager()
