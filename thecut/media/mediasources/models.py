@@ -14,9 +14,9 @@ class Document(AbstractMediaItem):
     objects = QuerySetManager()
     
     def clean(self, *args, **kwargs):
-        super(Image, self).clean(*args, **kwargs)
-        if not self.pk and self.file.field.generate_filename(
-            self, self.file.name) > self.file.field.max_length:
+        super(Document, self).clean(*args, **kwargs)
+        length = len(self.file.field.generate_filename(self, self.file.name))
+        if length > self.file.field.max_length:
             raise ValidationError('Document filename is too long, please ' \
                 'rename the file to a shorter name before uploading.')
     
@@ -51,8 +51,8 @@ class Image(AbstractMediaItem):
     
     def clean(self, *args, **kwargs):
         super(Image, self).clean(*args, **kwargs)
-        if not self.pk and self.file.field.generate_filename(
-            self, self.file.name) > self.file.field.max_length:
+        length = len(self.file.field.generate_filename(self, self.file.name))
+        if length > self.file.field.max_length:
             raise ValidationError('Image filename is too long, please ' \
                 'rename the file to a shorter name before uploading.')
     
@@ -102,9 +102,9 @@ class Video(AbstractMediaItem):
     objects = QuerySetManager()
     
     def clean(self, *args, **kwargs):
-        super(Image, self).clean(*args, **kwargs)
-        if not self.pk and self.file.field.generate_filename(
-            self, self.file.name) > self.file.field.max_length:
+        super(Video, self).clean(*args, **kwargs)
+        length = len(self.file.field.generate_filename(self, self.file.name))
+        if length > self.file.field.max_length:
             raise ValidationError('Video filename is too long, please ' \
                 'rename the file to a shorter name before uploading.')
     
@@ -168,9 +168,9 @@ class Audio(AbstractMediaItem):
     objects = QuerySetManager()
     
     def clean(self, *args, **kwargs):
-        super(Image, self).clean(*args, **kwargs)
-        if not self.pk and self.file.field.generate_filename(
-            self, self.file.name) > self.file.field.max_length:
+        super(Audio, self).clean(*args, **kwargs)
+        length = len(self.file.field.generate_filename(self, self.file.name))
+        if length > self.file.field.max_length:
             raise ValidationError('Audio filename is too long, please ' \
                 'rename the file to a shorter name before uploading.')
     
