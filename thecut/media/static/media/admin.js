@@ -49,8 +49,9 @@ media.jQuery(document).ready(function($) {
     
     
     function loadObjectListForContentType(content_type_pk) {
-        inline_group.find('.media-object_list').slideUp().remove();
-        var object_list = $('<ul class="media-object_list" /></ul>');
+        var media_objects = $('.media-objects');
+        media_objects.html('<ul class="media-object_list" /></ul>');
+        var object_list = media_objects.find('ul.media-object_list');
         var url = 'media/contenttype/' + content_type_pk + '/list';
         var object_pks = getObjectPksForContentType(content_type_pk);
         $.ajax({
@@ -59,13 +60,6 @@ media.jQuery(document).ready(function($) {
             type: 'POST',
             success: function(data, textStatus, jqXHR) {
                 object_list.html(data);
-                object_list.find('li').each(function(index, Element) {
-                    var object_pk = parseInt($(Element).attr('id').match(/(\d+)\-(\d+)/)[2]);
-                    $(this).find('.action.remove').click(function() {
-                        removeObject(content_type_pk, object_pk);
-                    });
-                });
-                
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 var list_item = $('<li />');
@@ -85,8 +79,6 @@ media.jQuery(document).ready(function($) {
                 });
             },
         });
-        
-        object_list.appendTo(inline_group);
         
         var selected_content_type = inline_group.find('.media-content_type_list li.active:first a');
         inline_group.find('.action.select').remove();
@@ -183,6 +175,12 @@ media.jQuery(document).ready(function($) {
         });
     }
     
+    $('.media-attachedmediaitems .media-object_list li .action.remove').live('click', function() {
+        var li = $(this).closest('li');
+        var content_type_pk = parseInt(li.attr('id').match(/(\d+)\-(\d+)/)[1]);
+        var object_pk = parseInt(li.attr('id').match(/(\d+)\-(\d+)/)[2]);
+        removeObject(content_type_pk, object_pk);
+    });
     
     inline_group.find('.inline-related .delete input').live('click', function() {
         var inline_related = $(this).closest('.inline-related');
