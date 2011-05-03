@@ -5,6 +5,7 @@ from functools import partial
 from tagging.fields import TagField
 from thecut.core.managers import QuerySetManager
 from thecut.core.models import AbstractBaseResource, AbstractResource, OrderMixin
+from thecut.media.signals import delete_media_attachments
 import warnings
 
 
@@ -57,7 +58,7 @@ class AttachedMediaItem(OrderMixin, models.Model):
         def get_objects_for_content_type(self, content_type):
             # TODO: Optimisation/caching/queryset?
             # Maybe return an iterator? Direct SQL for ordering?
-            items = self.filter(content_type=content_type).select_related()
+            items = self.filter(content_type=content_type).select_generic_related()
             return [item.content_object for item in items]
         
         def get_image(self):
@@ -71,9 +72,8 @@ class AttachedMediaItem(OrderMixin, models.Model):
                 items = self.all()
                 return items and items[0].content_object.get_image()
         
-        def select_related(self):
-            queryset = super(
-                AttachedMediaItem.QuerySet, self).select_related()
+        def select_generic_related(self):
+            queryset = self.all()
             
             # Simulating select_related() on GenericForeignKey
             # http://blog.roseman.org.uk/2010/02/22/django-patterns-part-4-forwards-generic-relations/
@@ -90,8 +90,12 @@ class AttachedMediaItem(OrderMixin, models.Model):
                 relations[ct] = ct_model.objects.in_bulk(list(fk_list))
             
             for item in queryset:
-                setattr(item, '_content_object_cache',
-                        relations[item.content_type_id][item.object_id])
+                if item.content_type_id and item.object_id:
+                    try:
+                        setattr(item, '_content_object_cache',
+                            relations[item.content_type_id][item.object_id])
+                    except KeyError:
+                        pass
             
             return queryset
         
@@ -202,4 +206,7 @@ AbstractResource.add_to_class('media', generic.GenericRelation(
     'media.AttachedMediaItem',
     content_type_field='parent_content_type',
     object_id_field='parent_object_id'))
+
+
+models.signals.pre_delete.connect(delete_media_attachments)
 
