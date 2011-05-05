@@ -244,8 +244,21 @@ media.jQuery(document).ready(function($) {
         return false;
     });
     
-    $('.media-attachedmediaitems .media-picker .media-filter_objects form input[type="checkbox"]').live('click', function(event) {
+    /*$('.media-attachedmediaitems .media-picker .media-filter_objects form input[type="checkbox"]').live('click', function(event) {
         $(this).closest('form').submit();
+    });*/
+    
+    /* ie workaround*/
+    $('.media-attachedmediaitems .media-picker .media-filter_objects form label').live('click', function(event) {
+        var checkbox = $('#' + $(this).attr('for'));
+        if (checkbox.is(':checked')) {
+          checkbox.removeAttr('checked');
+        } else {
+          checkbox.attr('checked', 'checked');
+        }
+        $(this).closest('form').submit();
+        event.preventDefault();
+        return false;
     });
     
     $('.media-attachedmediaitems .media-picker .media-available_objects .pagination a').live('click', function(event) {
