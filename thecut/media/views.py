@@ -1,204 +1,104 @@
 from django.conf import settings
-from django.contrib.auth.decorators import permission_required
-from django.http import HttpResponse, HttpResponseBadRequest
-from django.shortcuts import render_to_response
-from django.template import RequestContext
-from django.views.generic.list_detail import object_detail, object_list
-from thecut.media.forms import DocumentUploadForm, ImageUploadForm
-from thecut.media.models import Gallery, Video
+from django.contrib.auth.decorators import user_passes_test
+from django.contrib.contenttypes.models import ContentType
+from django.http import HttpResponseBadRequest, HttpResponse
+from django.shortcuts import get_object_or_404, render_to_response
+from django.utils import simplejson
+from django.views.generic.list_detail import object_list
+from django.views.decorators.cache import cache_control, cache_page
+from tagging.models import Tag, TaggedItem
+from thecut.media import MEDIA_SOURCE_CLASSES
+from thecut.media.forms import MediaSearchForm
 
 
-PAGINATE_BY = getattr(settings, 'MEDIA_PAGINATE_BY', 100)
-NO_IMAGE_404 = getattr(settings, 'MEDIA_NO_IMAGE_404', True)
+PAGINATE_BY = getattr(settings, 'MEDIA_PAGINATE_BY', 7)
 
 
-def gallery_list(request, page=None):
-    if page == '1':
-        return redirect(reverse('gallery_list'))
-    if page is None:
-        page = 1
-    queryset = Gallery.objects.current_site().active()
-    
-    return object_list(request, queryset, paginate_by=PAGINATE_BY,
-        page=page, template_object_name='gallery')
-
-
-def gallery_detail(request, slug):
-    if NO_IMAGE_404:
-        queryset = Gallery.objects.current_site().active().with_images()
+@cache_control(no_cache=True)
+@cache_page(0)
+@user_passes_test(lambda u: u.has_perm('media.add_attachedmediaitem') or \
+    u.has_perm('media.change_attachedmediaitem'))
+def admin_contenttype_list(request):
+    if request.is_ajax() or settings.DEBUG:
+        content_types = [ContentType.objects.get_for_model(model) for \
+            model in MEDIA_SOURCE_CLASSES]
+        return render_to_response('media/_contenttype_list.html',
+            {'content_type_list': content_types})
     else:
-        queryset = Gallery.objects.current_site().active()
-    if 'facebook' in settings.INSTALLED_APPS:
-        template_name = 'media/gallery_detail_facebook.html'
-    else:
-        template_name = None
-    return object_detail(request, queryset, slug=slug,
-        template_name=template_name, template_name_field='template',
-        template_object_name='gallery')
+        return HttpResponseBadRequest('bad request')
 
 
-def video_list(request, page=None):
-    if page == '1':
-        return redirect(reverse('video_list'))
-    if page is None:
-        page = 1
-    queryset = Video.objects.current_site().active()
-    
-    return object_list(request, queryset, paginate_by=PAGINATE_BY,
-        page=page, template_object_name='video')
-
-
-def video_detail(request, slug):
-    queryset = Video.objects.current_site().active()
-    if 'facebook' in settings.INSTALLED_APPS:
-        template_name = 'media/video_detail_facebook.html'
-    else:
-        template_name = None
-    return object_detail(request, queryset, slug=slug,
-        template_name=template_name, template_name_field='template',
-        template_object_name='video')
-
-
-def document_picker(request):
-    """Document picker."""
-    if not request.is_ajax():
-        return HttpResponseBadRequest('error')
-    
-    #TODO: Get the queryset specified passed to
-    # DocumentMultipleChoiceField? Form post/session?
-    from thecut.media.models import Document
-    queryset = Document.objects.all()#filter(is_public=True)
-    
-    paginate_by = PAGINATE_BY
-    
-    ids = request.REQUEST.get('ids', None)
-    if ids:
-       ids = ids.split(',')
-       queryset = queryset.filter(pk__in=ids)
-       paginate_by = queryset.count()
-    
-    q = request.REQUEST.get('q', None)
-    if q:
-        queryset = queryset.filter(title__icontains=q)
-    
-    return object_list(request, queryset, extra_context={'q': q},
-        paginate_by=paginate_by,
-        template_name='media/_document_picker.html',
-        template_object_name='document')
-
-
-@permission_required('media.add_document')
-def document_upload(request):
-    """Document upload."""
-    if request.method == 'POST':
-        form = DocumentUploadForm(request.POST, request.FILES)
-        if form.is_valid():
-            document = form.save(commit=False)
-            document.created_by = document.updated_by = request.user
-            document.save()
-            return render_to_response(
-                'media/_document_upload_complete.html',
-                {'document': document},
-                context_instance=RequestContext(request))
-    else:
-        form = DocumentUploadForm()
-    return render_to_response('media/_document_upload.html',
-        {'form': form},
-        context_instance=RequestContext(request))
-
-
-def gallery_picker(request):
-    """Gallery picker."""
-    if not request.is_ajax():
-        return HttpResponseBadRequest('error')
-    
-    #TODO: Get the queryset specified passed to
-    # GalleryMultipleChoiceField? Form post/session?
-    from thecut.media.models import Gallery
-    queryset = Gallery.objects.active()
-    
-    paginate_by = PAGINATE_BY
-    
-    ids = request.REQUEST.get('ids', None)
-    if ids:
-       ids = ids.split(',')
-       queryset = queryset.filter(pk__in=ids)
-       # Disable Pagination
-       paginate_by = queryset.count()
-    
-    q = request.REQUEST.get('q', None)
-    if q:
-        queryset = queryset.filter(title__icontains=q)
-    
-    return object_list(request, queryset, extra_context={'q': q},
-        paginate_by=paginate_by,
-        template_name='media/_gallery_picker.html',
-        template_object_name='gallery')
-
-
-def image_picker(request):
-    """Image picker."""
-    if not request.is_ajax():
-        return HttpResponseBadRequest('error')
-    
-    #TODO: Get the queryset specified passed to
-    # ImageMultipleChoiceField? Form post/session?
-    from thecut.media.models import Image
-    queryset = Image.objects.filter(is_public=True)
-    
-    paginate_by = PAGINATE_BY
-    
-    q = request.REQUEST.get('q', None)
-    if q:
-        queryset = queryset.filter(title__icontains=q)
-    
-    ids = request.REQUEST.get('ids', None)
-    if ids:
-       ids = ids.split(',')
-       queryset = queryset.filter(pk__in=ids)
-       paginate_by = queryset.count()
-       querylist = []
-       for pk in ids:
-           querylist += [queryset.get(pk=pk)]
-       queryset = querylist
-    
-    return render_to_response('media/_image_picker.html',
-        {'photo_list': queryset, 'q': q},
-        context_instance=RequestContext(request))
-
-
-@permission_required('photologue.add_photo')
-def image_upload(request):
-    """Image upload."""
-    if request.method == 'POST':
-        form = ImageUploadForm(request.POST, request.FILES)
-        if form.is_valid():
-            image = form.save()
-            return render_to_response(
-                'media/_image_upload_complete.html', {'image': image},
-                context_instance=RequestContext(request))
-    else:
-        form = ImageUploadForm()
-    return render_to_response('media/_image_upload.html',
-        {'form': form},
-        context_instance=RequestContext(request))
-
-
-if getattr(settings, 'DEBUG', False):
-    def image_picker_test(request):
-        from django.forms import Form, ModelMultipleChoiceField
-        from django.shortcuts import render_to_response
-        from django.template import RequestContext
-        from thecut.media.fields import ImageMultipleChoiceField
-        from thecut.media.models import Image
+@cache_control(no_cache=True)
+@cache_page(0)
+@user_passes_test(lambda u: u.has_perm('media.add_attachedmediaitem') or \
+    u.has_perm('media.change_attachedmediaitem'))
+def admin_contenttype_object_list(request, content_type_pk,
+    queryset=None, **kwargs):
+    if request.is_ajax() or settings.DEBUG:
+        content_type = get_object_or_404(ContentType,
+            pk=content_type_pk)
+        model_class = content_type.model_class()
+        object_name = model_class._meta.object_name.lower()
+        template_name = 'admin/%s/%s/_picker.html' %(
+            content_type.app_label, object_name)
         
-        class TestForm(Form):
-            photos1 = ImageMultipleChoiceField(Image.objects.all())
-            photos2 = ImageMultipleChoiceField(Image.objects.all())
+        if queryset is None:
+            queryset = model_class.objects.active()
+        tag_list = Tag.objects.usage_for_queryset(queryset,
+            counts=True)
         
-        form = TestForm()
+        form = MediaSearchForm(tag_list, request.GET)
+        valid = form.is_valid()
         
-        return render_to_response('media/image_picker_test.html',
-            {'form': form}, context_instance=RequestContext(request))
+        q = form.cleaned_data.get('q', None)
+        if q:
+            queryset = queryset.filter(title__icontains=q)
+        
+        selected_tag_pks = form.cleaned_data.get('tags', None)
+        if selected_tag_pks:
+            queryset = TaggedItem.objects.get_intersection_by_model(
+                queryset, Tag.objects.filter(pk__in=selected_tag_pks))
+            tag_list = Tag.objects.usage_for_queryset(queryset,
+                counts=True)
+        
+        form = MediaSearchForm(tag_list, initial={'q': q,
+            'tags': selected_tag_pks})
+        
+        extra_context = {'content_type': content_type, 'form': form}
+        kwargs.update({'extra_context': extra_context})
+        
+        kwdefaults = {'paginate_by': PAGINATE_BY,
+            'template_name': template_name,
+            'template_object_name': object_name}
+        kwdefaults.update(kwargs)
+        
+        return object_list(request, queryset, **kwdefaults)
+    else:
+        return HttpResponseBadRequest('Bad request.')
 
+
+@cache_control(no_cache=True)
+@cache_page(0)
+@user_passes_test(lambda u: u.has_perm('media.add_attachedmediaitem') or \
+    u.has_perm('media.change_attachedmediaitem'))
+def admin_contenttype_selected_object_list(request, content_type_pk):
+    if request.is_ajax() or settings.DEBUG:
+        content_type = get_object_or_404(ContentType,
+            pk=content_type_pk)
+        model_class = content_type.model_class()
+        object_name = model_class._meta.object_name.lower()
+        template_name = 'admin/%s/%s/_list.html' %(
+            content_type.app_label, object_name)
+        
+        pks = request.REQUEST.get('pks', None)
+        pks = pks and pks.split(',') or []
+        object_dictionary = pks and model_class.objects.active().in_bulk(
+            pks) or {}
+        
+        objects = [object_dictionary.get(int(pk)) for pk in pks]
+        
+        return render_to_response(template_name,
+            {'%s_list' %(object_name): objects, 'content_type': content_type})
+    else:
+        return HttpResponseBadRequest('Bad request.')
 

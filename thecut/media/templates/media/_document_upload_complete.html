@@ -1,6 +1,0 @@
-{% load thumbnail %}
-<li id="document-{{ document.pk }}">
-  <img src="{% thumbnail document.file "100x75" crop="smart" %}" alt="{{ document }}" />
-  {{ document }}
-  <span class="action remove">[x] Remove</span>
-</li>

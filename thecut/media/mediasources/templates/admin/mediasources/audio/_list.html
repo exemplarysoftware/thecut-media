@@ -1,0 +1,8 @@
+{% for audio in audio_list %}
+<li id="{{ content_type.pk }}-{{ audio.pk }}" class="list audio">
+  <div class="name">{{ audio }}</div>
+  <div class="content">{{ audio.caption|default_if_none:"" }}</div>
+  <div class="publish_at">{{ audio.publish_at }}</div>
+  <span class="action remove">Remove</span>
+</li>
+{% endfor %}

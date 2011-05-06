@@ -1,5 +1,8 @@
 include RELEASE-VERSION
 include AUTHORS COPYING README INSTALL LICENCE
-graft thecut/media/media
 graft thecut/media/static
 graft thecut/media/templates
+graft thecut/media/galleries/static
+graft thecut/media/galleries/templates
+graft thecut/media/mediasources/static
+graft thecut/media/mediasources/templates
