@@ -1,6 +1,7 @@
 from django.db import models
 from thecut.core.managers import QuerySetManager
 from thecut.core.models import AbstractSitesResourceWithSlug
+import warnings
 
 
 class Gallery(AbstractSitesResourceWithSlug):
