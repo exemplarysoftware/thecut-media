@@ -1,7 +1,12 @@
-from datetime import datetime
 
 
-def set_publish_at(sender, instance, **kwargs):
-    """If not already set, automatically set the instance's publish_at value to now."""
-    instance.publish_at = instance.publish_at or datetime.now()
+def delete_media_attachments(sender, instance, **kwargs):
+    """Delete attachments when media item is deleted."""
+    from django.contrib.contenttypes.models import ContentType
+    from thecut.media.models import AbstractMediaItem, AttachedMediaItem
+    if issubclass(instance.__class__, AbstractMediaItem):
+        content_type = ContentType.objects.get_for_model(sender)
+        attachments = AttachedMediaItem.objects.filter(content_type=content_type,
+            object_id=instance.pk)
+        attachments.delete()
 

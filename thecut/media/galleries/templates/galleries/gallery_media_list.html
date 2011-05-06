@@ -1,0 +1,47 @@
+{% extends "galleries/base.html" %}
+{% load thumbnail %}
+
+{% block title %}{{ gallery.title }} - {{ block.super }}{% endblock %}
+
+{% block extrahead %}
+{% if not gallery.is_indexable %}<meta name="robots" content="noindex" />{% endif %}
+{% if gallery.meta_description %}<meta name="description" content="{{ gallery.meta_description }}" />{% endif %}
+{% endblock %}
+
+{% block content %}
+  
+  <h1>{{ gallery.heading }}</h1>
+  <div>
+    {{ gallery.content|safe }}
+  </div>
+  
+  
+  {% for media in gallery_media_list %}
+  {% with media.content_object as item %}
+  {% if forloop.first %}<h2>Media</h2><ul>{% endif %}
+    {% thumbnail item.get_image "200x200" crop="center" as thumb %}
+    <li class="{{ media.content_type.model }}"><a href="{{ item.get_absolute_url }}"><img src="{{ thumb.url }}" alt="{{ item }}" /></a></li>
+    {% endthumbnail %}
+  {% if forloop.last %}</ul>{% endif %}
+  {% endwith %}
+  {% endfor %}
+  
+  
+  {% if page_obj.paginator.num_pages > 1 %}
+  <div class="pagination">
+    <span class="step-links">
+      <span class="current">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+      </span>
+      {% if page_obj.has_previous %}
+        <a href="{% url galleries:paginated_gallery_media_list gallery.slug page_obj.previous_page_number %}">previous</a>
+      {% endif %}
+      {% if page_obj.has_next %}
+        <a href="{% url galleries:paginated_gallery_media_list gallery.slug page_obj.next_page_number %}">next</a>
+      {% endif %}
+    </span>
+  </div>
+  {% endif %}
+  
+{% endblock %}
+

@@ -1,86 +1,37 @@
-from datetime import datetime
 from django import forms
-from thecut.media.fields import DocumentMultipleChoiceField, GalleryMultipleChoiceField, ImageMultipleChoiceField
-from thecut.media.models import Document, Gallery, Image, MediaSet, Video
+from django.contrib.contenttypes.models import ContentType
+from thecut.media import MEDIA_SOURCE_CLASSES
+from thecut.media.models import AttachedMediaItem
 
 
-class DocumentAdminForm(forms.ModelForm):
+class AttachedMediaItemInlineForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        super(DocumentAdminForm, self).__init__(*args, **kwargs)
-        self.fields['publish_at'].initial = datetime.now()
-    
-    class Meta:
-        model = Document
-
-
-class GalleryAdminForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super(GalleryAdminForm, self).__init__(*args, **kwargs)
-        self.fields['publish_at'].initial = datetime.now()
-        image_choices = [(i.pk, i.title) for i in Image.objects.all()]
-        self.fields['images'].choices = image_choices
+        super(AttachedMediaItemInlineForm, self).__init__(*args,
+            **kwargs)
         
-        if self.instance.image_order:
-            # Reorder choice options to reflect image ordering.
-            image_order = self.instance.ordered_images
-            for image in image_order:
-                choice = (image.pk, image.title)
-                choice_index = image_choices.index(choice)
-                image_choices.pop(choice_index)
-                image_choices.append(choice)
-            self.fields['images'].choices = image_choices
-    
-    images = ImageMultipleChoiceField(required=False)
-    
-    class Meta:
-        model = Gallery
-
-
-class MediaSetForm(forms.ModelForm):
-    images = ImageMultipleChoiceField(required=False)
-    galleries = GalleryMultipleChoiceField(Gallery.objects.all(),
-        required=False)
-    documents = DocumentMultipleChoiceField(Document.objects.all(),
-        required=False)
-    
-    class Meta:
-        fields = ['images', 'image_order', 'galleries', 'documents']
-        model = MediaSet
-    
-    def __init__(self, *args, **kwargs):
-        super(MediaSetForm, self).__init__(*args, **kwargs)
+        content_types = []
+        for model in MEDIA_SOURCE_CLASSES:
+            content_types += [ContentType.objects.get_for_model(model)]
         
-        image_choices = [(i.pk, i.title) for i in Image.objects.all()]
-        self.fields['images'].choices = image_choices
+        queryset = self.fields['content_type'].queryset
+        self.fields['content_type'].queryset = queryset.filter(
+            pk__in=[ct.pk for ct in content_types])
         
-        if self.instance.image_order:
-            # Reorder choice options to reflect image ordering.
-            image_order = self.instance.ordered_images
-            for image in image_order:
-                choice = (image.pk, image.title)
-                choice_index = image_choices.index(choice)
-                image_choices.pop(choice_index)
-                image_choices.append(choice)
-            self.fields['images'].choices = image_choices
-
-
-class VideoAdminForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super(VideoAdminForm, self).__init__(*args, **kwargs)
-        self.fields['publish_at'].initial = datetime.now()
+    class Media:
+        css = {'all': ['media/smoothness/jquery-ui-1.8.10.custom.css', 'media/admin.css']}
+        js = ['media/jquery.js', 'media/jquery-ui.js',
+            'media/jquery.init.js', 'media/csrf.js', 'media/admin.js']
     
     class Meta:
-        model = Video
+        model = AttachedMediaItem
 
 
-class DocumentUploadForm(forms.ModelForm):
-    class Meta:
-        fields = ['title', 'file']
-        model = Document
-
-
-class ImageUploadForm(forms.ModelForm):
-    class Meta:
-        fields = ['title', 'image']
-        model = Image
+class MediaSearchForm(forms.Form):
+    q = forms.CharField(required=False)
+    tags = forms.MultipleChoiceField(required=False, choices=[],
+        widget=forms.CheckboxSelectMultiple())
+    
+    def __init__(self, tag_list, *args, **kwargs):
+        super(MediaSearchForm, self).__init__(*args, **kwargs)
+        self.fields['tags'].choices = [(t.pk, t.name) for t in tag_list]
 
