@@ -155,9 +155,11 @@ class YoutubeVideo(AbstractMediaItem):
             {'video_id': self.get_video_id()})
     
     def get_video_id(self):
-        url_pattern = re.compile(
-            r'^http://www.youtube.com/watch\?v=([-a-z0-9A-Z_]+)$')
-        match = re.match(url_pattern, self.url)
+        match = re.match(r'http://youtu.be/([-a-z0-9A-Z_]+)$', self.url)
+        if not match:
+            match = re.match(
+                r'^http://www.youtube.com/watch\?v=([-a-z0-9A-Z_]+)(?:&{,1}.*)$',
+                self.url)
         if match:
             return match.groups()[0]
 
