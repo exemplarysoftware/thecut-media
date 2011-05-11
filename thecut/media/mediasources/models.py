@@ -148,7 +148,8 @@ class YoutubeVideo(AbstractMediaItem):
     objects = QuerySetManager()
     
     def get_absolute_url(self):
-        return self.url
+        return 'http://www.youtube.com/watch?v=%(video_id)s' %(
+            {'video_id': self.get_video_id()})
     
     def get_image(self):
         return 'http://img.youtube.com/vi/%(video_id)s/0.jpg' %(
