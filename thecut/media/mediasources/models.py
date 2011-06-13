@@ -1,9 +1,11 @@
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils import simplejson
 from mimetypes import guess_type
 from sorl.thumbnail import get_thumbnail
 from thecut.core.managers import QuerySetManager
 from thecut.media.models import AbstractMediaItem
+from urllib import urlencode, urlopen
 import re
 import warnings
 
@@ -163,6 +165,60 @@ class YoutubeVideo(AbstractMediaItem):
                 self.url)
         if match:
             return match.groups()[0]
+
+
+class VimeoVideo(AbstractMediaItem):
+    url = models.URLField(help_text='e.g. http://vimeo.com/123456')
+    objects = QuerySetManager()
+    _api_data = models.TextField(blank=True, null=True, editable=False)
+    _oembed_data = models.TextField(blank=True, null=True, editable=False)
+    
+    def get_absolute_url(self):
+        return self.file.url
+    
+    def get_image(self):
+        return self.api_data['thumbnail_large']
+    
+    @property
+    def api_data(self):
+        if not self._api_data:
+            self._api_data = self._get_api_data()
+        return simplejson.loads(self._api_data)[0]
+    
+    def _get_api_data(self):
+        base_uri = 'http://vimeo.com/api/v2/'
+        video_uri = '%svideo/%s.json' %(base_uri, self.get_video_id())
+        response = urlopen(video_uri)
+        return response.read()
+    
+    @property
+    def oembed_data(self):
+        if not self._oembed_data:
+             self._oembed_data = self._get_oembed_data()
+        return simplejson.loads(self._oembed_data)
+    
+    def _get_oembed_data(self):
+        base_uri = 'http://vimeo.com/api/oembed.json'
+        params = urlencode({'url': self.url})
+        response = urlopen(base_uri, params)
+        return response.read()
+    
+    def get_video_id(self):
+        url_pattern = re.compile(r'vimeo.com\/(\d+)\/?')
+        match = re.search(url_pattern, self.url)
+        return match and match.groups()[0] or None
+    
+    def html(self):
+        return self.oembed_data['html']
+    
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            data = self.api_data
+            self.title = self.title or data['title']
+            self.content = self.content or data['description']
+        if not self._oembed_data:
+            self._get_oembed_data()
+        return super(VimeoVideo, self).save(*args, **kwargs)
 
 
 class Audio(AbstractMediaItem):

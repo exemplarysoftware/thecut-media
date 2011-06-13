@@ -1,0 +1,9 @@
+{% load thumbnail %}
+{% for vimeovideo in vimeovideo_list %}
+<li id="{{ content_type.pk }}-{{ vimeovideo.pk }}" class="thumbnail video">
+  {% thumbnail vimeovideo.get_image "140x106" as thumb %}
+  <img src="{{ thumb.url }}" alt="{{ vimeovideo }}" title="{{ vimeovideo }}" />
+  {% endthumbnail %}
+  <span class="action remove" title="Remove">Remove</span>
+</li>
+{% endfor %}

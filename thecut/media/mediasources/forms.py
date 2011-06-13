@@ -1,6 +1,6 @@
 from thecut.core.forms import ModelAdminForm
 from thecut.media.mediasources.models import Audio, Document, Image, Video, \
-    YoutubeVideo
+    YoutubeVideo, VimeoVideo
 
 
 class AudioAdminForm(ModelAdminForm):
@@ -26,4 +26,13 @@ class VideoAdminForm(ModelAdminForm):
 class YoutubeVideoAdminForm(ModelAdminForm):
     class Meta:
         model = YoutubeVideo
+
+
+class VimeoVideoAdminForm(ModelAdminForm):
+    def __init__(self, *args, **kwargs):
+        super(VimeoVideoAdminForm, self).__init__(*args, **kwargs)
+        self.fields['title'].required = False
+    
+    class Meta:
+        model = VimeoVideo
 

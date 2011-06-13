@@ -3,9 +3,10 @@ from django.contrib import admin
 from sorl.thumbnail import get_thumbnail
 from thecut.core.admin import ModelAdmin
 from thecut.media.mediasources.forms import AudioAdminForm, \
-    DocumentAdminForm, ImageAdminForm, VideoAdminForm, YoutubeVideoAdminForm
+    DocumentAdminForm, ImageAdminForm, VideoAdminForm, YoutubeVideoAdminForm, \
+    VimeoVideoAdminForm
 from thecut.media.mediasources.models import Audio, Document, Image, Video, \
-    YoutubeVideo
+    YoutubeVideo, VimeoVideo
 
 
 def conditionally_register(model, adminclass):
@@ -137,4 +138,26 @@ class YoutubeVideoAdmin(ModelAdmin):
     search_fields = ['title']
 
 conditionally_register(YoutubeVideo, YoutubeVideoAdmin)
+
+
+class VimeoVideoAdmin(ModelAdmin):
+    fieldsets = [
+        (None, {'fields': ['url', 'title', 'caption', 'content',
+            'tags']}),
+        ('Publishing', {'fields': [('publish_at', 'is_enabled'),
+            'expire_at', 'publish_by', 'is_featured',
+            ('created_at', 'created_by'),
+            ('updated_at', 'updated_by')],
+            'classes': ['collapse']}),
+    ]
+    form = VimeoVideoAdminForm
+    list_display = ['title', 'publish_at', 'is_enabled', 'is_featured',
+        preview_image]
+    list_filter = ['publish_at', 'is_enabled', 'is_featured']
+    #prepopulated_fields = {'title': ['file']}
+    readonly_fields = ['created_at', 'created_by',
+        'updated_at', 'updated_by']
+    search_fields = ['title']
+
+conditionally_register(VimeoVideo, VimeoVideoAdmin)
 
