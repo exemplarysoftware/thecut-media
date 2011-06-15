@@ -34,5 +34,5 @@ def generate_unique_image_slug(text, iteration=0):
         return slug
     else:
         iteration += 1
-        return generate_unique_slug(text, iteration=iteration)
+        return generate_unique_image_slug(text, iteration=iteration)
 
