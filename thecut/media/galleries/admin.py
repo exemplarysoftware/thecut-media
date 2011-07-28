@@ -12,7 +12,7 @@ def preview_image(obj):
     image = obj.media.get_image()
     if image:
         thumb = get_thumbnail(image, '100x75', crop='center')
-        return u'<img src="%s" alt="%s" />' %(thumb.url, str(obj))
+        return u'<img src="%s" alt="%s" />' %(thumb.url, unicode(obj))
     else:
         return u''
 preview_image.short_description = 'Preview'
