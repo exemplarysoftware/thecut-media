@@ -22,7 +22,7 @@ class LatestGalleryFeed(Feed):
             '-publish_at')[:10]
     
     def item_title(self, item):
-        return str(item)
+        return unicode(item)
     
     def item_description(self, item):
         return item.content
