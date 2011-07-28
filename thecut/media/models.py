@@ -201,7 +201,7 @@ class AttachedMediaItem(OrderMixin, models.Model):
     def __unicode__(self):
         return '%(order)s - %(model)s: %(object)s' %(
             {'order': self.order, 'model': self.content_type,
-            'object': self.content_object})
+            'object': unicode(self.content_object)})
 
 
 AbstractResource.add_to_class('media', generic.GenericRelation(
