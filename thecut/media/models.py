@@ -6,6 +6,7 @@ from tagging.fields import TagField
 from thecut.core.managers import QuerySetManager
 from thecut.core.models import AbstractBaseResource, AbstractResource, OrderMixin
 from thecut.media.signals import delete_media_attachments
+from thecut.media.utils import get_media_source_models
 import warnings
 
 
@@ -46,8 +47,7 @@ class AttachedMediaItem(OrderMixin, models.Model):
     class QuerySet(models.query.QuerySet):
         def __init__(self, *args, **kwargs):
             # TODO: Optimisation/caching
-            from thecut.media import MEDIA_SOURCE_CLASSES
-            for class_ in MEDIA_SOURCE_CLASSES:
+            for class_ in get_media_source_models():
                 plural_name = class_._meta.verbose_name_plural.replace(
                     ' ', '')
                 content_type = ContentType.objects.get_for_model(class_)
