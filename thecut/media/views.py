@@ -4,7 +4,6 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseBadRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render_to_response
-from django.utils import simplejson
 from django.views.generic.list_detail import object_list
 from django.views.decorators.cache import cache_control, cache_page
 from tagging.models import Tag, TaggedItem
