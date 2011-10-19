@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.conf.urls.defaults import patterns, url
 from thecut.media.galleries.feeds import LatestGalleryFeed
 

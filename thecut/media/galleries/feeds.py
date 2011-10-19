@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
 from django.contrib.sites.models import Site
 from django.contrib.syndication.views import Feed

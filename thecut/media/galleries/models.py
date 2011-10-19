@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.db import models
 from thecut.core.managers import QuerySetManager
 from thecut.core.models import AbstractSitesResourceWithSlug

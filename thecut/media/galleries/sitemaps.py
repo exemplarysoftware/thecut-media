@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.contrib.sitemaps import Sitemap
 from django.core.urlresolvers import reverse
 from thecut.media.galleries.models import Gallery

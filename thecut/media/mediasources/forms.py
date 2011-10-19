@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from thecut.core.forms import ModelAdminForm
 from thecut.media.mediasources.models import Audio, Document, Image, Video, \
     YoutubeVideo, VimeoVideo

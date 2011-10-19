@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 
 def delete_media_attachments(sender, instance, **kwargs):
