@@ -1,46 +1,46 @@
 {% extends "galleries/base.html" %}
 {% load thumbnail %}
 
-{% block extrahead %}
-<link rel="alternate" href="{% url galleries:gallery_feed %}" type="application/atom+xml" title="Latest Galleries" />
-{% endblock %}
-
 {% block title %}Galleries - {{ block.super }}{% endblock %}
+
+{% block extrahead %}
+  {{ block.super }}
+  <link rel="alternate" href="{% url galleries:gallery_feed %}" type="application/atom+xml" title="Latest Galleries" />
+  
+  {% if page_obj.paginator.num_pages > 1 %}{% spaceless %}
+    {% if page_obj.has_previous %}
+      <link rel="prev" href="{% if page_obj.previous_page_number == 1 %}{% url galleries:gallery_list %}{% else %}{% url galleries:paginated_gallery_list page=page_obj.previous_page_number %}{% endif %}" />
+    {% endif %}
+    {% if page_obj.has_next %}
+      <link rel="next" href="{% url galleries:paginated_gallery_list page=page_obj.next_page_number %}" />
+    {% endif %}
+  {% endspaceless %}{% endif %}
+{% endblock %}
 
 {% block content %}
   
   <h1>Galleries</h1>
   
   {% for gallery in gallery_list %}
-  {% if forloop.first %}<ul class="gallery-list">{% endif %}
-  <li>
-    <a href="{{ gallery.get_absolute_url }}">
-      {% thumbnail gallery.media.get_image "200x200" crop="center" as thumb %}
-      <img src="{{ thumb.url }}" alt="{{ gallery.media.get_image }}" />
-      {% endthumbnail %}
-      {{ gallery.publish_at }}
-      {{ gallery }}
-      {{ gallery.summary }}
-    </a>
-  </li>
+  {% if forloop.first %}<ul>{% endif %}
+    <li>
+      <a href="{{ gallery.get_absolute_url }}">
+        {% thumbnail gallery.media.get_image "200x200" as thumb %}<img src="{{ thumb.url }}" alt="{{ gallery }}" />{% endthumbnail %}
+        {{ gallery.publish_at }}
+        {{ gallery }}
+        {{ gallery.summary }}
+      </a>
+    </li>
   {% if forloop.last %}</ul>{% endif %}
   {% empty %}
   <p>No galleries to display.</p>
   {% endfor %}
   
   {% if page_obj.paginator.num_pages > 1 %}
-  <div class="pagination">
-    <span class="step-links">
-      <span class="current">
-        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-      </span>
-      {% if page_obj.has_previous %}
-        <a href="{% url galleries:paginated_gallery_list page_obj.previous_page_number %}">previous</a>
-      {% endif %}
-      {% if page_obj.has_next %}
-        <a href="{% url galleries:paginated_gallery_list page_obj.next_page_number %}">next</a>
-      {% endif %}
-    </span>
+  <div>
+    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+    {% if page_obj.has_previous %}<a href="{% if page_obj.previous_page_number == 1 %}{% url galleries:gallery_list %}{% else %}{% url galleries:paginated_gallery_list page_obj.previous_page_number %}{% endif %}" rel="previous">previous</a>{% endif %}
+    {% if page_obj.has_next %}<a href="{% url galleries:paginated_gallery_list page_obj.next_page_number %}" rel="next">next</a>{% endif %}
   </div>
   {% endif %}
   
