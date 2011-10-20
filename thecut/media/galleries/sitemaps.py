@@ -30,5 +30,5 @@ class GalleryListSitemap(Sitemap):
 
 
 sitemaps = {'galleries_gallery': GallerySitemap,
-    'galleries_gallerylist': GalleriesSitemap}
+    'galleries_gallerylist': GalleryListSitemap}
 
