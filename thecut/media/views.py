@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseBadRequest, HttpResponse
@@ -7,11 +6,8 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.views.generic.list_detail import object_list
 from django.views.decorators.cache import cache_control, cache_page
 from tagging.models import Tag, TaggedItem
-from thecut.media import MEDIA_SOURCE_CLASSES
+from thecut.media import settings, MEDIA_SOURCE_CLASSES
 from thecut.media.forms import MediaSearchForm
-
-
-PAGINATE_BY = getattr(settings, 'MEDIA_PAGINATE_BY', 7)
 
 
 @cache_control(no_cache=True)
@@ -67,7 +63,7 @@ def admin_contenttype_object_list(request, content_type_pk,
         extra_context = {'content_type': content_type, 'form': form}
         kwargs.update({'extra_context': extra_context})
         
-        kwdefaults = {'paginate_by': PAGINATE_BY,
+        kwdefaults = {'paginate_by': settings.MEDIA_PAGINATE_BY,
             'template_name': template_name,
             'template_object_name': object_name}
         kwdefaults.update(kwargs)

@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
-from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import get_models
+from thecut.media import settings
 
 
 def get_media_source_classes(model_list=None):
     """Returns classes for the each string in list."""
     from thecut.media.models import AbstractMediaItem
-    model_list = model_list or getattr(settings, 'MEDIA_SOURCES', [])
+    model_list = model_list or settings.MEDIA_SOURCES
     source_classes = []
     for import_string in model_list:
         module_string = '.'.join(import_string.split('.')[:-1])

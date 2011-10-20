@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from django.conf import settings
 from django.contrib import admin
 from sorl.thumbnail import get_thumbnail
 from thecut.core.admin import ModelAdmin
+from thecut.media import settings
 from thecut.media.mediasources.forms import AudioAdminForm, \
     DocumentAdminForm, ImageAdminForm, VideoAdminForm, YoutubeVideoAdminForm, \
     VimeoVideoAdminForm
@@ -13,7 +13,7 @@ from thecut.media.mediasources.models import Audio, Document, Image, Video, \
 def conditionally_register(model, adminclass):
     """Register model with admin site if it is in MEDIA_SOURCES."""
     if 'thecut.media.mediasources.models.%s' %(model.__name__) in \
-        getattr(settings, 'MEDIA_SOURCES', []):
+        settings.MEDIA_SOURCES:
         admin.site.register(model, adminclass)
 
 
