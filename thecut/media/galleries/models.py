@@ -9,6 +9,7 @@ class AbstractGallery(AbstractSitesResourceWithSlug):
     objects = QuerySetManager()
     
     class Meta(AbstractSitesResourceWithSlug.Meta):
+        abstract = True
         ordering = ['-publish_at', 'title']
         verbose_name_plural = 'galleries'
     
