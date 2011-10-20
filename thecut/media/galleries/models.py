@@ -5,7 +5,7 @@ from thecut.core.models import AbstractSitesResourceWithSlug
 import warnings
 
 
-class Gallery(AbstractSitesResourceWithSlug):
+class AbstractGallery(AbstractSitesResourceWithSlug):
     objects = QuerySetManager()
     
     class Meta(AbstractSitesResourceWithSlug.Meta):
@@ -18,10 +18,6 @@ class Gallery(AbstractSitesResourceWithSlug):
     #        return self.annotate(
     #            num_images=models.Count('images')).filter(
     #            num_images__gte=1)
-    
-    @models.permalink
-    def get_absolute_url(self):
-        return ('galleries:gallery_media_list', [], {'slug': self.slug})
     
     ## Deprecated properties
     
@@ -95,4 +91,12 @@ class Gallery(AbstractSitesResourceWithSlug):
             def all(self):
                 return photos()
         return proxy()
+
+
+class Gallery(AbstractGallery):
+    objects = QuerySetManager()
+    
+    @models.permalink
+    def get_absolute_url(self):
+        return ('galleries:gallery_media_list', [], {'slug': self.slug})
 
