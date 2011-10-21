@@ -1,5 +1,8 @@
+# -*- coding: utf-8 -*-
 from django.contrib.sitemaps import Sitemap
+from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
+from thecut.media.galleries import settings
 from thecut.media.galleries.models import Gallery
 
 
@@ -12,19 +15,20 @@ class GallerySitemap(Sitemap):
         return obj.updated_at
 
 
-class View(object):
-    """Wrapper for a view in order to provide get_absolute_url()."""
-    def __init__(self, name):
-        self.name = name
-    
-    def get_absolute_url(self):
-        return reverse(self.name)
-
-
-class GalleriesSitemap(Sitemap):
+class GalleryListSitemap(Sitemap):
     def items(self):
-        return [View('galleries:gallery_list')]
+        objects = Gallery.objects.current_site().indexable()
+        paginator = Paginator(objects, settings.GALLERY_PAGINATE_BY)
+        return paginator.page_range
+    
+    def location(self, page):
+        if page == 1:
+            return reverse('galleries:gallery_list')
+        else:
+            return reverse('galleries:paginated_gallery_list',
+                kwargs={'page': page})
 
 
-sitemaps = {'gallery': GallerySitemap, 'galleries': GalleriesSitemap}
+sitemaps = {'galleries_gallery': GallerySitemap,
+    'galleries_gallerylist': GalleryListSitemap}
 

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.conf.urls.defaults import url, patterns
 from django.contrib import admin
 from django.contrib.contenttypes.generic import GenericStackedInline

@@ -1,6 +1,5 @@
-from django.conf import settings
+# -*- coding: utf-8 -*-
 from django.contrib import admin
-from django.contrib.contenttypes.generic import GenericTabularInline
 from sorl.thumbnail import get_thumbnail
 from thecut.core.admin import ModelAdmin
 from thecut.media.admin import AttachedMediaItemMixin

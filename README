@@ -1,6 +1,40 @@
 The Cut Django App: Media
 
-If pgmagick is to be used then the libgraphicsmagick++-dev and
-libboost-python-dev packages need to be installed before installing
+
+
+============
+thecut.media
+============
+
+
+If pgmagick is to be used as thumbnail engine then the libgraphicsmagick++-dev
+and libboost-python-dev packages need to be installed before installing
 'pgmagick==0.3.2' using pip.
+
+
+To install this application (whilst in the project's activated virtualenv)::
+    pip install git+ssh://git@git.thecut.net.au/thecut-media@0.04
+
+
+Add the ``thecut.media`` to the project's ``INSTALLED_APPS`` setting::
+
+    INSTALLED_APPS = (
+        ...
+        'thecut.media',
+    )
+
+
+Add ``MEDIA_SOURCES`` and ``THUMBNAIL_ENGINE`` setting::
+
+MEDIA_SOURCES = [
+    'thecut.media.mediasources.models.Image',
+    'thecut.media.mediasources.models.Document',
+]
+
+try:
+    import pgmagick
+except ImportError:
+    THUMBNAIL_ENGINE = 'sorl.thumbnail.engines.pil_engine.Engine'
+else:
+    THUMBNAIL_ENGINE = 'sorl.thumbnail.engines.pgmagick_engine.Engine'
 

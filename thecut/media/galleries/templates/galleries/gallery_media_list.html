@@ -4,42 +4,41 @@
 {% block title %}{{ gallery.title }} - {{ block.super }}{% endblock %}
 
 {% block extrahead %}
-{% if not gallery.is_indexable %}<meta name="robots" content="noindex" />{% endif %}
-{% if gallery.meta_description %}<meta name="description" content="{{ gallery.meta_description }}" />{% endif %}
+  {{ block.super }}
+  {% if not gallery.is_indexable %}<meta name="robots" content="noindex" />{% endif %}
+  {% if gallery.meta_description %}<meta name="description" content="{{ gallery.meta_description }}" />{% endif %}
+  
+  {% if page_obj.paginator.num_pages > 1 %}{% spaceless %}
+    {% if page_obj.has_previous %}
+      <link rel="prev" href="{% if page_obj.previous_page_number == 1 %}{% url galleries:gallery_media_list gallery.slug %}{% else %}{% url galleries:paginated_gallery_media_list gallery.slug page_obj.previous_page_number %}{% endif %}" />
+    {% endif %}
+    {% if page_obj.has_next %}
+      <link rel="next" href="{% url galleries:paginated_gallery_media_list gallery.slug page_obj.next_page_number %}" />
+    {% endif %}
+  {% endspaceless %}{% endif %}
 {% endblock %}
 
 {% block content %}
   
   <h1>{{ gallery.heading }}</h1>
-  <div>
-    {{ gallery.content|safe }}
-  </div>
+  {% if gallery.featured_content %}<div>{{ gallery.featured_content|safe }}</div>{% endif %}
+  {% if gallery.content %}<div>{{ gallery.content|safe }}</div>{% endif %}
   
-  
-  {% for media in gallery_media_list %}
+  {% spaceless %}{% for media in gallery_media_list %}
   {% with media.content_object as item %}
   {% if forloop.first %}<h2>Media</h2><ul>{% endif %}
-    {% thumbnail item.get_image "200x200" crop="center" as thumb %}
+    {% thumbnail item.get_image "200x200" as thumb %}
     <li class="{{ media.content_type.model }}"><a href="{{ item.get_absolute_url }}"><img src="{{ thumb.url }}" alt="{{ item }}" /></a></li>
     {% endthumbnail %}
   {% if forloop.last %}</ul>{% endif %}
   {% endwith %}
-  {% endfor %}
-  
+  {% endfor %}{% endspaceless %}
   
   {% if page_obj.paginator.num_pages > 1 %}
-  <div class="pagination">
-    <span class="step-links">
-      <span class="current">
-        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-      </span>
-      {% if page_obj.has_previous %}
-        <a href="{% url galleries:paginated_gallery_media_list gallery.slug page_obj.previous_page_number %}">previous</a>
-      {% endif %}
-      {% if page_obj.has_next %}
-        <a href="{% url galleries:paginated_gallery_media_list gallery.slug page_obj.next_page_number %}">next</a>
-      {% endif %}
-    </span>
+  <div>
+    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+    {% if page_obj.has_previous %}<a href="{% if page_obj.previous_page_number == 1 %}{% url galleries:gallery_media_list gallery.slug %}{% else %}{% url galleries:paginated_gallery_media_list gallery.slug page_obj.previous_page_number %}{% endif %}" rel="previous">previous</a>{% endif %}
+    {% if page_obj.has_next %}<a href="{% url galleries:paginated_gallery_media_list gallery.slug page_obj.next_page_number %}" rel="next">next</a>{% endif %}
   </div>
   {% endif %}
   
