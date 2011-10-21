@@ -3,11 +3,12 @@ from django.contrib import admin
 from sorl.thumbnail import get_thumbnail
 from thecut.core.admin import ModelAdmin
 from thecut.media import settings
-from thecut.media.mediasources.forms import AudioAdminForm, \
-    DocumentAdminForm, ImageAdminForm, VideoAdminForm, YoutubeVideoAdminForm, \
-    VimeoVideoAdminForm
-from thecut.media.mediasources.models import Audio, Document, Image, Video, \
-    YoutubeVideo, VimeoVideo
+from thecut.media.mediasources.forms import (AudioAdminForm,
+    DocumentAdminForm, ImageAdminForm, VideoAdminForm, YoutubeVideoAdminForm,
+    VimeoVideoAdminForm)
+from thecut.media.mediasources.models import (Audio, Document, Image, Video,
+    YoutubeVideo, VimeoVideo)
+from thecut.media.mediasources.views import UploadView
 
 
 def conditionally_register(model, adminclass):
@@ -32,7 +33,15 @@ preview_image.short_description = 'Preview'
 preview_image.allow_tags = True
 
 
-class AudioAdmin(ModelAdmin):
+class MediaUploadMixin(object):
+    def add_view(self, request, form_url='', extra_context=None):
+        view = UploadView.as_view()
+        response = view(request, admin=self)
+        return hasattr(response, 'render') and callable(response.render) and \
+            response.render() or response
+
+
+class AudioAdmin(MediaUploadMixin, ModelAdmin):
     fieldsets = [
         (None, {'fields': ['file', 'title', 'caption', 'content',
             'tags']}),
@@ -54,7 +63,7 @@ class AudioAdmin(ModelAdmin):
 conditionally_register(Audio, AudioAdmin)
 
 
-class DocumentAdmin(ModelAdmin):
+class DocumentAdmin(MediaUploadMixin, ModelAdmin):
     fieldsets = [
         (None, {'fields': ['file', 'title', 'caption', 'content',
             'tags']}),
@@ -76,29 +85,25 @@ class DocumentAdmin(ModelAdmin):
 conditionally_register(Document, DocumentAdmin)
 
 
-class ImageAdmin(ModelAdmin):
+class ImageAdmin(MediaUploadMixin, ModelAdmin):
     fieldsets = [
-        (None, {'fields': ['file', 'title', 'caption', 'content',
-            'tags']}),
+        (None, {'fields': ['file', 'title', 'caption', 'content', 'tags']}),
         ('Publishing', {'fields': [('publish_at', 'is_enabled'),
             'expire_at', 'publish_by', 'is_featured',
-            ('created_at', 'created_by'),
-            ('updated_at', 'updated_by')],
+            ('created_at', 'created_by'), ('updated_at', 'updated_by')],
             'classes': ['collapse']}),
     ]
     form = ImageAdminForm
     list_display = ['title', 'publish_at', 'is_enabled', 'is_featured',
         preview_image]
     list_filter = ['publish_at', 'is_enabled', 'is_featured']
-    #prepopulated_fields = {'title': ['file']}
-    readonly_fields = ['created_at', 'created_by',
-        'updated_at', 'updated_by']
+    readonly_fields = ['created_at', 'created_by', 'updated_at', 'updated_by']
     search_fields = ['title']
 
 conditionally_register(Image, ImageAdmin)
 
 
-class VideoAdmin(ModelAdmin):
+class VideoAdmin(MediaUploadMixin, ModelAdmin):
     fieldsets = [
         (None, {'fields': ['file', 'title', 'caption', 'content',
             'tags']}),
