@@ -5,6 +5,7 @@ from django.utils import simplejson
 from mimetypes import guess_type
 from sorl.thumbnail import get_thumbnail
 from thecut.core.managers import QuerySetManager
+from thecut.media.mediasources import utils
 from thecut.media.models import AbstractMediaItem
 from urllib import urlencode, urlopen
 import re
@@ -114,6 +115,9 @@ class AbstractImage(AbstractMediaItem):
 class Image(AbstractImage):
     objects = QuerySetManager()
 
+models.signals.post_save.connect(utils.generate_image_thumbnails,
+    sender=Image)
+
 
 class AbstractVideo(AbstractMediaItem):
     file = models.FileField(max_length=250,
@@ -173,6 +177,9 @@ class AbstractVideo(AbstractMediaItem):
 class Video(AbstractVideo):
     objects = QuerySetManager()
 
+models.signals.post_save.connect(utils.generate_video_thumbnails,
+    sender=Video)
+
 
 class AbstractYoutubeVideo(AbstractMediaItem):
     url = models.URLField()
@@ -201,6 +208,9 @@ class AbstractYoutubeVideo(AbstractMediaItem):
 
 class YoutubeVideo(AbstractYoutubeVideo):
     objects = QuerySetManager()
+
+models.signals.post_save.connect(utils.generate_youtube_video_thumbnails,
+    sender=YoutubeVideo)
 
 
 class AbstractVimeoVideo(AbstractMediaItem):
@@ -262,6 +272,9 @@ class AbstractVimeoVideo(AbstractMediaItem):
 
 class VimeoVideo(AbstractVimeoVideo):
     objects = QuerySetManager()
+
+models.signals.post_save.connect(utils.generate_vimeo_video_thumbnails,
+    sender=VimeoVideo)
 
 
 class AbstractAudio(AbstractMediaItem):
