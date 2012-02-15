@@ -14,27 +14,27 @@ def generate_thumbnails(instance, thumbnail_sizes):
 
 
 def generate_image_thumbnails(sender, instance, created, **kwargs):
-    if settings.CELERY:
+    if settings.GENERATE_THUMBNAILS_ON_SAVE:
         generate_thumbnails(instance, settings.IMAGE_THUMBNAILS)
 
 
 def generate_document_thumbnails(sender, instance, created, **kwargs):
-    if settings.CELERY:
+    if settings.GENERATE_THUMBNAILS_ON_SAVE:
         generate_thumbnails(instance, settings.DOCUMENT_THUMBNAILS)
 
 
 def generate_video_thumbnails(sender, instance, created, **kwargs):
-    if settings.CELERY:
+    if settings.GENERATE_THUMBNAILS_ON_SAVE:
         generate_thumbnails(instance, settings.VIDEO_THUMBNAILS)
 
 
 def generate_youtube_video_thumbnails(sender, instance, created, **kwargs):
-    if settings.CELERY:
+    if settings.GENERATE_THUMBNAILS_ON_SAVE:
         generate_thumbnails(instance, settings.YOUTUBE_VIDEO_THUMBNAILS)
 
 
 def generate_vimeo_video_thumbnails(sender, instance, created, **kwargs):
-    if settings.CELERY:
+    if settings.GENERATE_THUMBNAILS_ON_SAVE:
         generate_thumbnails(instance, settings.VIMEO_VIDEO_THUMBNAILS)
 
 
