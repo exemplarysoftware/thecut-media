@@ -18,6 +18,11 @@ def generate_image_thumbnails(sender, instance, created, **kwargs):
         generate_thumbnails(instance, settings.IMAGE_THUMBNAILS)
 
 
+def generate_document_thumbnails(sender, instance, created, **kwargs):
+    if settings.CELERY:
+        generate_thumbnails(instance, settings.DOCUMENT_THUMBNAILS)
+
+
 def generate_video_thumbnails(sender, instance, created, **kwargs):
     if settings.CELERY:
         generate_thumbnails(instance, settings.VIDEO_THUMBNAILS)
@@ -31,4 +36,9 @@ def generate_youtube_video_thumbnails(sender, instance, created, **kwargs):
 def generate_vimeo_video_thumbnails(sender, instance, created, **kwargs):
     if settings.CELERY:
         generate_thumbnails(instance, settings.VIMEO_VIDEO_THUMBNAILS)
+
+
+def delete_file(sender, instance, **kwargs):
+    from sorl.thumbnail import delete
+    delete(instance.file)
 

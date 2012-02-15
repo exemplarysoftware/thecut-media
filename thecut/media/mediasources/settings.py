@@ -18,6 +18,10 @@ IMAGE_THUMBNAILS = getattr(settings,
     'MEDIASOURCES_IMAGE_THUMBNAILS', []) + ADMIN_IMAGE_THUMBNAILS
 
 
+DOCUMENT_THUMBNAILS = getattr(settings,
+    'MEDIASOURCES_DOCUMENT_THUMBNAILS', [])
+
+
 ADMIN_VIDEO_THUMBNAILS = getattr(settings,
     'MEDIASOURCES_ADMIN_VIDEO_THUMBNAILS', [
     # List of tuples containing geometry_size and options dict

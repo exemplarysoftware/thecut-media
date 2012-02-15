@@ -57,6 +57,10 @@ class AbstractDocument(AbstractMediaItem):
 class Document(AbstractDocument):
     objects = QuerySetManager()
 
+models.signals.post_save.connect(utils.generate_document_thumbnails,
+    sender=Document)
+models.signals.pre_delete.connect(utils.delete_file, sender=Document)
+
 
 class AbstractImage(AbstractMediaItem):
     file = models.ImageField(max_length=250,
@@ -117,6 +121,7 @@ class Image(AbstractImage):
 
 models.signals.post_save.connect(utils.generate_image_thumbnails,
     sender=Image)
+models.signals.pre_delete.connect(utils.delete_file, sender=Image)
 
 
 class AbstractVideo(AbstractMediaItem):
@@ -179,6 +184,7 @@ class Video(AbstractVideo):
 
 models.signals.post_save.connect(utils.generate_video_thumbnails,
     sender=Video)
+models.signals.pre_delete.connect(utils.delete_file, sender=Video)
 
 
 class AbstractYoutubeVideo(AbstractMediaItem):
@@ -303,4 +309,6 @@ class AbstractAudio(AbstractMediaItem):
 
 class Audio(AbstractAudio):
     objects = QuerySetManager()
+
+models.signals.pre_delete.connect(utils.delete_file, sender=Audio)
 
