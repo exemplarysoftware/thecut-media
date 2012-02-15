@@ -5,6 +5,9 @@ from django.conf import settings
 
 CELERY = 'djcelery' in settings.INSTALLED_APPS
 
+GENERATE_THUMBNAILS_ON_SAVE = CELERY and getattr(settings,
+    'MEDIASOURCES_GENERATE_THUMBNAILS_ON_SAVE', not settings.DEBUG)
+
 
 ADMIN_IMAGE_THUMBNAILS = getattr(settings,
     'MEDIASOURCES_ADMIN_IMAGE_THUMBNAILS', [
