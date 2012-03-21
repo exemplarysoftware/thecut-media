@@ -1,51 +1,69 @@
 # -*- coding: utf-8 -*-
-from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, redirect
-from django.views.generic.list_detail import object_detail, object_list
 from thecut.media.galleries import settings
 from thecut.media.galleries.models import Gallery
 
-
-def gallery_list(request, queryset=None, **kwargs):
-    if queryset is None:
-        queryset = Gallery.objects.current_site().active()
-    
-    if kwargs.get('page', None) == '1':
-        return redirect(reverse('galleries:gallery_list'))
-    kwdefaults = {'paginate_by': settings.GALLERY_PAGINATE_BY, 'page': 1,
-        'template_object_name': 'gallery'}
-    kwdefaults.update(kwargs)
-    
-    return object_list(request, queryset, **kwdefaults)
+# Class-based views
+from distutils.version import StrictVersion
+from django import get_version
+if StrictVersion(get_version()) < StrictVersion('1.3'):
+    import cbv as generic
+else:
+    from django.views import generic
 
 
-def gallery_detail(request, queryset=None, **kwargs):
-    if queryset is None:
-        queryset = Gallery.objects.current_site().active()
+class DetailView(generic.DetailView):
+    context_object_name = 'gallery'
+    model = Gallery
+    template_name_field = 'template'
     
-    kwdefaults = {'template_name_field': 'template',
-        'template_object_name': 'gallery'}
-    kwdefaults.update(kwargs)
-    
-    return object_detail(request, queryset, **kwdefaults)
+    def get_queryset(self, *args, **kwargs):
+        queryset = super(DetailView, self).get_queryset(*args, **kwargs)
+        return queryset.current_site().active()
 
 
-def gallery_media_list(request, slug, queryset=None, **kwargs):
-    gallery = get_object_or_404(Gallery.objects.current_site().active(),
-        slug=slug)
+class ListView(generic.ListView):
+    context_object_name = 'gallery_list'
+    model = Gallery
+    paginate_by = settings.GALLERY_PAGINATE_BY
     
-    if queryset is None:
-        queryset = gallery.media.all()
+    def get(self, *args, **kwargs):
+        page = self.kwargs.get('page', None)
+        if page is not None and int(page) < 2:
+            return redirect('galleries:gallery_list', permanent=True)
+        return super(ListView, self).get(*args, **kwargs)
     
-    if kwargs.get('page', None) == '1':
-        return redirect(reverse('galleries:gallery_media_list',
-            kwargs={'slug': gallery.slug}))
+    def get_queryset(self, *args, **kwargs):
+        queryset = super(ListView, self).get_queryset(*args, **kwargs)
+        return queryset.current_site().active()
+
+
+class MediaListView(generic.ListView):
+    context_object_name = 'gallery_media_list'
+    paginate_by = settings.GALLERY_MEDIA_PAGINATE_BY
+    template_name = 'galleries/gallery_media_list.html'
+    _gallery = None
     
-    kwargs.update({'extra_context': {'gallery': gallery}})
-    kwdefaults = {'paginate_by': settings.GALLERY_MEDIA_PAGINATE_BY, 'page': 1,
-        'template_name': 'galleries/gallery_media_list.html',
-        'template_object_name': 'gallery_media'}
-    kwdefaults.update(kwargs)
+    def get(self, *args, **kwargs):
+        page = self.kwargs.get('page', None)
+        if page is not None and int(page) < 2:
+            return redirect('galleries:gallery_media_list',
+                slug=self.get_gallery().slug, permanent=True)
+        return super(MediaListView, self).get(*args, **kwargs)
     
-    return object_list(request, queryset, **kwdefaults)
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(MediaListView, self).get_context_data(*args,
+            **kwargs)
+        context_data.update({'gallery': self.get_gallery()})
+        return context_data
+    
+    def get_gallery(self):
+        if self._gallery is None:
+            self._gallery = get_object_or_404(
+                Gallery.objects.current_site().active(),
+                slug=self.kwargs.get('slug', None))
+        return self._gallery
+    
+    def get_queryset(self, *args, **kwargs):
+        return self.get_gallery().media.all()
 
