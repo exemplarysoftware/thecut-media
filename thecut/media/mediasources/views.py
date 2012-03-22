@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, unicode_literals
 from django.contrib.admin.options import csrf_protect_m
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import PermissionDenied

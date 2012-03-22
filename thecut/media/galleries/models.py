@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, unicode_literals
 from django.db import models
 from thecut.core.managers import QuerySetManager
 from thecut.core.models import AbstractSitesResourceWithSlug
