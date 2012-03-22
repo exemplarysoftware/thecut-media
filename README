@@ -13,7 +13,7 @@ and libboost-python-dev packages need to be installed before installing
 
 
 To install this application (whilst in the project's activated virtualenv)::
-    pip install git+ssh://git@git.thecut.net.au/thecut-media@0.04
+    pip install git+ssh://git@git.thecut.net.au/thecut-media
 
 
 Add the ``thecut.media`` to the project's ``INSTALLED_APPS`` setting::
