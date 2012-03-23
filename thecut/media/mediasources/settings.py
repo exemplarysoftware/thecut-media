@@ -8,6 +8,10 @@ CELERY = 'djcelery' in settings.INSTALLED_APPS
 GENERATE_THUMBNAILS_ON_SAVE = CELERY and getattr(settings,
     'MEDIASOURCES_GENERATE_THUMBNAILS_ON_SAVE', not settings.DEBUG)
 
+PLACEHOLDER_IMAGE_PATH = getattr(settings,
+    'MEDIASOURCES_PLACEHOLDER_IMAGE_PATH',
+    settings.STATIC_ROOT + '/media/placeholder.svg')
+
 
 ADMIN_IMAGE_THUMBNAILS = getattr(settings,
     'MEDIASOURCES_ADMIN_IMAGE_THUMBNAILS', [
@@ -21,7 +25,13 @@ IMAGE_THUMBNAILS = ADMIN_IMAGE_THUMBNAILS + getattr(settings,
     'MEDIASOURCES_IMAGE_THUMBNAILS', [])
 
 
-DOCUMENT_THUMBNAILS = getattr(settings,
+ADMIN_DOCUMENT_THUMBNAILS = getattr(settings,
+    'MEDIASOURCES_ADMIN_DOCUMENT_THUMBNAILS', [
+    # List of tuples containing geometry_size and options dict
+    ('100x75', {'crop': 'center'}),
+])
+
+DOCUMENT_THUMBNAILS = ADMIN_DOCUMENT_THUMBNAILS + getattr(settings,
     'MEDIASOURCES_DOCUMENT_THUMBNAILS', [])
 
 

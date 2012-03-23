@@ -36,12 +36,15 @@ class AbstractDocument(AbstractMediaItem):
     def get_absolute_url(self):
         return self.file.url
     
-    def get_image(self):
-        try:
-            image = get_thumbnail(self.file, '1000x1000', upscale=False)
-        except:
-            image = None
-        return image
+    def get_image(self, no_placeholder=False):
+        if self.file and (self.is_processed or no_placeholder):
+            try:
+                image = get_thumbnail(self.file, '1000x1000', upscale=False)
+            except:
+                image = None
+            return image
+        else:
+            return utils.get_placeholder_image()
     
     def get_mime_type(self):
         return guess_type(self.file.path)[0]
@@ -87,8 +90,11 @@ class AbstractImage(AbstractMediaItem):
     def get_absolute_url(self):
         return self.file.url
     
-    def get_image(self):
-        return self.file
+    def get_image(self, no_placeholder=False):
+        if self.file and (self.is_processed or no_placeholder):
+            return self.file
+        else:
+            return utils.get_placeholder_image()
     
     def get_mime_type(self):
         return guess_type(self.file.path)[0]
@@ -154,8 +160,11 @@ class AbstractVideo(AbstractMediaItem):
     def get_absolute_url(self):
         return self.file.url
     
-    #def get_image(self):
-    #    return self.image
+    #def get_image(self, no_placeholder=False):
+    #    if self.file and (self.is_processed or no_placeholder):
+    #        return self.file
+    #    else:
+    #        return utils.get_placeholder_image()
     
     def get_mime_type(self):
         return guess_type(self.file.path)[0]
@@ -207,9 +216,12 @@ class AbstractYoutubeVideo(AbstractMediaItem):
         return 'http://www.youtube.com/watch?v=%(video_id)s' %(
             {'video_id': self.get_video_id()})
     
-    def get_image(self):
-        return 'http://img.youtube.com/vi/%(video_id)s/0.jpg' %(
-            {'video_id': self.get_video_id()})
+    def get_image(self, no_placeholder=False):
+        if self.file and (self.is_processed or no_placeholder):
+            return 'http://img.youtube.com/vi/%(video_id)s/0.jpg' %(
+                {'video_id': self.get_video_id()})
+        else:
+            return utils.get_placeholder_image()
     
     def get_video_id(self):
         match = re.match(r'http://youtu.be/([-a-z0-9A-Z_]+)$', self.url)
@@ -242,8 +254,11 @@ class AbstractVimeoVideo(AbstractMediaItem):
     def get_absolute_url(self):
         return self.file.url
     
-    def get_image(self):
-        return self.api_data['thumbnail_large']
+    def get_image(self, no_placeholder=False):
+        if self.file and (self.is_processed or no_placeholder):
+            return self.api_data['thumbnail_large']
+        else:
+            return utils.get_placeholder_image()
     
     @property
     def api_data(self):

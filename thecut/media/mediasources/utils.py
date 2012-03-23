@@ -3,6 +3,13 @@ from __future__ import absolute_import, unicode_literals
 from thecut.media.mediasources import settings
 
 
+def get_placeholder_image():
+    # TODO: Fetch from staticfiles storage
+    from django.core.files.images import ImageFile
+    f = open(settings.PLACEHOLDER_IMAGE_PATH)
+    return ImageFile(f)
+
+
 def generate_thumbnails(instance, thumbnail_sizes):
     """Queue tasks to generate required thumbnails."""
     from thecut.media.mediasources import tasks

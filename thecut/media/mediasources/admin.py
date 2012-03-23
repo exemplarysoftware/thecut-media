@@ -96,7 +96,7 @@ class ImageAdmin(MediaUploadMixin, ModelAdmin):
     ]
     form = ImageAdminForm
     list_display = ['title', 'publish_at', 'is_enabled', 'is_featured',
-        'is_processed', preview_image]
+        preview_image]
     list_filter = ['publish_at', 'is_enabled', 'is_featured']
     readonly_fields = ['created_at', 'created_by', 'updated_at', 'updated_by']
     search_fields = ['title']
