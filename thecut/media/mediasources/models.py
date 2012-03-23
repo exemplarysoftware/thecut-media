@@ -6,7 +6,7 @@ from django.utils import simplejson
 from mimetypes import guess_type
 from sorl.thumbnail import get_thumbnail
 from thecut.core.managers import QuerySetManager
-from thecut.media.mediasources import utils
+from thecut.media.mediasources import settings, utils
 from thecut.media.models import AbstractMediaItem
 from urllib import urlencode, urlopen
 import re
@@ -16,6 +16,8 @@ import warnings
 class AbstractDocument(AbstractMediaItem):
     file = models.FileField(max_length=250,
         upload_to='uploads/media/documents/%Y/%m/%d')
+    is_processed = models.BooleanField(
+        default=not settings.GENERATE_THUMBNAILS_ON_SAVE)
     objects = QuerySetManager()
     
     class Meta(AbstractMediaItem.Meta):
@@ -66,6 +68,8 @@ models.signals.pre_delete.connect(utils.delete_file, sender=Document)
 class AbstractImage(AbstractMediaItem):
     file = models.ImageField(max_length=250,
         upload_to='uploads/media/images/%Y/%m/%d')
+    is_processed = models.BooleanField(
+        default=not settings.GENERATE_THUMBNAILS_ON_SAVE)
     objects = QuerySetManager()
     
     class Meta(AbstractMediaItem.Meta):
@@ -128,6 +132,8 @@ models.signals.pre_delete.connect(utils.delete_file, sender=Image)
 class AbstractVideo(AbstractMediaItem):
     file = models.FileField(max_length=250,
         upload_to='uploads/media/videos/%Y/%m/%d')
+    is_processed = models.BooleanField(
+        default=not settings.GENERATE_THUMBNAILS_ON_SAVE)
     #image = models.ImageField(
     #    upload_to='uploads/media/videos/%Y/%m/%d',
     #    blank=True, null=True)
@@ -190,6 +196,8 @@ models.signals.pre_delete.connect(utils.delete_file, sender=Video)
 
 class AbstractYoutubeVideo(AbstractMediaItem):
     url = models.URLField()
+    is_processed = models.BooleanField(
+        default=not settings.GENERATE_THUMBNAILS_ON_SAVE)
     objects = QuerySetManager()
     
     class Meta(AbstractMediaItem.Meta):
@@ -222,9 +230,11 @@ models.signals.post_save.connect(utils.generate_youtube_video_thumbnails,
 
 class AbstractVimeoVideo(AbstractMediaItem):
     url = models.URLField(help_text='e.g. http://vimeo.com/123456')
-    objects = QuerySetManager()
+    is_processed = models.BooleanField(
+        default=not settings.GENERATE_THUMBNAILS_ON_SAVE)
     _api_data = models.TextField(blank=True, null=True, editable=False)
     _oembed_data = models.TextField(blank=True, null=True, editable=False)
+    objects = QuerySetManager()
     
     class Meta(AbstractMediaItem.Meta):
         abstract = True
