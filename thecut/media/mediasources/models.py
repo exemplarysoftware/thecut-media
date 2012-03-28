@@ -47,7 +47,20 @@ class AbstractDocument(AbstractMediaItem):
             return utils.get_placeholder_image()
     
     def get_mime_type(self):
-        return guess_type(self.file.path)[0]
+        mime = guess_type(self.file.path)
+        return mime[0] if mime else None
+    
+    def save(self, *args, **kwargs):
+        if self.pk:
+            try:
+                existing = self.__class__.objects.get(pk=self.pk)
+            except self.__class__.DoesNotExist:
+                pass
+            else:
+                if existing.image != self.image:
+                    utils.delete_file(self.__class__, existing)
+                    self.is_processed = not settings.GENERATE_THUMBNAILS_ON_SAVE
+        return super(AbstractDocument, self).save(*args, **kwargs)
     
     ## Deprecated properties
     
@@ -97,7 +110,20 @@ class AbstractImage(AbstractMediaItem):
             return utils.get_placeholder_image()
     
     def get_mime_type(self):
-        return guess_type(self.file.path)[0]
+        mime = guess_type(self.file.path)
+        return mime[0] if mime else None
+    
+    def save(self, *args, **kwargs):
+        if self.pk:
+            try:
+                existing = self.__class__.objects.get(pk=self.pk)
+            except self.__class__.DoesNotExist:
+                pass
+            else:
+                if existing.image != self.image:
+                    utils.delete_file(self.__class__, existing)
+                    self.is_processed = not settings.GENERATE_THUMBNAILS_ON_SAVE
+        return super(AbstractImage, self).save(*args, **kwargs)
     
     ## Deprecated properties
     
@@ -167,7 +193,8 @@ class AbstractVideo(AbstractMediaItem):
     #        return utils.get_placeholder_image()
     
     def get_mime_type(self):
-        return guess_type(self.file.path)[0]
+        mime = guess_type(self.file.path)
+        return mime[0] if mime else None
     
     #def generate_image(self):
     #    if self.image:
@@ -183,6 +210,18 @@ class AbstractVideo(AbstractMediaItem):
     #    image = file_path#ImageFile(open(file_path, 'rb'))
     #    self.image = image
     #    self.save()
+    
+    def save(self, *args, **kwargs):
+        if self.pk:
+            try:
+                existing = self.__class__.objects.get(pk=self.pk)
+            except self.__class__.DoesNotExist:
+                pass
+            else:
+                if existing.image != self.image:
+                    utils.delete_file(self.__class__, existing)
+                    self.is_processed = not settings.GENERATE_THUMBNAILS_ON_SAVE
+        return super(AbstractVideo, self).save(*args, **kwargs)
     
     ## Deprecated properties
     
@@ -330,7 +369,20 @@ class AbstractAudio(AbstractMediaItem):
         return self.file.url
     
     def get_mime_type(self):
-        return guess_type(self.file.path)[0]
+        mime = guess_type(self.file.path)
+        return mime[0] if mime else None
+    
+    def save(self, *args, **kwargs):
+        if self.pk:
+            try:
+                existing = self.__class__.objects.get(pk=self.pk)
+            except self.__class__.DoesNotExist:
+                pass
+            else:
+                if existing.image != self.image:
+                    utils.delete_file(self.__class__, existing)
+                    self.is_processed = not settings.GENERATE_THUMBNAILS_ON_SAVE
+        return super(AbstractAudio, self).save(*args, **kwargs)
 
 
 class Audio(AbstractAudio):
