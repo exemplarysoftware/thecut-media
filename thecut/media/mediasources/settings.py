@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 from django.conf import settings
+from sorl.thumbnail.conf import settings as sorl_settings
 
 
 CELERY = 'djcelery' in settings.INSTALLED_APPS
@@ -9,9 +10,9 @@ GENERATE_THUMBNAILS_ON_SAVE = CELERY and getattr(settings,
     'MEDIASOURCES_GENERATE_THUMBNAILS_ON_SAVE', not settings.DEBUG)
 
 PLACEHOLDER_IMAGE_PATH = getattr(settings,
-    'MEDIASOURCES_PLACEHOLDER_IMAGE_PATH',
+    settings.STATIC_ROOT + 'MEDIASOURCES_PLACEHOLDER_IMAGE_PATH',
     settings.STATIC_ROOT + '/media/placeholder.svg' if not \
-        'pil_engine' in getattr(settings, 'THUMBNAIL_ENGINE', '') else \
+        'pil_engine' in sorl_settings.THUMBNAIL_ENGINE else \
         settings.STATIC_ROOT + '/media/placeholder.png')
 
 
