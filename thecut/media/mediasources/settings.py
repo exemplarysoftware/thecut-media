@@ -17,7 +17,7 @@ ADMIN_IMAGE_THUMBNAILS = getattr(settings,
     'MEDIASOURCES_ADMIN_IMAGE_THUMBNAILS', [
     # List of tuples containing geometry_size and options dict
     ('60x45', {'crop': 'center'}),
-    ('100x75', {'crop': 'center'}),
+    ('100x75', {}),
     ('140x106', {'crop': 'center'}),
 ])
 
@@ -28,7 +28,7 @@ IMAGE_THUMBNAILS = ADMIN_IMAGE_THUMBNAILS + getattr(settings,
 ADMIN_DOCUMENT_THUMBNAILS = getattr(settings,
     'MEDIASOURCES_ADMIN_DOCUMENT_THUMBNAILS', [
     # List of tuples containing geometry_size and options dict
-    ('100x75', {'crop': 'center'}),
+    ('100x75', {}),
 ])
 
 DOCUMENT_THUMBNAILS = ADMIN_DOCUMENT_THUMBNAILS + getattr(settings,
@@ -39,7 +39,7 @@ ADMIN_VIDEO_THUMBNAILS = getattr(settings,
     'MEDIASOURCES_ADMIN_VIDEO_THUMBNAILS', [
     # List of tuples containing geometry_size and options dict
     ('60x45', {'crop': 'center'}),
-    ('100x75', {'crop': 'center'}),
+    ('100x75', {}),
     ('140x106', {'crop': 'center'}),
 ])
 
