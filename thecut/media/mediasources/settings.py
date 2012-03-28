@@ -10,7 +10,9 @@ GENERATE_THUMBNAILS_ON_SAVE = CELERY and getattr(settings,
 
 PLACEHOLDER_IMAGE_PATH = getattr(settings,
     'MEDIASOURCES_PLACEHOLDER_IMAGE_PATH',
-    settings.STATIC_ROOT + '/media/placeholder.svg')
+    settings.STATIC_ROOT + '/media/placeholder.svg' if not \
+        'pil_engine' in getattr(settings, 'THUMBNAIL_ENGINE', '') else \
+        settings.STATIC_ROOT + '/media/placeholder.png')
 
 
 ADMIN_IMAGE_THUMBNAILS = getattr(settings,
