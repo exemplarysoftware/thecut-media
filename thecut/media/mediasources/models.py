@@ -57,7 +57,7 @@ class AbstractDocument(AbstractMediaItem):
             except self.__class__.DoesNotExist:
                 pass
             else:
-                if existing.image != self.image:
+                if existing.file != self.file:
                     utils.delete_file(self.__class__, existing)
                     self.is_processed = not settings.GENERATE_THUMBNAILS_ON_SAVE
         return super(AbstractDocument, self).save(*args, **kwargs)
@@ -120,7 +120,7 @@ class AbstractImage(AbstractMediaItem):
             except self.__class__.DoesNotExist:
                 pass
             else:
-                if existing.image != self.image:
+                if existing.file != self.file:
                     utils.delete_file(self.__class__, existing)
                     self.is_processed = not settings.GENERATE_THUMBNAILS_ON_SAVE
         return super(AbstractImage, self).save(*args, **kwargs)
@@ -218,7 +218,7 @@ class AbstractVideo(AbstractMediaItem):
             except self.__class__.DoesNotExist:
                 pass
             else:
-                if existing.image != self.image:
+                if existing.file != self.file:
                     utils.delete_file(self.__class__, existing)
                     self.is_processed = not settings.GENERATE_THUMBNAILS_ON_SAVE
         return super(AbstractVideo, self).save(*args, **kwargs)
@@ -379,7 +379,7 @@ class AbstractAudio(AbstractMediaItem):
             except self.__class__.DoesNotExist:
                 pass
             else:
-                if existing.image != self.image:
+                if existing.file != self.file:
                     utils.delete_file(self.__class__, existing)
                     self.is_processed = not settings.GENERATE_THUMBNAILS_ON_SAVE
         return super(AbstractAudio, self).save(*args, **kwargs)
