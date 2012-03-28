@@ -1,6 +1,6 @@
 media.jQuery(document).ready(function($) {
     
-    $('#image_form').submit(function() {
+    $('#content-main form').submit(function() {
         $('body').addClass('uploading');
     });
     
