@@ -20,7 +20,7 @@ def conditionally_register(model, adminclass):
 
 
 def preview_image(obj):
-    html = u''
+    html = ''
     if hasattr(obj, 'get_image'):
         try:
             thumb = get_thumbnail(obj.get_image(), '100x75')

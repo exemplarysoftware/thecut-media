@@ -50,8 +50,8 @@ class UploadView(generic.FormView):
         
         defaults = {'current_app': admin.admin_site.name,
             'opts': opts, 'app_label': opts.app_label, 'add': True,
-            'content_type': content_type, 'form_url': u'',
-            'title': u'Add %s' %(force_unicode(opts.verbose_name_plural)),
+            'content_type': content_type, 'form_url': '',
+            'title': 'Add %s' %(force_unicode(opts.verbose_name_plural)),
             'root_path': admin.admin_site.root_path,
             'media': mark_safe(admin.media + form.media),
             'errors': form.errors,

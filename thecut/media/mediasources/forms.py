@@ -47,7 +47,7 @@ class MediaUploadForm(forms.Form):
         attrs={'class': 'vTextField', 'required': 'required'}))
     files = forms.FileField(widget=MultipleFileInput(
         attrs={'required': 'required'}))
-    tags = TagField(required=False, help_text=u'Separate tags with spaces, ' \
+    tags = TagField(required=False, help_text='Separate tags with spaces, ' \
         'put quotes around multiple-word tags.', widget=forms.TextInput(
         attrs={'class': 'vTextField'}))
     
