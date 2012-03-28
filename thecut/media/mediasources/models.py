@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, unicode_literals
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import simplejson
 from mimetypes import guess_type
 from sorl.thumbnail import get_thumbnail
 from thecut.core.managers import QuerySetManager
-from thecut.media.mediasources import utils
+from thecut.media.mediasources import settings, utils
 from thecut.media.models import AbstractMediaItem
 from urllib import urlencode, urlopen
 import re
@@ -15,6 +16,8 @@ import warnings
 class AbstractDocument(AbstractMediaItem):
     file = models.FileField(max_length=250,
         upload_to='uploads/media/documents/%Y/%m/%d')
+    is_processed = models.BooleanField(
+        default=not settings.GENERATE_THUMBNAILS_ON_SAVE)
     objects = QuerySetManager()
     
     class Meta(AbstractMediaItem.Meta):
@@ -33,15 +36,31 @@ class AbstractDocument(AbstractMediaItem):
     def get_absolute_url(self):
         return self.file.url
     
-    def get_image(self):
-        try:
-            image = get_thumbnail(self.file, '1000x1000', upscale=False)
-        except:
-            image = None
-        return image
+    def get_image(self, no_placeholder=False):
+        if self.file and (self.is_processed or no_placeholder):
+            try:
+                image = get_thumbnail(self.file, '1000x1000', upscale=False)
+            except:
+                image = None
+            return image
+        else:
+            return utils.get_placeholder_image()
     
     def get_mime_type(self):
-        return guess_type(self.file.path)[0]
+        mime = guess_type(self.file.path)
+        return mime[0] if mime else None
+    
+    def save(self, *args, **kwargs):
+        if self.pk:
+            try:
+                existing = self.__class__.objects.get(pk=self.pk)
+            except self.__class__.DoesNotExist:
+                pass
+            else:
+                if existing.file != self.file:
+                    utils.delete_file(self.__class__, existing)
+                    self.is_processed = not settings.GENERATE_THUMBNAILS_ON_SAVE
+        return super(AbstractDocument, self).save(*args, **kwargs)
     
     ## Deprecated properties
     
@@ -65,6 +84,8 @@ models.signals.pre_delete.connect(utils.delete_file, sender=Document)
 class AbstractImage(AbstractMediaItem):
     file = models.ImageField(max_length=250,
         upload_to='uploads/media/images/%Y/%m/%d')
+    is_processed = models.BooleanField(
+        default=not settings.GENERATE_THUMBNAILS_ON_SAVE)
     objects = QuerySetManager()
     
     class Meta(AbstractMediaItem.Meta):
@@ -82,11 +103,27 @@ class AbstractImage(AbstractMediaItem):
     def get_absolute_url(self):
         return self.file.url
     
-    def get_image(self):
-        return self.file
+    def get_image(self, no_placeholder=False):
+        if self.file and (self.is_processed or no_placeholder):
+            return self.file
+        else:
+            return utils.get_placeholder_image()
     
     def get_mime_type(self):
-        return guess_type(self.file.path)[0]
+        mime = guess_type(self.file.path)
+        return mime[0] if mime else None
+    
+    def save(self, *args, **kwargs):
+        if self.pk:
+            try:
+                existing = self.__class__.objects.get(pk=self.pk)
+            except self.__class__.DoesNotExist:
+                pass
+            else:
+                if existing.file != self.file:
+                    utils.delete_file(self.__class__, existing)
+                    self.is_processed = not settings.GENERATE_THUMBNAILS_ON_SAVE
+        return super(AbstractImage, self).save(*args, **kwargs)
     
     ## Deprecated properties
     
@@ -127,6 +164,8 @@ models.signals.pre_delete.connect(utils.delete_file, sender=Image)
 class AbstractVideo(AbstractMediaItem):
     file = models.FileField(max_length=250,
         upload_to='uploads/media/videos/%Y/%m/%d')
+    is_processed = models.BooleanField(
+        default=not settings.GENERATE_THUMBNAILS_ON_SAVE)
     #image = models.ImageField(
     #    upload_to='uploads/media/videos/%Y/%m/%d',
     #    blank=True, null=True)
@@ -147,11 +186,15 @@ class AbstractVideo(AbstractMediaItem):
     def get_absolute_url(self):
         return self.file.url
     
-    #def get_image(self):
-    #    return self.image
+    #def get_image(self, no_placeholder=False):
+    #    if self.file and (self.is_processed or no_placeholder):
+    #        return self.file
+    #    else:
+    #        return utils.get_placeholder_image()
     
     def get_mime_type(self):
-        return guess_type(self.file.path)[0]
+        mime = guess_type(self.file.path)
+        return mime[0] if mime else None
     
     #def generate_image(self):
     #    if self.image:
@@ -167,6 +210,18 @@ class AbstractVideo(AbstractMediaItem):
     #    image = file_path#ImageFile(open(file_path, 'rb'))
     #    self.image = image
     #    self.save()
+    
+    def save(self, *args, **kwargs):
+        if self.pk:
+            try:
+                existing = self.__class__.objects.get(pk=self.pk)
+            except self.__class__.DoesNotExist:
+                pass
+            else:
+                if existing.file != self.file:
+                    utils.delete_file(self.__class__, existing)
+                    self.is_processed = not settings.GENERATE_THUMBNAILS_ON_SAVE
+        return super(AbstractVideo, self).save(*args, **kwargs)
     
     ## Deprecated properties
     
@@ -189,6 +244,8 @@ models.signals.pre_delete.connect(utils.delete_file, sender=Video)
 
 class AbstractYoutubeVideo(AbstractMediaItem):
     url = models.URLField()
+    is_processed = models.BooleanField(
+        default=not settings.GENERATE_THUMBNAILS_ON_SAVE)
     objects = QuerySetManager()
     
     class Meta(AbstractMediaItem.Meta):
@@ -198,9 +255,12 @@ class AbstractYoutubeVideo(AbstractMediaItem):
         return 'http://www.youtube.com/watch?v=%(video_id)s' %(
             {'video_id': self.get_video_id()})
     
-    def get_image(self):
-        return 'http://img.youtube.com/vi/%(video_id)s/0.jpg' %(
-            {'video_id': self.get_video_id()})
+    def get_image(self, no_placeholder=False):
+        if self.file and (self.is_processed or no_placeholder):
+            return 'http://img.youtube.com/vi/%(video_id)s/0.jpg' %(
+                {'video_id': self.get_video_id()})
+        else:
+            return utils.get_placeholder_image()
     
     def get_video_id(self):
         match = re.match(r'http://youtu.be/([-a-z0-9A-Z_]+)$', self.url)
@@ -221,9 +281,11 @@ models.signals.post_save.connect(utils.generate_youtube_video_thumbnails,
 
 class AbstractVimeoVideo(AbstractMediaItem):
     url = models.URLField(help_text='e.g. http://vimeo.com/123456')
-    objects = QuerySetManager()
+    is_processed = models.BooleanField(
+        default=not settings.GENERATE_THUMBNAILS_ON_SAVE)
     _api_data = models.TextField(blank=True, null=True, editable=False)
     _oembed_data = models.TextField(blank=True, null=True, editable=False)
+    objects = QuerySetManager()
     
     class Meta(AbstractMediaItem.Meta):
         abstract = True
@@ -231,8 +293,11 @@ class AbstractVimeoVideo(AbstractMediaItem):
     def get_absolute_url(self):
         return self.file.url
     
-    def get_image(self):
-        return self.api_data['thumbnail_large']
+    def get_image(self, no_placeholder=False):
+        if self.file and (self.is_processed or no_placeholder):
+            return self.api_data['thumbnail_large']
+        else:
+            return utils.get_placeholder_image()
     
     @property
     def api_data(self):
@@ -304,7 +369,20 @@ class AbstractAudio(AbstractMediaItem):
         return self.file.url
     
     def get_mime_type(self):
-        return guess_type(self.file.path)[0]
+        mime = guess_type(self.file.path)
+        return mime[0] if mime else None
+    
+    def save(self, *args, **kwargs):
+        if self.pk:
+            try:
+                existing = self.__class__.objects.get(pk=self.pk)
+            except self.__class__.DoesNotExist:
+                pass
+            else:
+                if existing.file != self.file:
+                    utils.delete_file(self.__class__, existing)
+                    self.is_processed = not settings.GENERATE_THUMBNAILS_ON_SAVE
+        return super(AbstractAudio, self).save(*args, **kwargs)
 
 
 class Audio(AbstractAudio):

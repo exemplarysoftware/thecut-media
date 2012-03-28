@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, unicode_literals
 from django.conf.urls.defaults import include, patterns, url
 from thecut.media.galleries.feeds import LatestGalleryFeed
 from thecut.media.galleries.views import ListView, MediaListView

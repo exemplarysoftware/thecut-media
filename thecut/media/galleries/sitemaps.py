@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, unicode_literals
 from django.contrib.sitemaps import Sitemap
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse

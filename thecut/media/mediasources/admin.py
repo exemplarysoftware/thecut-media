@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, unicode_literals
 from django.contrib import admin
 from sorl.thumbnail import get_thumbnail
 from thecut.core.admin import ModelAdmin
@@ -22,12 +23,12 @@ def preview_image(obj):
     html = u''
     if hasattr(obj, 'get_image'):
         try:
-            thumb = get_thumbnail(obj.get_image(), '100x75', crop='center')
+            thumb = get_thumbnail(obj.get_image(), '100x75')
         except:
             pass
         else:
-            html = u'<img src="%s" alt="%s" style="width:100px; ' \
-                'height: 75px;" />' %(thumb.url, unicode(obj))
+            html = '<span class="image-preview"><img src="%s" alt="%s" />' \
+                '</span>' %(thumb.url, unicode(obj))
     return html
 preview_image.short_description = 'Preview'
 preview_image.allow_tags = True
