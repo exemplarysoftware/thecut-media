@@ -4,10 +4,19 @@ from thecut.media.mediasources import settings
 
 
 def get_placeholder_image():
-    # TODO: Fetch from staticfiles storage
     from django.core.files.images import ImageFile
-    f = open(settings.PLACEHOLDER_IMAGE_PATH)
-    return ImageFile(f)
+    if settings.STATICFILES_STORAGE:
+        from django.core.files.storage import get_storage_class
+        storage_class = get_storage_class(settings.STATICFILES_STORAGE)
+        storage = storage_class()
+        placeholder = storage.open(settings.PLACEHOLDER_IMAGE_PATH)
+        image = ImageFile(placeholder)
+        image.storage = storage
+    else:
+        placeholder = open('%s/%s' %(settings.STATIC_ROOT,
+            settings.PLACEHOLDER_IMAGE_PATH))
+        image = ImageFile(placeholder)
+    return image
 
 
 def generate_thumbnails(instance, thumbnail_sizes):

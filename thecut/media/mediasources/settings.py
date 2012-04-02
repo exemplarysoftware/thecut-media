@@ -9,12 +9,13 @@ CELERY = 'djcelery' in settings.INSTALLED_APPS
 GENERATE_THUMBNAILS_ON_SAVE = CELERY and getattr(settings,
     'MEDIASOURCES_GENERATE_THUMBNAILS_ON_SAVE', not settings.DEBUG)
 
-PLACEHOLDER_IMAGE_PATH = getattr(settings,
-    settings.STATIC_ROOT + 'MEDIASOURCES_PLACEHOLDER_IMAGE_PATH',
-    settings.STATIC_ROOT + '/media/placeholder.svg' if not \
-        'pil_engine' in sorl_settings.THUMBNAIL_ENGINE else \
-        settings.STATIC_ROOT + '/media/placeholder.png')
+STATIC_ROOT = getattr(settings, 'STATIC_ROOT', settings.MEDIA_ROOT)
 
+STATICFILES_STORAGE = getattr(settings, 'STATICFILES_STORAGE', False)
+
+PLACEHOLDER_IMAGE_PATH = getattr(settings,
+    'MEDIASOURCES_PLACEHOLDER_IMAGE_PATH', 'media/placeholder.%s' %(
+        'svg' if not 'pil_engine' in sorl_settings.THUMBNAIL_ENGINE else 'png'))
 
 ADMIN_IMAGE_THUMBNAILS = getattr(settings,
     'MEDIASOURCES_ADMIN_IMAGE_THUMBNAILS', [
