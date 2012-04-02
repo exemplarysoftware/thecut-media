@@ -52,7 +52,7 @@ class UploadView(generic.FormView):
             'opts': opts, 'app_label': opts.app_label, 'add': True,
             'content_type': content_type, 'form_url': '',
             'title': 'Add %s' %(force_unicode(opts.verbose_name_plural)),
-            'root_path': admin.admin_site.root_path,
+            'root_path': getattr(admin.admin_site, 'root_path', None),
             'media': mark_safe(admin.media + form.media),
             'errors': form.errors,
             
@@ -82,4 +82,10 @@ class UploadView(generic.FormView):
             'admin/%s/%s/media_upload_form.html' %(app_label, model_name),
             'admin/%s/media_upload_form.html' %(app_label),
             'admin/media_upload_form.html']
+    
+    def render_to_response(self, *args, **kwargs):
+        admin = self.kwargs['admin']
+        current_app = admin.admin_site.name
+        return super(UploadView, self).render_to_response(*args,
+            current_app=current_app, **kwargs)
 
