@@ -11,6 +11,19 @@ media.jQuery(document).ready(function($) {
     });
     
     
+    // Workaround for Django 1.4, which prefixes field name classes with 'field-'.
+    $('.form-row').each(function(index, Element) {
+        var e = $(Element);
+        var classes = e.attr('class').split(/\s+/);
+        $.each(classes, function(index, value) {
+            var unprefixed_class = value.replace('field-', '');
+            if (!e.hasClass(unprefixed_class)) {
+                e.addClass(unprefixed_class);
+            }
+        });
+    });
+    
+    
     function loadContentTypeList() {
         $.ajax({
             url: 'media/contenttype/',
