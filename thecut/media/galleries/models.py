@@ -2,7 +2,8 @@
 from __future__ import absolute_import, unicode_literals
 from django.db import models
 from thecut.core.managers import QuerySetManager
-from thecut.core.models import AbstractSitesResourceWithSlug
+from thecut.core.models import AbstractResource, AbstractSitesResourceWithSlug
+from thecut.core.utils import generate_unique_slug
 import warnings
 
 
@@ -95,10 +96,34 @@ class AbstractGallery(AbstractSitesResourceWithSlug):
         return proxy()
 
 
+class AbstractGalleryCategory(AbstractResource):
+    slug = models.SlugField(unique=True)
+    objects = QuerySetManager()
+    
+    class Meta(AbstractResource.Meta):
+        abstract = True
+        verbose_name_plural = 'gallery categories'
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = generate_unique_slug(self.title, self.__class__)
+        super(AbstractGalleryCategory, self).save(*args, **kwargs)
+
+
 class Gallery(AbstractGallery):
+    categories = models.ManyToManyField('galleries.GalleryCategory',
+        related_name='galleries', blank=True, null=True)
     objects = QuerySetManager()
     
     @models.permalink
     def get_absolute_url(self):
         return ('galleries:gallery_media_list', [], {'slug': self.slug})
+
+
+class GalleryCategory(AbstractGalleryCategory):
+    objects = QuerySetManager()
+    
+    @models.permalink
+    def get_absolute_url(self):
+        return ('galleries:category_gallery_list', [], {'slug': self.slug})
 

@@ -36,6 +36,9 @@ class AbstractDocument(AbstractMediaItem):
     def get_absolute_url(self):
         return self.file.url
     
+    def get_filename(self):
+        return self.file.name.split('/')[-1]
+    
     def get_image(self, no_placeholder=False):
         if self.file and (self.is_processed or no_placeholder):
             try:
@@ -102,6 +105,9 @@ class AbstractImage(AbstractMediaItem):
     
     def get_absolute_url(self):
         return self.file.url
+    
+    def get_filename(self):
+        return self.file.name.split('/')[-1]
     
     def get_image(self, no_placeholder=False):
         if self.file and (self.is_processed or no_placeholder):
@@ -185,6 +191,9 @@ class AbstractVideo(AbstractMediaItem):
     
     def get_absolute_url(self):
         return self.file.url
+    
+    def get_filename(self):
+        return self.file.name.split('/')[-1]
     
     #def get_image(self, no_placeholder=False):
     #    if self.file and (self.is_processed or no_placeholder):
@@ -367,6 +376,9 @@ class AbstractAudio(AbstractMediaItem):
     
     def get_absolute_url(self):
         return self.file.url
+    
+    def get_filename(self):
+        return self.file.name.split('/')[-1]
     
     def get_mime_type(self):
         mime = guess_type(self.file.path)

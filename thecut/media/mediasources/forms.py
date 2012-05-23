@@ -43,11 +43,11 @@ class VimeoVideoAdminForm(ModelAdminForm):
 
 
 class MediaUploadForm(forms.Form):
-    title = forms.CharField(max_length=200, widget=forms.TextInput(
-        attrs={'class': 'vTextField', 'required': 'required'}))
     files = forms.FileField(widget=MultipleFileInput(
         attrs={'required': 'required'}))
-    tags = TagField(required=False, help_text=u'Separate tags with spaces, ' \
+    title = forms.CharField(required=False, max_length=200,
+        widget=forms.TextInput(attrs={'class': 'vTextField'}))
+    tags = TagField(required=False, help_text='Separate tags with spaces, ' \
         'put quotes around multiple-word tags.', widget=forms.TextInput(
         attrs={'class': 'vTextField'}))
     

@@ -2,7 +2,7 @@
 from __future__ import absolute_import, unicode_literals
 from django.shortcuts import get_object_or_404, redirect
 from thecut.media.galleries import settings
-from thecut.media.galleries.models import Gallery
+from thecut.media.galleries.models import Gallery, GalleryCategory
 
 # Class-based views
 from distutils.version import StrictVersion
@@ -31,11 +31,36 @@ class ListView(generic.ListView):
     def get(self, *args, **kwargs):
         page = self.kwargs.get('page', None)
         if page is not None and int(page) < 2:
-            return redirect('galleries:gallery_list', permanent=True)
+            category = self.get_category()
+            if category:
+                return redirect('galleries:category_gallery_list',
+                    slug=category.slug, permanent=True)
+            else:
+                return redirect('galleries:gallery_list', permanent=True)
         return super(ListView, self).get(*args, **kwargs)
+    
+    def get_category(self):
+        if not hasattr(self, '_category'):
+            slug = self.kwargs.get('slug', None)
+            if slug is not None:
+                category = get_object_or_404(GalleryCategory.objects.active(),
+                    slug=slug)
+            else:
+                category = None
+            self._category = category
+        return self._category
+    
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(ListView, self).get_context_data(*args, **kwargs)
+        category = self.get_category()
+        context_data.setdefault('category', category)
+        return context_data
     
     def get_queryset(self, *args, **kwargs):
         queryset = super(ListView, self).get_queryset(*args, **kwargs)
+        category = self.get_category()
+        if category:
+            queryset = queryset.filter(categories=category)
         return queryset.current_site().active()
 
 

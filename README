@@ -38,3 +38,11 @@ except ImportError:
 else:
     THUMBNAIL_ENGINE = 'sorl.thumbnail.engines.pgmagick_engine.Engine'
 
+
+For exif/xmp data extraction, the pyexiftool package is required. This can be
+installed (whist in the project's activated virtualenv) using pip:
+    pip install git+https://github.com/smarnach/pyexiftool.git
+
+The exiftool package also needs to be installed on the system:
+    sudo apt-get install libimage-exiftool-perl
+

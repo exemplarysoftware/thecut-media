@@ -1,13 +1,23 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+from django.core.files.uploadedfile import TemporaryUploadedFile
 from thecut.media.mediasources import settings
 
 
 def get_placeholder_image():
-    # TODO: Fetch from staticfiles storage
     from django.core.files.images import ImageFile
-    f = open(settings.PLACEHOLDER_IMAGE_PATH)
-    return ImageFile(f)
+    if settings.STATICFILES_STORAGE:
+        from django.core.files.storage import get_storage_class
+        storage_class = get_storage_class(settings.STATICFILES_STORAGE)
+        storage = storage_class()
+        placeholder = storage.open(settings.PLACEHOLDER_IMAGE_PATH)
+        image = ImageFile(placeholder)
+        image.storage = storage
+    else:
+        placeholder = open('%s/%s' %(settings.STATIC_ROOT,
+            settings.PLACEHOLDER_IMAGE_PATH))
+        image = ImageFile(placeholder)
+    return image
 
 
 def generate_thumbnails(instance, thumbnail_sizes):
@@ -44,4 +54,24 @@ def generate_vimeo_video_thumbnails(sender, instance, created, **kwargs):
 def delete_file(sender, instance, **kwargs):
     from sorl.thumbnail import delete
     delete(instance.file)
+
+
+def get_metadata(uploaded_file):
+    """Get metadata for an uploaded file."""
+    from exiftool import ExifTool
+    
+    # If we are not dealing with a TemporaryUploadedFile (such as
+    # InMemoryUploadedFile), create a TemporaryUploadedFile.
+    if not isinstance(uploaded_file, TemporaryUploadedFile):
+        temp_file = TemporaryUploadedFile(name=uploaded_file.name,
+            content_type=uploaded_file.content_type, size=uploaded_file.size,
+            charset=uploaded_file.charset)
+        temp_file.write(uploaded_file.read())
+    else:
+        temp_file = uploaded_file
+    
+    with ExifTool() as et:
+        metadata = et.get_metadata(temp_file.temporary_file_path())
+    
+    return metadata
 
