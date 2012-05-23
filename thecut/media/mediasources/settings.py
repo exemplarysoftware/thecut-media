@@ -56,3 +56,13 @@ YOUTUBE_VIDEO_THUMBNAILS = ADMIN_VIDEO_THUMBNAILS + getattr(settings,
 VIMEO_VIDEO_THUMBNAILS = ADMIN_VIDEO_THUMBNAILS + getattr(settings,
     'MEDIASOURCES_VIMEO_VIDEO_THUMBNAILS', [])
 
+
+try:
+    from exiftool import ExifTool
+except ImportError:
+    EXIFTOOL = False
+else:
+    EXIFTOOL = True
+
+USE_EXIFTOOL = EXIFTOOL and getattr(settings, 'MEDIASOURCES_USE_EXIFTOOL', True)
+

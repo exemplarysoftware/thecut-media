@@ -5,7 +5,9 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import PermissionDenied
 from django.utils.encoding import force_unicode
 from django.utils.safestring import mark_safe
+from thecut.media.mediasources import settings
 from thecut.media.mediasources.forms import MediaUploadForm
+from thecut.media.mediasources.utils import get_metadata
 
 # Class-based views
 from distutils.version import StrictVersion
@@ -23,7 +25,7 @@ class UploadView(generic.FormView):
     @csrf_protect_m
     def dispatch(self, request, *args, **kwargs):
         if not kwargs['admin'].has_add_permission(request):
-            raise PermissionDenied
+            raise PermissionDenied()
         return super(UploadView, self).dispatch(request, *args, **kwargs)
     
     def form_valid(self, form):
@@ -35,6 +37,21 @@ class UploadView(generic.FormView):
             obj = model(title=form.cleaned_data['title'], file=upload,
                 tags=form.cleaned_data['tags'], created_by=self.request.user,
                 updated_by=self.request.user)
+            
+            if settings.USE_EXIFTOOL:
+                # Try to populate missing data from the file's metadata
+                metadata = get_metadata(upload)
+                obj.title = obj.title or metadata.get('XMP:Title', '')[:200]
+                obj.caption = obj.caption or metadata.get('XMP:Description', '')
+                tags = [unicode(keyword) for keyword in metadata.get(
+                    'IPTC:Keywords', [])]
+                if not obj.tags:
+                    obj.tags = ' '.join('"%s"' %(tag) if ' ' in tag else tag
+                        for tag in tags)
+            
+            if not obj.title and hasattr(obj, 'get_filename'):
+                obj.title = '.'.join(obj.get_filename().split('.')[:-1])
+            
             obj.save()
         
         return super(UploadView, self).form_valid(form)
