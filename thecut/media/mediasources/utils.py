@@ -63,11 +63,12 @@ def get_metadata(uploaded_file):
     # If we are not dealing with a TemporaryUploadedFile (such as
     # InMemoryUploadedFile), create a TemporaryUploadedFile.
     if not isinstance(uploaded_file, TemporaryUploadedFile):
-        uploaded_file.seek(0)
         temp_file = TemporaryUploadedFile(name=uploaded_file.name,
             content_type=uploaded_file.content_type, size=uploaded_file.size,
             charset=uploaded_file.charset)
+        uploaded_file.seek(0)
         temp_file.write(uploaded_file.read())
+        uploaded_file.seek(0)
     else:
         temp_file = uploaded_file
     
