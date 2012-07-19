@@ -265,7 +265,7 @@ class AbstractYoutubeVideo(AbstractMediaItem):
             {'video_id': self.get_video_id()})
     
     def get_image(self, no_placeholder=False):
-        if self.file and (self.is_processed or no_placeholder):
+        if self.is_processed or no_placeholder:
             return 'http://img.youtube.com/vi/%(video_id)s/0.jpg' %(
                 {'video_id': self.get_video_id()})
         else:
@@ -303,7 +303,7 @@ class AbstractVimeoVideo(AbstractMediaItem):
         return self.file.url
     
     def get_image(self, no_placeholder=False):
-        if self.file and (self.is_processed or no_placeholder):
+        if self.is_processed or no_placeholder:
             return self.api_data['thumbnail_large']
         else:
             return utils.get_placeholder_image()
