@@ -300,7 +300,7 @@ class AbstractVimeoVideo(AbstractMediaItem):
         abstract = True
     
     def get_absolute_url(self):
-        return self.file.url
+        return self.url
     
     def get_image(self, no_placeholder=False):
         if self.is_processed or no_placeholder:
