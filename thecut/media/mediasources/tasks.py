@@ -13,7 +13,7 @@ def generate_thumbnail(content_type_pk, object_pk, geometry_string, options):
     get_thumbnail(obj.get_image(no_placeholder=True), geometry_string,
         **options)
     logger.info('Generated %s thumbnail for %s' %(geometry_string,
-        obj.file.name))
+        unicode(obj)))
 
 
 @task(ignore_result=True)
@@ -28,5 +28,5 @@ def generate_thumbnails(instance, thumbnail_sizes):
             pass
     instance.is_processed = True
     instance.save()
-    logger.info('Finished generating thumbnails for %s' %(instance.file.name))
+    logger.info('Finished generating thumbnails for %s' %(unicode(instance)))
 
