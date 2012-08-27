@@ -19,8 +19,8 @@ class GallerySitemap(Sitemap):
 class GalleryListSitemap(Sitemap):
     def items(self):
         objects = Gallery.objects.current_site().indexable()
-        paginator = Paginator(objects, settings.GALLERY_PAGINATE_BY)
-        return paginator.page_range
+        page_size = settings.GALLERY_PAGINATE_BY
+        return Paginator(objects, page_size).page_range if page_size else [1]
     
     def location(self, page):
         if page == 1:
@@ -36,8 +36,10 @@ class CategoryGalleryListSitemap(Sitemap):
         items = []
         for category in categories:
             objects = category.galleries.current_site().indexable()
-            paginator = Paginator(objects, settings.GALLERY_PAGINATE_BY)
-            items += [(category.slug, page) for page in paginator.page_range]
+            page_size = settings.GALLERY_PAGINATE_BY
+            page_range = Paginator(objects, page_size).page_range if page_size \
+                else [1]
+            items += [(category.slug, page) for page in page_range]
         return items
     
     def location(self, opts):
