@@ -2,20 +2,20 @@
 from __future__ import absolute_import, unicode_literals
 from django.db import models
 from thecut.core.managers import QuerySetManager
-from thecut.core.models import AbstractResource, AbstractSitesResourceWithSlug
+from thecut.core.models import AbstractResource, AbstractSiteResourceWithSlug
 from thecut.core.utils import generate_unique_slug
 import warnings
 
 
-class AbstractGallery(AbstractSitesResourceWithSlug):
+class AbstractGallery(AbstractSiteResourceWithSlug):
     objects = QuerySetManager()
     
-    class Meta(AbstractSitesResourceWithSlug.Meta):
+    class Meta(AbstractSiteResourceWithSlug.Meta):
         abstract = True
         ordering = ['-publish_at', 'title']
         verbose_name_plural = 'galleries'
     
-    #class QuerySet(AbstractSitesResourceWithSlug.QuerySet):
+    #class QuerySet(AbstractSiteResourceWithSlug.QuerySet):
     #    def with_images(self):
     #        """Return galleries containing at least one image."""
     #        return self.annotate(
