@@ -25,7 +25,7 @@ class GalleryAdmin(AttachedMediaItemMixin, ModelAdmin):
     fieldsets = [
         (None, {'fields': ['title', 'headline', 'featured_content', 'content',
             'meta_description', 'tags']}),
-        ('Publishing', {'fields': ['categories', 'sites', 'slug',
+        ('Publishing', {'fields': ['categories', 'site', 'slug',
             ('publish_at', 'is_enabled'), 'expire_at', 'publish_by',
             'template', 'is_featured', 'is_indexable',
             ('created_at', 'created_by'), ('updated_at', 'updated_by')],
@@ -34,7 +34,8 @@ class GalleryAdmin(AttachedMediaItemMixin, ModelAdmin):
     form = GalleryAdminForm
     list_display = ['title', 'publish_at', 'is_enabled', 'is_featured',
         'is_indexable', preview_image]
-    list_filter = ['publish_at', 'is_enabled', 'is_featured', 'is_indexable']
+    list_filter = ['categories', 'publish_at', 'is_enabled', 'is_featured',
+        'is_indexable', 'site']
     prepopulated_fields = {'slug': ['title']}
     readonly_fields = ['created_at', 'created_by', 'updated_at', 'updated_by']
     search_fields = ['title']

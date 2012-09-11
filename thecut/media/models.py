@@ -14,10 +14,10 @@ import warnings
 
 class AbstractMediaItem(AbstractBaseResource):
     title = models.CharField(max_length=200, db_index=True)
-    caption = models.TextField(null=True, blank=True)
-    content = models.TextField(null=True, blank=True)
-    tags = TagField(blank=True, null=True, help_text='Separate tags \
-        with spaces, put quotes around multiple-word tags.')
+    caption = models.TextField(blank=True, default='')
+    content = models.TextField(blank=True, default='')
+    tags = TagField(blank=True, default='', help_text='Separate tags ' \
+        'with spaces, put quotes around multiple-word tags.')
     attachments = generic.GenericRelation('media.AttachedMediaItem',
         content_type_field='content_type', object_id_field='object_id')
     
