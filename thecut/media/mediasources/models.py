@@ -174,7 +174,7 @@ class AbstractVideo(AbstractMediaItem):
         default=not settings.GENERATE_THUMBNAILS_ON_SAVE)
     #image = models.ImageField(
     #    upload_to='uploads/media/videos/%Y/%m/%d',
-    #    blank=True, null=True)
+    #    blank=True, default='')
     objects = QuerySetManager()
     
     class Meta(AbstractMediaItem.Meta):
@@ -292,8 +292,8 @@ class AbstractVimeoVideo(AbstractMediaItem):
     url = models.URLField(help_text='e.g. http://vimeo.com/123456')
     is_processed = models.BooleanField(
         default=not settings.GENERATE_THUMBNAILS_ON_SAVE)
-    _api_data = models.TextField(blank=True, null=True, editable=False)
-    _oembed_data = models.TextField(blank=True, null=True, editable=False)
+    _api_data = models.TextField(blank=True, default='', editable=False)
+    _oembed_data = models.TextField(blank=True, default='', editable=False)
     objects = QuerySetManager()
     
     class Meta(AbstractMediaItem.Meta):
