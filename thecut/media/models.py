@@ -13,6 +13,7 @@ import warnings
 
 
 class AbstractMediaItem(AbstractBaseResource):
+    
     title = models.CharField(max_length=200, db_index=True)
     caption = models.TextField(blank=True, default='')
     content = models.TextField(blank=True, default='')
@@ -31,27 +32,25 @@ class AbstractMediaItem(AbstractBaseResource):
 
 
 class AttachedMediaItem(OrderMixin, models.Model):
+    
     # Generic relation to media object.
     content_type = models.ForeignKey(ContentType)
     object_id = models.IntegerField()
-    content_object = generic.GenericForeignKey('content_type',
-        'object_id')
+    content_object = generic.GenericForeignKey('content_type', 'object_id')
     
     # Generic relation to another object.
     parent_content_type = models.ForeignKey(ContentType,
         related_name='attachedmediaitem_parent_set')
     parent_object_id = models.IntegerField()
-    parent_content_object = generic.GenericForeignKey(
-        'parent_content_type', 'parent_object_id')
+    parent_content_object = generic.GenericForeignKey('parent_content_type',
+        'parent_object_id')
     
     objects = QuerySetManager()
     
     class QuerySet(models.query.QuerySet):
         def __init__(self, *args, **kwargs):
-            # TODO: Optimisation/caching
             for class_ in get_media_source_models():
-                plural_name = class_._meta.verbose_name_plural.replace(
-                    ' ', '')
+                plural_name = class_._meta.verbose_name_plural.replace(' ', '')
                 content_type = ContentType.objects.get_for_model(class_)
                 objects = partial(self.get_objects_for_content_type,
                     content_type=content_type)
@@ -60,10 +59,10 @@ class AttachedMediaItem(OrderMixin, models.Model):
                 **kwargs)
         
         def get_objects_for_content_type(self, content_type):
-            # TODO: Optimisation/caching/queryset?
-            # Maybe return an iterator? Direct SQL for ordering?
-            items = self.filter(content_type=content_type).select_generic_related()
-            return [item.content_object for item in items]
+            pks = self.filter(content_type=content_type).values_list(
+                'object_id')
+            return content_type.model_class().objects.filter(
+                pk__in=pks).order_by('attachments__order')
         
         def get_image(self):
             #TODO: Decide if this should only return the first image
@@ -75,33 +74,6 @@ class AttachedMediaItem(OrderMixin, models.Model):
             else:
                 items = self.all()
                 return items and items[0].content_object.get_image()
-        
-        def select_generic_related(self):
-            queryset = self.all()
-            
-            # Simulating select_related() on GenericForeignKey
-            # http://blog.roseman.org.uk/2010/02/22/django-patterns-part-4-forwards-generic-relations/
-            generics = {}
-            for item in queryset:
-                generics.setdefault(item.content_type_id, set()).add(
-                    item.object_id)
-            
-            content_types = ContentType.objects.in_bulk(generics.keys())
-            
-            relations = {}
-            for ct, fk_list in generics.items():
-                ct_model = content_types[ct].model_class()
-                relations[ct] = ct_model.objects.in_bulk(list(fk_list))
-            
-            for item in queryset:
-                if item.content_type_id and item.object_id:
-                    try:
-                        setattr(item, '_content_object_cache',
-                            relations[item.content_type_id][item.object_id])
-                    except KeyError:
-                        pass
-            
-            return queryset
         
         ## Deprecated properties (from previous MediaSet model)
         
@@ -201,16 +173,14 @@ class AttachedMediaItem(OrderMixin, models.Model):
             return proxy()
     
     def __unicode__(self):
-        return '%(order)s - %(model)s: %(object)s' %(
-            {'order': self.order, 'model': self.content_type,
-            'object': unicode(self.content_object)})
+        return '%(order)s - %(model)s: %(object)s' %({'order': self.order,
+            'model': self.content_type, 'object': unicode(self.content_object)})
 
 
 AbstractResource.add_to_class('media', generic.GenericRelation(
     'media.AttachedMediaItem',
     content_type_field='parent_content_type',
     object_id_field='parent_object_id'))
-
 
 models.signals.pre_delete.connect(delete_media_attachments)
 
