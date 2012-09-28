@@ -9,7 +9,6 @@ from thecut.core.managers import QuerySetManager
 from thecut.core.models import AbstractBaseResource, AbstractResource, OrderMixin
 from thecut.media.signals import delete_media_attachments
 from thecut.media.utils import get_media_source_models
-import warnings
 
 
 class AbstractMediaItem(AbstractBaseResource):
@@ -74,103 +73,6 @@ class AttachedMediaItem(OrderMixin, models.Model):
             else:
                 items = self.all()
                 return items and items[0].content_object.get_image()
-        
-        ## Deprecated properties (from previous MediaSet model)
-        
-        @property
-        def all_images(self):
-            """Deprecated - instead use 'images()'."""
-            warnings.warn('all_images property is deprecated - use '
-                '\'images()\' method.', DeprecationWarning,
-                stacklevel=2)
-            return self.images()
-        
-        @property
-        def all_photos(self):
-            """Deprecated - instead use 'images()'."""
-            warnings.warn('all_photos property is deprecated - use '
-                '\'images()\' method.', DeprecationWarning,
-                stacklevel=2)
-            return self.images()
-        
-        # Clashes with new documents() method added during __init__().
-        #@property
-        #def documents(self):
-        #    """Deprecated - instead use 'documents()'."""
-        #    warnings.warn('documents property is deprecated - use '
-        #        '\'documents()\' method.', DeprecationWarning,
-        #        stacklevel=2)
-        #    documents = self.documents
-        #    class proxy(object):
-        #        def all(self):
-        #            return documents()
-        #    return proxy()
-        
-        @property
-        def galleries(self):
-            """Deprecated. Galleries cannot be attached to MediaSets."""
-            warnings.warn('Galleries can no longer be attached to '
-                'MediaSets.', DeprecationWarning, stacklevel=2)
-            class proxy(object):
-                def all(self):
-                    return None
-            return proxy()
-        
-        @property
-        def image(self):
-            """Deprecated - instead use 'get_image()'."""
-            warnings.warn('image property is deprecated - use '
-                '\'get_image()\' method.', DeprecationWarning,
-                stacklevel=2)
-            return self.get_image()
-        
-        @property
-        def image_order(self):
-            """Deprecated. Ordering is now managed by AttachedMediaItem."""
-            warnings.warn('Ordering is now managed by AttachedMediaItem '
-                'model.', DeprecationWarning, stacklevel=2)
-            return [image.pk for image in self.images()]
-        
-        # Clashes with new images() method added during __init__().
-        #@property
-        #def images(self):
-        #    """Deprecated - instead use 'images()'."""
-        #    warnings.warn('images property is deprecated - use '
-        #        '\'images()\' method.', DeprecationWarning,
-        #        stacklevel=2)
-        #    images = self.images
-        #    class proxy(object):
-        #        def all(self):
-        #            return images()
-        #    return proxy()
-        
-        @property
-        def ordered_images(self):
-            """Deprecated - instead use 'images()'."""
-            warnings.warn('ordered_images property is deprecated - use '
-                '\'images()\' method.', DeprecationWarning,
-                stacklevel=2)
-            return self.images()
-        
-        @property
-        def photo(self):
-            """Deprecated - instead use 'get_image()'."""
-            warnings.warn('photo property is deprecated - use '
-                '\'get_image()\' method.', DeprecationWarning,
-                stacklevel=2)
-            return self.get_image()
-        
-        @property
-        def photos(self):
-            """Deprecated - instead use 'images()'."""
-            warnings.warn('photos property is deprecated - use '
-                '\'images()\' method.', DeprecationWarning,
-                stacklevel=2)
-            photos = self.images
-            class proxy(object):
-                def all(self):
-                    return photos()
-            return proxy()
     
     def __unicode__(self):
         return '%(order)s - %(model)s: %(object)s' %({'order': self.order,

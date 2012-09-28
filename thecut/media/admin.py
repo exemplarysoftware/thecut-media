@@ -5,7 +5,6 @@ from django.contrib import admin
 from django.contrib.contenttypes.generic import GenericStackedInline
 from thecut.media.forms import AttachedMediaItemInlineForm
 from thecut.media.models import AttachedMediaItem
-import warnings
 
 
 class AttachedMediaItemInline(GenericStackedInline):
@@ -15,15 +14,6 @@ class AttachedMediaItemInline(GenericStackedInline):
     form = AttachedMediaItemInlineForm
     #max_num = 0
     model = AttachedMediaItem
-
-
-class MediaSetInline(AttachedMediaItemInline):
-    def __init__(self, *args, **kwargs):
-        """Deprecated - instead use AttachedMediaItemInline."""
-        warnings.warn('MediaSetInline class is deprecated - use '
-            'AttachedMediaItemInline.', DeprecationWarning,
-            stacklevel=2)
-        return super(MediaSetInline, self).__init__(*args, **kwargs)
 
 
 class AttachedMediaItemMixin(admin.ModelAdmin):

@@ -20,7 +20,8 @@ class AttachedMediaItemInlineForm(forms.ModelForm):
             pk__in=[ct.pk for ct in content_types])
         
     class Media:
-        css = {'all': ['media/smoothness/jquery-ui-1.8.10.custom.css', 'media/admin.css']}
+        css = {'all': ['media/smoothness/jquery-ui-1.8.10.custom.css',
+            'media/admin.css']}
         js = ['media/jquery.js', 'media/jquery-ui.js',
             'media/jquery.init.js', 'media/csrf.js', 'media/admin.js']
     
