@@ -56,7 +56,6 @@ class AudioAdmin(MediaUploadMixin, ModelAdmin):
     list_display = ['title', 'publish_at', 'is_enabled', 'is_featured',
         preview_image]
     list_filter = ['publish_at', 'is_enabled', 'is_featured']
-    #prepopulated_fields = {'title': ['file']}
     readonly_fields = ['created_at', 'created_by',
         'updated_at', 'updated_by']
     search_fields = ['title']
@@ -78,7 +77,6 @@ class DocumentAdmin(MediaUploadMixin, ModelAdmin):
     list_display = ['title', 'publish_at', 'is_enabled', 'is_featured',
         preview_image]
     list_filter = ['publish_at', 'is_enabled', 'is_featured']
-    #prepopulated_fields = {'title': ['file']}
     readonly_fields = ['created_at', 'created_by',
         'updated_at', 'updated_by']
     search_fields = ['title']
@@ -118,7 +116,6 @@ class VideoAdmin(MediaUploadMixin, ModelAdmin):
     list_display = ['title', 'publish_at', 'is_enabled', 'is_featured',
         preview_image]
     list_filter = ['publish_at', 'is_enabled', 'is_featured']
-    #prepopulated_fields = {'title': ['file']}
     readonly_fields = ['created_at', 'created_by',
         'updated_at', 'updated_by']
     search_fields = ['title']
@@ -140,7 +137,6 @@ class YoutubeVideoAdmin(ModelAdmin):
     list_display = ['title', 'publish_at', 'is_enabled', 'is_featured',
         preview_image]
     list_filter = ['publish_at', 'is_enabled', 'is_featured']
-    #prepopulated_fields = {'title': ['file']}
     readonly_fields = ['created_at', 'created_by',
         'updated_at', 'updated_by']
     search_fields = ['title']
@@ -162,7 +158,6 @@ class VimeoVideoAdmin(ModelAdmin):
     list_display = ['title', 'publish_at', 'is_enabled', 'is_featured',
         preview_image]
     list_filter = ['publish_at', 'is_enabled', 'is_featured']
-    #prepopulated_fields = {'title': ['file']}
     readonly_fields = ['created_at', 'created_by',
         'updated_at', 'updated_by']
     search_fields = ['title']

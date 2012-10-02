@@ -64,16 +64,6 @@ class AbstractDocument(AbstractMediaItem):
                     utils.delete_file(self.__class__, existing)
                     self.is_processed = not settings.GENERATE_THUMBNAILS_ON_SAVE
         return super(AbstractDocument, self).save(*args, **kwargs)
-    
-    ## Deprecated properties
-    
-    @property
-    def mime_type(self):
-        """Deprecated - instead use 'get_mime_type()'."""
-        warnings.warn('mime_type property is deprecated - use '
-            '\'get_mime_type()\' method.', DeprecationWarning,
-            stacklevel=2)
-        return self.get_mime_type()
 
 
 class Document(AbstractDocument):
@@ -130,33 +120,6 @@ class AbstractImage(AbstractMediaItem):
                     utils.delete_file(self.__class__, existing)
                     self.is_processed = not settings.GENERATE_THUMBNAILS_ON_SAVE
         return super(AbstractImage, self).save(*args, **kwargs)
-    
-    ## Deprecated properties
-    
-    @property
-    def get_display_url(self):
-        """Deprecated - instead use 'get_absolute_url'."""
-        # For backwards compatibility, set the commonly used
-        # 'get_display_url' property which is used in other apps
-        # default templates.
-        warnings.warn('Deprecated - use \'get_absolute_url\' '
-            'property.', DeprecationWarning, stacklevel=2)
-        return self.get_absolute_url()
-    
-    @property
-    def image(self):
-        """Deprecated - instead use 'file'."""
-        warnings.warn('Deprecated - use \'file\' property.',
-            DeprecationWarning, stacklevel=2)
-        return self.file
-    
-    @property
-    def mime_type(self):
-        """Deprecated - instead use 'get_mime_type()'."""
-        warnings.warn('mime_type property is deprecated - use '
-            '\'get_mime_type()\' method.', DeprecationWarning,
-            stacklevel=2)
-        return self.get_mime_type()
 
 
 class Image(AbstractImage):
@@ -231,16 +194,6 @@ class AbstractVideo(AbstractMediaItem):
                     utils.delete_file(self.__class__, existing)
                     self.is_processed = not settings.GENERATE_THUMBNAILS_ON_SAVE
         return super(AbstractVideo, self).save(*args, **kwargs)
-    
-    ## Deprecated properties
-    
-    @property
-    def mime_type(self):
-        """Deprecated - instead use 'get_mime_type()'."""
-        warnings.warn('mime_type property is deprecated - use '
-            '\'get_mime_type()\' method.', DeprecationWarning,
-            stacklevel=2)
-        return self.get_mime_type()
 
 
 class Video(AbstractVideo):
