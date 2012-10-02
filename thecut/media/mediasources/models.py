@@ -280,9 +280,9 @@ class AbstractVimeoVideo(AbstractMediaItem):
         return simplejson.loads(self._oembed_data)
     
     def _get_oembed_data(self):
-        base_uri = 'http://vimeo.com/api/oembed.json'
         params = urlencode({'url': self.url})
-        response = urlopen(base_uri, params)
+        uri = 'http://vimeo.com/api/oembed.json?%s' %(params)
+        response = urlopen(uri)
         return response.read()
     
     def get_video_id(self):
