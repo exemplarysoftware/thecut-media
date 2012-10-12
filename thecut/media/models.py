@@ -58,10 +58,10 @@ class AttachedMediaItem(OrderMixin, models.Model):
                 **kwargs)
         
         def get_objects_for_content_type(self, content_type):
-            pks = self.filter(content_type=content_type).values_list(
-                'object_id')
+            pks = self.filter(content_type=content_type).values_list('pk',
+                flat=True)
             return content_type.model_class().objects.filter(
-                pk__in=pks).order_by('attachments__order')
+                attachments__pk__in=pks).order_by('attachments__order')
         
         def get_image(self):
             #TODO: Decide if this should only return the first image
