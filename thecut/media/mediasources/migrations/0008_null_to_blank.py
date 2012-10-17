@@ -1,135 +1,42 @@
-# -*- coding: utf-8 -*-
+# encoding: utf-8
 import datetime
 from south.db import db
-from south.v2 import SchemaMigration
+from south.v2 import DataMigration
 from django.db import models
 
-
-class Migration(SchemaMigration):
+class Migration(DataMigration):
 
     def forwards(self, orm):
+        "Write your forwards methods here."
+        models = ['mediasources.Document', 'mediasources.Image',
+            'mediasources.Video', 'mediasources.YoutubeVideo',
+            'mediasources.VimeoVideo', 'mediasources.Audio']
+        fields = ['tags', 'content', 'caption']
+        extra_vimeo_fields = ['_api_data', '_oembed_data']
+        
+        for model in models:
+            for obj in orm[model].objects.all():
+                altered = False
+                for field in fields:
+                    if getattr(obj, field) is None:
+                        setattr(obj, field, u'')
+                        altered = True
+                if altered:
+                    obj.save()
+        
+        for obj in orm['mediasources.VimeoVideo'].objects.all():
+            altered = False
+            for field in extra_vimeo_fields:
+                if getattr(obj, field) is None:
+                    setattr(obj, field, u'')
+                    altered = True
+                if altered:
+                    obj.save()
 
-        # Changing field 'YoutubeVideo.tags'
-        db.alter_column('mediasources_youtubevideo', 'tags', self.gf('tagging.fields.TagField')())
-
-        # Changing field 'YoutubeVideo.content'
-        db.alter_column('mediasources_youtubevideo', 'content', self.gf('django.db.models.fields.TextField')())
-
-        # Changing field 'YoutubeVideo.caption'
-        db.alter_column('mediasources_youtubevideo', 'caption', self.gf('django.db.models.fields.TextField')())
-
-        # Changing field 'Image.tags'
-        db.alter_column('mediasources_image', 'tags', self.gf('tagging.fields.TagField')())
-
-        # Changing field 'Image.content'
-        db.alter_column('mediasources_image', 'content', self.gf('django.db.models.fields.TextField')())
-
-        # Changing field 'Image.caption'
-        db.alter_column('mediasources_image', 'caption', self.gf('django.db.models.fields.TextField')())
-
-        # Changing field 'Video.tags'
-        db.alter_column('mediasources_video', 'tags', self.gf('tagging.fields.TagField')())
-
-        # Changing field 'Video.content'
-        db.alter_column('mediasources_video', 'content', self.gf('django.db.models.fields.TextField')())
-
-        # Changing field 'Video.caption'
-        db.alter_column('mediasources_video', 'caption', self.gf('django.db.models.fields.TextField')())
-
-        # Changing field 'Document.tags'
-        db.alter_column('mediasources_document', 'tags', self.gf('tagging.fields.TagField')())
-
-        # Changing field 'Document.content'
-        db.alter_column('mediasources_document', 'content', self.gf('django.db.models.fields.TextField')())
-
-        # Changing field 'Document.caption'
-        db.alter_column('mediasources_document', 'caption', self.gf('django.db.models.fields.TextField')())
-
-        # Changing field 'Audio.tags'
-        db.alter_column('mediasources_audio', 'tags', self.gf('tagging.fields.TagField')())
-
-        # Changing field 'Audio.content'
-        db.alter_column('mediasources_audio', 'content', self.gf('django.db.models.fields.TextField')())
-
-        # Changing field 'Audio.caption'
-        db.alter_column('mediasources_audio', 'caption', self.gf('django.db.models.fields.TextField')())
-
-        # Changing field 'VimeoVideo._api_data'
-        db.alter_column('mediasources_vimeovideo', '_api_data', self.gf('django.db.models.fields.TextField')())
-
-        # Changing field 'VimeoVideo.tags'
-        db.alter_column('mediasources_vimeovideo', 'tags', self.gf('tagging.fields.TagField')())
-
-        # Changing field 'VimeoVideo.content'
-        db.alter_column('mediasources_vimeovideo', 'content', self.gf('django.db.models.fields.TextField')())
-
-        # Changing field 'VimeoVideo.caption'
-        db.alter_column('mediasources_vimeovideo', 'caption', self.gf('django.db.models.fields.TextField')())
-
-        # Changing field 'VimeoVideo._oembed_data'
-        db.alter_column('mediasources_vimeovideo', '_oembed_data', self.gf('django.db.models.fields.TextField')())
 
     def backwards(self, orm):
+        pass
 
-        # Changing field 'YoutubeVideo.tags'
-        db.alter_column('mediasources_youtubevideo', 'tags', self.gf('tagging.fields.TagField')(null=True))
-
-        # Changing field 'YoutubeVideo.content'
-        db.alter_column('mediasources_youtubevideo', 'content', self.gf('django.db.models.fields.TextField')(null=True))
-
-        # Changing field 'YoutubeVideo.caption'
-        db.alter_column('mediasources_youtubevideo', 'caption', self.gf('django.db.models.fields.TextField')(null=True))
-
-        # Changing field 'Image.tags'
-        db.alter_column('mediasources_image', 'tags', self.gf('tagging.fields.TagField')(null=True))
-
-        # Changing field 'Image.content'
-        db.alter_column('mediasources_image', 'content', self.gf('django.db.models.fields.TextField')(null=True))
-
-        # Changing field 'Image.caption'
-        db.alter_column('mediasources_image', 'caption', self.gf('django.db.models.fields.TextField')(null=True))
-
-        # Changing field 'Video.tags'
-        db.alter_column('mediasources_video', 'tags', self.gf('tagging.fields.TagField')(null=True))
-
-        # Changing field 'Video.content'
-        db.alter_column('mediasources_video', 'content', self.gf('django.db.models.fields.TextField')(null=True))
-
-        # Changing field 'Video.caption'
-        db.alter_column('mediasources_video', 'caption', self.gf('django.db.models.fields.TextField')(null=True))
-
-        # Changing field 'Document.tags'
-        db.alter_column('mediasources_document', 'tags', self.gf('tagging.fields.TagField')(null=True))
-
-        # Changing field 'Document.content'
-        db.alter_column('mediasources_document', 'content', self.gf('django.db.models.fields.TextField')(null=True))
-
-        # Changing field 'Document.caption'
-        db.alter_column('mediasources_document', 'caption', self.gf('django.db.models.fields.TextField')(null=True))
-
-        # Changing field 'Audio.tags'
-        db.alter_column('mediasources_audio', 'tags', self.gf('tagging.fields.TagField')(null=True))
-
-        # Changing field 'Audio.content'
-        db.alter_column('mediasources_audio', 'content', self.gf('django.db.models.fields.TextField')(null=True))
-
-        # Changing field 'Audio.caption'
-        db.alter_column('mediasources_audio', 'caption', self.gf('django.db.models.fields.TextField')(null=True))
-
-        # Changing field 'VimeoVideo._api_data'
-        db.alter_column('mediasources_vimeovideo', '_api_data', self.gf('django.db.models.fields.TextField')(null=True))
-
-        # Changing field 'VimeoVideo.tags'
-        db.alter_column('mediasources_vimeovideo', 'tags', self.gf('tagging.fields.TagField')(null=True))
-
-        # Changing field 'VimeoVideo.content'
-        db.alter_column('mediasources_vimeovideo', 'content', self.gf('django.db.models.fields.TextField')(null=True))
-
-        # Changing field 'VimeoVideo.caption'
-        db.alter_column('mediasources_vimeovideo', 'caption', self.gf('django.db.models.fields.TextField')(null=True))
-
-        # Changing field 'VimeoVideo._oembed_data'
-        db.alter_column('mediasources_vimeovideo', '_oembed_data', self.gf('django.db.models.fields.TextField')(null=True))
 
     models = {
         'auth.group': {
