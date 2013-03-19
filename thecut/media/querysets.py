@@ -1,0 +1,37 @@
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import, unicode_literals
+from django.contrib.contenttypes.models import ContentType
+from django.db import models
+from functools import partial
+from thecut.media import utils
+
+
+class AttachedMediaItemQuerySet(models.query.QuerySet):
+    """Customised :py:class:`~django.db.models.db.query.QuerySet` for
+    :py:class:`~thecut.media.models.AttachedMediaItem` model."""
+
+    def __init__(self, *args, **kwargs):
+        for class_ in utils.get_media_source_models():
+            plural_name = class_._meta.verbose_name_plural.replace(' ', '')
+            content_type = ContentType.objects.get_for_model(class_)
+            objects = partial(self.get_objects_for_content_type,
+                              content_type=content_type)
+            setattr(self, plural_name, objects)
+        super(AttachedMediaItemQuerySet, self).__init__(*args, **kwargs)
+
+    def get_objects_for_content_type(self, content_type):
+        pks = self.filter(content_type=content_type).values_list('pk',
+                                                                 flat=True)
+        return content_type.model_class().objects.filter(
+            attachments__pk__in=pks).order_by('attachments__order')
+
+    def get_image(self):
+        # TODO: Decide if this should only return the first image
+        # from only images, or if it should return the first image
+        # from any object (e.g. document/video).
+        images = self.images()[:1]
+        if images:
+            return images[0].get_image()
+        else:
+            items = self.all()[:1]
+            return items and items[0].content_object.get_image()

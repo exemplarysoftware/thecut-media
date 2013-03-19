@@ -11,4 +11,3 @@ def delete_media_attachments(sender, instance, **kwargs):
         attachments = AttachedMediaItem.objects.filter(
             content_type=content_type, object_id=instance.pk)
         attachments.delete()
-

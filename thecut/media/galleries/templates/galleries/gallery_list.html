@@ -1,43 +1,44 @@
 {% extends "galleries/base.html" %}
+{% load url from future %}
 {% load thumbnail %}
 
 {% block title %}{{ category|default:"Galleries" }} - {{ block.super }}{% endblock %}
 
 {% block extrahead %}
   {{ block.super }}
-  
+
   {% if category %}
     {% if not category.is_indexable %}<meta name="robots" content="noindex" />{% endif %}
     {% if category.meta_description %}<meta name="description" content="{{ category.meta_description }}" />{% endif %}
-    <link rel="alternate" href="{% url galleries:category_gallery_feed category.slug %}" type="application/atom+xml" title="Latest {{ category }}" />
+    <link rel="alternate" href="{% url "galleries:category_gallery_feed" category.slug %}" type="application/atom+xml" title="Latest {{ category }}" />
   {% else %}
-    <link rel="alternate" href="{% url galleries:gallery_feed %}" type="application/atom+xml" title="Latest Galleries" />
+    <link rel="alternate" href="{% url "galleries:gallery_feed" %}" type="application/atom+xml" title="Latest galleries" />
   {% endif %}
-  
+
   {% if page_obj.paginator.num_pages > 1 %}{% spaceless %}
     {% if page_obj.has_previous %}
       {% if category %}
-        <link rel="prev" href="{% if page_obj.previous_page_number == 1 %}{% url galleries:category_gallery_list slug=category.slug %}{% else %}{% url galleries:paginated_category_gallery_list slug=category.slug page=page_obj.previous_page_number %}{% endif %}" />
+        <link rel="prev" href="{% if page_obj.previous_page_number == 1 %}{% url "galleries:category_gallery_list" slug=category.slug %}{% else %}{% url "galleries:paginated_category_gallery_list" slug=category.slug page=page_obj.previous_page_number %}{% endif %}" />
       {% else %}
-        <link rel="prev" href="{% if page_obj.previous_page_number == 1 %}{% url galleries:gallery_list %}{% else %}{% url galleries:paginated_gallery_list page=page_obj.previous_page_number %}{% endif %}" />
+        <link rel="prev" href="{% if page_obj.previous_page_number == 1 %}{% url "galleries:gallery_list" %}{% else %}{% url "galleries:paginated_gallery_list" page=page_obj.previous_page_number %}{% endif %}" />
       {% endif %}
     {% endif %}
     {% if page_obj.has_next %}
       {% if category %}
-        <link rel="next" href="{% url galleries:paginated_category_gallery_list slug=category.slug page=page_obj.next_page_number %}" />
+        <link rel="next" href="{% url "galleries:paginated_category_gallery_list" slug=category.slug page=page_obj.next_page_number %}" />
       {% else %}
-        <link rel="next" href="{% url galleries:paginated_gallery_list page=page_obj.next_page_number %}" />
+        <link rel="next" href="{% url "galleries:paginated_gallery_list" page=page_obj.next_page_number %}" />
       {% endif %}
     {% endif %}
   {% endspaceless %}{% endif %}
 {% endblock %}
 
 {% block content %}
-  
+
   <h1>{{ category|default:"Galleries" }}</h1>
   {% if category.featured_content %}<div>{{ category.featured_content }}</div>{% endif %}
   {% if category.content %}<div>{{ category.content|safe }}</div>{% endif %}
-  
+
   {% for gallery in gallery_list %}
   {% if forloop.first %}<ul>{% endif %}
     <li>
@@ -52,29 +53,28 @@
   {% empty %}
     <p>No galleries to display.</p>
   {% endfor %}
-  
+
   {% if page_obj.paginator.num_pages > 1 %}
   <div>
     Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-    
+
     {% if page_obj.has_previous %}
       {% if category %}
-        <a href="{% if page_obj.previous_page_number == 1 %}{% url galleries:category_gallery_list slug=category.slug %}{% else %}{% url galleries:paginated_category_gallery_list slug=category.slug page=page_obj.previous_page_number %}{% endif %}" rel="previous">previous</a>
+        <a href="{% if page_obj.previous_page_number == 1 %}{% url "galleries:category_gallery_list" slug=category.slug %}{% else %}{% url "galleries:paginated_category_gallery_list" slug=category.slug page=page_obj.previous_page_number %}{% endif %}" rel="previous">previous</a>
       {% else %}
-        <a href="{% if page_obj.previous_page_number == 1 %}{% url galleries:gallery_list %}{% else %}{% url galleries:paginated_gallery_list page=page_obj.previous_page_number %}{% endif %}" rel="previous">previous</a>
+        <a href="{% if page_obj.previous_page_number == 1 %}{% url "galleries:gallery_list" %}{% else %}{% url "galleries:paginated_gallery_list" page=page_obj.previous_page_number %}{% endif %}" rel="previous">previous</a>
       {% endif %}
     {% endif %}
-    
+
     {% if page_obj.has_next %}
       {% if category %}
-        <a href="{% url galleries:paginated_category_gallery_list category.slug page_obj.next_page_number %}" rel="next">next</a>
+        <a href="{% url "galleries:paginated_category_gallery_list" category.slug page_obj.next_page_number %}" rel="next">next</a>
       {% else %}
-        <a href="{% url galleries:paginated_gallery_list page_obj.next_page_number %}" rel="next">next</a>
+        <a href="{% url "galleries:paginated_gallery_list" page_obj.next_page_number %}" rel="next">next</a>
       {% endif %}
     {% endif %}
-    
+
   </div>
   {% endif %}
-  
-{% endblock %}
 
+{% endblock %}

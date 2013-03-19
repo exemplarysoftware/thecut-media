@@ -14,8 +14,8 @@ def get_placeholder_image():
         image = ImageFile(placeholder)
         image.storage = storage
     else:
-        placeholder = open('%s/%s' %(settings.STATIC_ROOT,
-            settings.PLACEHOLDER_IMAGE_PATH))
+        placeholder = open('{0}/{1}'.format(settings.STATIC_ROOT,
+                                            settings.PLACEHOLDER_IMAGE_PATH))
         image = ImageFile(placeholder)
     return image
 
@@ -59,21 +59,20 @@ def delete_file(sender, instance, **kwargs):
 def get_metadata(uploaded_file):
     """Get metadata for an uploaded file."""
     from exiftool import ExifTool
-    
+
     # If we are not dealing with a TemporaryUploadedFile (such as
     # InMemoryUploadedFile), create a TemporaryUploadedFile.
     if not isinstance(uploaded_file, TemporaryUploadedFile):
-        temp_file = TemporaryUploadedFile(name=uploaded_file.name,
-            content_type=uploaded_file.content_type, size=uploaded_file.size,
-            charset=uploaded_file.charset)
+        temp_file = TemporaryUploadedFile(
+            name=uploaded_file.name, content_type=uploaded_file.content_type,
+            size=uploaded_file.size, charset=uploaded_file.charset)
         uploaded_file.seek(0)
         temp_file.write(uploaded_file.read())
         uploaded_file.seek(0)
     else:
         temp_file = uploaded_file
-    
+
     with ExifTool() as et:
         metadata = et.get_metadata(temp_file.temporary_file_path())
-    
-    return metadata
 
+    return metadata
