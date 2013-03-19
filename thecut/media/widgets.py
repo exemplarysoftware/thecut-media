@@ -4,8 +4,9 @@ from django.forms.widgets import FileInput
 
 
 class MultipleFileInput(FileInput):
+
     def render(self, name, value, attrs=None):
-        attrs = attrs or {}
+        if attrs is None:
+            attrs = {}
         attrs.update({'multiple': 'multiple'})
         return super(MultipleFileInput, self).render(name, None, attrs=attrs)
-

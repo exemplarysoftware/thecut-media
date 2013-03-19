@@ -23,12 +23,11 @@ def get_media_source_classes(model_list=None):
 def get_media_source_models():
     """Returns list of models which subclass AbstractMediaItem."""
     from thecut.media.models import AbstractMediaItem
-    return [model for model in get_models() if issubclass(model,
-        AbstractMediaItem)]
+    return [model for model in get_models() if issubclass(
+            model, AbstractMediaItem)]
 
 
 def get_media_source_content_types():
     """Returns list of tuples containing model and content type."""
     return [(model, ContentType.objects.get_for_model(model)) for model in \
-        get_media_source_models()]
-
+            get_media_source_models()]
