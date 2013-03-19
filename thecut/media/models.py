@@ -7,8 +7,10 @@ from tagging.fields import TagField
 from thecut.media import querysets, receivers
 from thecut.ordering.models import OrderMixin
 from thecut.publishing.models import PublishableResource, Content
+from thecut.publishing.utils import python_2_unicode_compatible
 
 
+@python_2_unicode_compatible
 class AbstractMediaItem(PublishableResource):
 
     title = models.CharField(max_length=200, db_index=True)
@@ -24,10 +26,11 @@ class AbstractMediaItem(PublishableResource):
     class Meta(PublishableResource.Meta):
         abstract = True
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
 
+@python_2_unicode_compatible
 class AttachedMediaItem(OrderMixin, models.Model):
 
     # Generic relation to media object.
@@ -46,7 +49,7 @@ class AttachedMediaItem(OrderMixin, models.Model):
     objects = PassThroughManager().for_queryset_class(
         querysets.AttachedMediaItemQuerySet)()
 
-    def __unicode__(self):
+    def __str__(self):
         return '{0} - {1}: {2}'.format(self.order, self.content_type,
                                        self.content_object)
 
