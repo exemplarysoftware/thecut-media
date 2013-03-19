@@ -1,33 +1,38 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
-from django.conf.urls.defaults import include, patterns, url
-from thecut.media.galleries.feeds import (LatestGalleryFeed,
-    LatestCategoryGalleryFeed)
-from thecut.media.galleries.views import ListView, MediaListView
+from thecut.media.galleries import feeds, views
+
+try:
+    from django.conf.urls import include, patterns, url
+except ImportError:
+    # Pre-Django 1.4 compatibility
+    from django.conf.urls.defaults import include, patterns, url
 
 
-urls = patterns('thecut.media.galleries.views',
+urls = patterns(
+    'thecut.media.galleries.views',
+
     url(r'^$',
-        ListView.as_view(), name='gallery_list'),
+        views.ListView.as_view(), name='gallery_list'),
     url(r'^(?P<page>\d+)$',
-        ListView.as_view(), name='paginated_gallery_list'),
+        views.ListView.as_view(), name='paginated_gallery_list'),
     url(r'^latest\.xml$',
-        LatestGalleryFeed(), name='gallery_feed'),
-    
+        feeds.LatestGalleryFeed(), name='gallery_feed'),
+
     url(r'^categories/(?P<slug>[\w-]+)/$',
-        ListView.as_view(), name='category_gallery_list'),
+        views.ListView.as_view(), name='category_gallery_list'),
     url(r'^categories/(?P<slug>[\w-]+)/(?P<page>\d+)$',
-        ListView.as_view(), name='paginated_category_gallery_list'),
+        views.ListView.as_view(), name='paginated_category_gallery_list'),
     url(r'^categories/(?P<slug>[\w-]+)/latest\.xml$',
-        LatestCategoryGalleryFeed(), name='category_gallery_feed'),
-    
+        feeds.LatestCategoryGalleryFeed(), name='category_gallery_feed'),
+
     url(r'^(?P<slug>[\w-]+)/$',
-        MediaListView.as_view(), name='gallery_media_list'),
+        views.MediaListView.as_view(), name='gallery_media_list'),
     url(r'^(?P<slug>[\w-]+)/(?P<page>\d+)$',
-        MediaListView.as_view(), name='paginated_gallery_media_list'),
+        views.MediaListView.as_view(), name='paginated_gallery_media_list'),
+
 )
 
 urlpatterns = patterns('',
     (r'^', include(urls, namespace='galleries')),
 )
-

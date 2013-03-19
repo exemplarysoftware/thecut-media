@@ -3,11 +3,12 @@ import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
+from thecut.authorship.settings import AUTH_USER_MODEL
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        
+
         # Adding model 'Gallery'
         db.create_table('galleries_gallery', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
@@ -15,11 +16,11 @@ class Migration(SchemaMigration):
             ('is_featured', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('publish_at', self.gf('django.db.models.fields.DateTimeField')()),
             ('expire_at', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
-            ('publish_by', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='gallery_publish_by_user', null=True, to=orm['auth.User'])),
+            ('publish_by', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='gallery_publish_by_user', null=True, to=orm[AUTH_USER_MODEL])),
             ('created_at', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('created_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='gallery_created_by_user', to=orm['auth.User'])),
+            ('created_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='gallery_created_by_user', to=orm[AUTH_USER_MODEL])),
             ('updated_at', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-            ('updated_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='gallery_updated_by_user', to=orm['auth.User'])),
+            ('updated_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='gallery_updated_by_user', to=orm[AUTH_USER_MODEL])),
             ('title', self.gf('django.db.models.fields.CharField')(max_length=200)),
             ('headline', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
             ('content', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
@@ -42,7 +43,7 @@ class Migration(SchemaMigration):
 
 
     def backwards(self, orm):
-        
+
         # Deleting model 'Gallery'
         db.delete_table('galleries_gallery')
 
@@ -91,7 +92,7 @@ class Migration(SchemaMigration):
             'Meta': {'ordering': "['-publish_at', 'title']", 'object_name': 'Gallery'},
             'content': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'gallery_created_by_user'", 'to': "orm['auth.User']"}),
+            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'gallery_created_by_user'", 'to': "orm['{0}']".format(AUTH_USER_MODEL)}),
             'expire_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'featured_content': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'headline': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
@@ -101,14 +102,14 @@ class Migration(SchemaMigration):
             'is_indexable': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'meta_description': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'publish_at': ('django.db.models.fields.DateTimeField', [], {}),
-            'publish_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'gallery_publish_by_user'", 'null': 'True', 'to': "orm['auth.User']"}),
+            'publish_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'gallery_publish_by_user'", 'null': 'True', 'to': "orm['{0}']".format(AUTH_USER_MODEL)}),
             'sites': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['sites.Site']", 'null': 'True', 'blank': 'True'}),
             'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '50', 'db_index': 'True'}),
             'tags': ('tagging.fields.TagField', [], {'null': 'True'}),
             'template': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'updated_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'updated_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'gallery_updated_by_user'", 'to': "orm['auth.User']"})
+            'updated_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'gallery_updated_by_user'", 'to': "orm['{0}']".format(AUTH_USER_MODEL)})
         },
         'sites.site': {
             'Meta': {'ordering': "('domain',)", 'object_name': 'Site', 'db_table': "'django_site'"},
