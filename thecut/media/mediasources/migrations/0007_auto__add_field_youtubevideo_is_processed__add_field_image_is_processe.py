@@ -3,11 +3,12 @@ import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
+from thecut.authorship.settings import AUTH_USER_MODEL
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        
+
         # Adding field 'YoutubeVideo.is_processed'
         db.add_column('mediasources_youtubevideo', 'is_processed', self.gf('django.db.models.fields.BooleanField')(default=True), keep_default=False)
 
@@ -25,7 +26,7 @@ class Migration(SchemaMigration):
 
 
     def backwards(self, orm):
-        
+
         # Deleting field 'YoutubeVideo.is_processed'
         db.delete_column('mediasources_youtubevideo', 'is_processed')
 
@@ -93,25 +94,25 @@ class Migration(SchemaMigration):
             'caption': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'content': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'audio_created_by_user'", 'to': "orm['auth.User']"}),
+            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'audio_created_by_user'", 'to': "orm['{0}']".format(AUTH_USER_MODEL)}),
             'expire_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'file': ('django.db.models.fields.files.FileField', [], {'max_length': '250'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_enabled': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'is_featured': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'publish_at': ('django.db.models.fields.DateTimeField', [], {}),
-            'publish_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'audio_publish_by_user'", 'null': 'True', 'to': "orm['auth.User']"}),
+            'publish_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'audio_publish_by_user'", 'null': 'True', 'to': "orm['{0}']".format(AUTH_USER_MODEL)}),
             'tags': ('tagging.fields.TagField', [], {'null': 'True'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '200', 'db_index': 'True'}),
             'updated_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'updated_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'audio_updated_by_user'", 'to': "orm['auth.User']"})
+            'updated_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'audio_updated_by_user'", 'to': "orm['{0}']".format(AUTH_USER_MODEL)})
         },
         'mediasources.document': {
             'Meta': {'ordering': "['-created_at']", 'object_name': 'Document'},
             'caption': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'content': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'document_created_by_user'", 'to': "orm['auth.User']"}),
+            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'document_created_by_user'", 'to': "orm['{0}']".format(AUTH_USER_MODEL)}),
             'expire_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'file': ('django.db.models.fields.files.FileField', [], {'max_length': '250'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -119,18 +120,18 @@ class Migration(SchemaMigration):
             'is_featured': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'is_processed': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'publish_at': ('django.db.models.fields.DateTimeField', [], {}),
-            'publish_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'document_publish_by_user'", 'null': 'True', 'to': "orm['auth.User']"}),
+            'publish_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'document_publish_by_user'", 'null': 'True', 'to': "orm['{0}']".format(AUTH_USER_MODEL)}),
             'tags': ('tagging.fields.TagField', [], {'null': 'True'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '200', 'db_index': 'True'}),
             'updated_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'updated_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'document_updated_by_user'", 'to': "orm['auth.User']"})
+            'updated_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'document_updated_by_user'", 'to': "orm['{0}']".format(AUTH_USER_MODEL)})
         },
         'mediasources.image': {
             'Meta': {'ordering': "['-created_at']", 'object_name': 'Image'},
             'caption': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'content': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'image_created_by_user'", 'to': "orm['auth.User']"}),
+            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'image_created_by_user'", 'to': "orm['{0}']".format(AUTH_USER_MODEL)}),
             'expire_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'file': ('django.db.models.fields.files.ImageField', [], {'max_length': '250'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -138,18 +139,18 @@ class Migration(SchemaMigration):
             'is_featured': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'is_processed': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'publish_at': ('django.db.models.fields.DateTimeField', [], {}),
-            'publish_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'image_publish_by_user'", 'null': 'True', 'to': "orm['auth.User']"}),
+            'publish_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'image_publish_by_user'", 'null': 'True', 'to': "orm['{0}']".format(AUTH_USER_MODEL)}),
             'tags': ('tagging.fields.TagField', [], {'null': 'True'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '200', 'db_index': 'True'}),
             'updated_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'updated_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'image_updated_by_user'", 'to': "orm['auth.User']"})
+            'updated_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'image_updated_by_user'", 'to': "orm['{0}']".format(AUTH_USER_MODEL)})
         },
         'mediasources.video': {
             'Meta': {'ordering': "['-created_at']", 'object_name': 'Video'},
             'caption': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'content': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'video_created_by_user'", 'to': "orm['auth.User']"}),
+            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'video_created_by_user'", 'to': "orm['{0}']".format(AUTH_USER_MODEL)}),
             'expire_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'file': ('django.db.models.fields.files.FileField', [], {'max_length': '250'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -157,11 +158,11 @@ class Migration(SchemaMigration):
             'is_featured': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'is_processed': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'publish_at': ('django.db.models.fields.DateTimeField', [], {}),
-            'publish_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'video_publish_by_user'", 'null': 'True', 'to': "orm['auth.User']"}),
+            'publish_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'video_publish_by_user'", 'null': 'True', 'to': "orm['{0}']".format(AUTH_USER_MODEL)}),
             'tags': ('tagging.fields.TagField', [], {'null': 'True'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '200', 'db_index': 'True'}),
             'updated_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'updated_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'video_updated_by_user'", 'to': "orm['auth.User']"})
+            'updated_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'video_updated_by_user'", 'to': "orm['{0}']".format(AUTH_USER_MODEL)})
         },
         'mediasources.vimeovideo': {
             'Meta': {'ordering': "['-created_at']", 'object_name': 'VimeoVideo'},
@@ -170,18 +171,18 @@ class Migration(SchemaMigration):
             'caption': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'content': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'vimeovideo_created_by_user'", 'to': "orm['auth.User']"}),
+            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'vimeovideo_created_by_user'", 'to': "orm['{0}']".format(AUTH_USER_MODEL)}),
             'expire_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_enabled': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'is_featured': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'is_processed': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'publish_at': ('django.db.models.fields.DateTimeField', [], {}),
-            'publish_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'vimeovideo_publish_by_user'", 'null': 'True', 'to': "orm['auth.User']"}),
+            'publish_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'vimeovideo_publish_by_user'", 'null': 'True', 'to': "orm['{0}']".format(AUTH_USER_MODEL)}),
             'tags': ('tagging.fields.TagField', [], {'null': 'True'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '200', 'db_index': 'True'}),
             'updated_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'updated_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'vimeovideo_updated_by_user'", 'to': "orm['auth.User']"}),
+            'updated_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'vimeovideo_updated_by_user'", 'to': "orm['{0}']".format(AUTH_USER_MODEL)}),
             'url': ('django.db.models.fields.URLField', [], {'max_length': '200'})
         },
         'mediasources.youtubevideo': {
@@ -189,18 +190,18 @@ class Migration(SchemaMigration):
             'caption': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'content': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'youtubevideo_created_by_user'", 'to': "orm['auth.User']"}),
+            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'youtubevideo_created_by_user'", 'to': "orm['{0}']".format(AUTH_USER_MODEL)}),
             'expire_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_enabled': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'is_featured': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'is_processed': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'publish_at': ('django.db.models.fields.DateTimeField', [], {}),
-            'publish_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'youtubevideo_publish_by_user'", 'null': 'True', 'to': "orm['auth.User']"}),
+            'publish_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'youtubevideo_publish_by_user'", 'null': 'True', 'to': "orm['{0}']".format(AUTH_USER_MODEL)}),
             'tags': ('tagging.fields.TagField', [], {'null': 'True'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '200', 'db_index': 'True'}),
             'updated_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'updated_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'youtubevideo_updated_by_user'", 'to': "orm['auth.User']"}),
+            'updated_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'youtubevideo_updated_by_user'", 'to': "orm['{0}']".format(AUTH_USER_MODEL)}),
             'url': ('django.db.models.fields.URLField', [], {'max_length': '200'})
         }
     }
