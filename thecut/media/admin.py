@@ -2,6 +2,7 @@
 from __future__ import absolute_import, unicode_literals
 from django.contrib import admin
 from django.contrib.contenttypes.generic import GenericStackedInline
+from thecut.media import views
 from thecut.media.forms import AttachedMediaItemInlineForm
 from thecut.media.models import AttachedMediaItem
 
@@ -28,11 +29,11 @@ class AttachedMediaItemMixin(admin.ModelAdmin):
     def get_urls(self):
         urlpatterns = patterns('thecut.media.views',
             url(r'^(?:\d+|add)/media/contenttype/$',
-                'admin_contenttype_list'),
+                views.AdminContentTypeList.as_view()),
             url(r'^(?:\d+|add)/media/contenttype/(?P<content_type_pk>\d+)/picker$',
-                'admin_contenttype_object_list'),
+                views.AdminContentTypeObjectList.as_view()),
             url(r'^(?:\d+|add)/media/contenttype/(?P<content_type_pk>\d+)/list$',
-                'admin_contenttype_selected_object_list'),
+                views.AdminContentTypeSelectedObjectList.as_view()),
         )
         urlpatterns += super(AttachedMediaItemMixin, self).get_urls()
         return urlpatterns

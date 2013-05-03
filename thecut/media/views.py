@@ -1,99 +1,163 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+from distutils.version import StrictVersion
+from django import get_version
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.contenttypes.models import ContentType
-from django.http import HttpResponseBadRequest, HttpResponse
-from django.shortcuts import get_object_or_404, render_to_response
-from django.views.generic.list_detail import object_list
-from django.views.decorators.cache import cache_control, cache_page
+from django.http import HttpResponseBadRequest
+from django.shortcuts import get_object_or_404
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
 from tagging.models import Tag, TaggedItem
 from thecut.media import settings, MEDIA_SOURCE_CLASSES
 from thecut.media.forms import MediaSearchForm
 
-
-@cache_control(no_cache=True)
-@cache_page(0)
-@user_passes_test(lambda u: u.has_perm('media.add_attachedmediaitem') or \
-                            u.has_perm('media.change_attachedmediaitem'))
-def admin_contenttype_list(request):
-    if request.is_ajax() or settings.DEBUG:
-        content_types = [ContentType.objects.get_for_model(model) for \
-                         model in MEDIA_SOURCE_CLASSES]
-        return render_to_response(
-            'media/_contenttype_list.html',
-            {'content_type_list': content_types})
-    else:
-        return HttpResponseBadRequest('bad request')
+if StrictVersion(get_version()) < StrictVersion('1.3'):
+    # Pre-Django 1.3 compatibility
+    import cbv as generic
+else:
+    from django.views import generic
 
 
-@cache_control(no_cache=True)
-@cache_page(0)
-@user_passes_test(lambda u: u.has_perm('media.add_attachedmediaitem') or \
-                            u.has_perm('media.change_attachedmediaitem'))
-def admin_contenttype_object_list(request, content_type_pk, queryset=None,
-                                  **kwargs):
-    if request.is_ajax() or settings.DEBUG:
-        content_type = get_object_or_404(ContentType, pk=content_type_pk)
-        model_class = content_type.model_class()
-        object_name = model_class._meta.object_name.lower()
-        template_name = 'admin/{0}/{1}/_picker.html'.format(
-            content_type.app_label, object_name)
+class AdminContentTypeList(generic.TemplateView):
 
-        if queryset is None:
-            queryset = model_class.objects.active()
-        tag_list = Tag.objects.usage_for_queryset(queryset,
-            counts=True)
+    template_name = 'media/_contenttype_list.html'
 
-        form = MediaSearchForm(tag_list, request.GET)
-        valid = form.is_valid()
+    @method_decorator(never_cache)
+    @method_decorator(user_passes_test(
+        lambda u:
+            u.has_perm('media.add_attachedmediaitem') or
+            u.has_perm('media.change_attachedmediaitem')))
+    def dispatch(self, request, *args, **kwargs):
+        if request.is_ajax() or settings.DEBUG:
+            return super(AdminContentTypeList, self).dispatch(
+                request, *args, **kwargs)
+        else:
+            return HttpResponseBadRequest(content_type='text/plain')
 
-        q = form.cleaned_data.get('q', None)
+    def get_content_types(self):
+        return [ContentType.objects.get_for_model(model) for model in
+                MEDIA_SOURCE_CLASSES]
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(AdminContentTypeList, self).get_context_data(
+            *args, **kwargs)
+        context_data.update({'content_type_list': self.get_content_types()})
+        return context_data
+
+
+class AdminContentTypeObjectList(generic.ListView):
+
+    paginate_by = settings.MEDIA_PAGINATE_BY
+
+    @method_decorator(never_cache)
+    @method_decorator(user_passes_test(
+        lambda u: u.has_perm('media.add_attachedmediaitem') or
+                  u.has_perm('media.change_attachedmediaitem')))
+    def dispatch(self, request, *args, **kwargs):
+        if request.is_ajax() or settings.DEBUG:
+            return super(AdminContentTypeObjectList, self).dispatch(
+                request, *args, **kwargs)
+        else:
+            return HttpResponseBadRequest(content_type='text/plain')
+
+    def get_content_type(self):
+        if not hasattr(self, '_content_type'):
+            self._content_type = get_object_or_404(
+                ContentType, pk=self.kwargs.get('content_type_pk'))
+        return self._content_type
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(AdminContentTypeObjectList,
+                             self).get_context_data(*args, **kwargs)
+        context_data.update({'content_type': self.get_content_type(),
+                             'form': self.form})
+        return context_data
+
+    def get_form(self, tags):
+        form = MediaSearchForm(tags, self.request.GET)
+        form.is_valid()
+        return form
+
+    def get_model(self):
+        if not hasattr(self, '_model'):
+            self._model = self.get_content_type().model_class()
+        return self._model
+
+    def get_queryset(self):
+        queryset = self.get_model().objects.active()
+
+        tags = self.get_tags(queryset)
+        form = self.get_form(tags)
+
+        # If a search query has been made, filter queryset some more
+        q = form.cleaned_data.get('q')
         if q:
             queryset = queryset.filter(title__icontains=q)
 
-        selected_tag_pks = form.cleaned_data.get('tags', None)
-        if selected_tag_pks:
+        # If tags have been selected, then filter queryset and form some more
+        selected_tags = form.cleaned_data.get('tags')
+        if selected_tags:
             queryset = TaggedItem.objects.get_intersection_by_model(
-                queryset, Tag.objects.filter(pk__in=selected_tag_pks))
-            tag_list = Tag.objects.usage_for_queryset(queryset, counts=True)
+                queryset, Tag.objects.filter(pk__in=selected_tags))
+            tags = self.get_tags(queryset)
 
-        form = MediaSearchForm(tag_list,
-                               initial={'q': q, 'tags': selected_tag_pks})
+        self.form = MediaSearchForm(
+            tags, initial={'q': q, 'tags': selected_tags})
 
-        extra_context = {'content_type': content_type, 'form': form}
-        kwargs.update({'extra_context': extra_context})
+        return queryset
 
-        kwdefaults = {'paginate_by': settings.MEDIA_PAGINATE_BY,
-                      'template_name': template_name,
-                      'template_object_name': object_name}
-        kwdefaults.update(kwargs)
+    def get_tags(self, queryset):
+        return Tag.objects.usage_for_queryset(queryset, counts=True)
 
-        return object_list(request, queryset, **kwdefaults)
-    else:
-        return HttpResponseBadRequest('Bad request.')
+    def get_template_names(self, *args, **kwargs):
+        return ['admin/{0}/{1}/_picker.html'.format(
+                self.get_model()._meta.app_label,
+                self.get_model()._meta.object_name.lower())]
 
 
-@cache_control(no_cache=True)
-@cache_page(0)
-@user_passes_test(lambda u: u.has_perm('media.add_attachedmediaitem') or \
-                            u.has_perm('media.change_attachedmediaitem'))
-def admin_contenttype_selected_object_list(request, content_type_pk):
-    if request.is_ajax() or settings.DEBUG:
-        content_type = get_object_or_404(ContentType, pk=content_type_pk)
-        model_class = content_type.model_class()
-        object_name = model_class._meta.object_name.lower()
-        template_name = 'admin/{0}/{1}/_list.html'.format(
-            content_type.app_label, object_name)
+class AdminContentTypeSelectedObjectList(generic.ListView):
 
-        pks = request.REQUEST.get('pks', None)
-        pks = pks and pks.split(',') or []
-        object_dictionary = pks and model_class.objects.active().in_bulk(pks) \
-            or {}
+    @method_decorator(never_cache)
+    @method_decorator(user_passes_test(
+        lambda u: u.has_perm('media.add_attachedmediaitem') or
+                  u.has_perm('media.change_attachedmediaitem')))
+    def dispatch(self, request, *args, **kwargs):
+        if request.is_ajax() or settings.DEBUG:
+            return super(AdminContentTypeSelectedObjectList, self).dispatch(
+                request, *args, **kwargs)
+        else:
+            return HttpResponseBadRequest(content_type='text/plain')
 
-        objects = [object_dictionary.get(int(pk)) for pk in pks]
+    def get_content_type(self):
+        if not hasattr(self, '_content_type'):
+            self._content_type = get_object_or_404(
+                ContentType, pk=self.kwargs.get('content_type_pk'))
+        return self._content_type
 
-        return render_to_response(template_name,
-                                  {'{0}_list'.format(object_name): objects,
-                                  'content_type': content_type})
-    else:
-        return HttpResponseBadRequest('Bad request.')
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(AdminContentTypeSelectedObjectList,
+                             self).get_context_data(*args, **kwargs)
+        context_data.update({'content_type': self.get_content_type()})
+        return context_data
+
+    def get_context_object_name(self, object_list):
+        return '{0}_list'.format(self.get_model()._meta.object_name.lower())
+
+    def get_model(self):
+        if not hasattr(self, '_model'):
+            self._model = self.get_content_type().model_class()
+        return self._model
+
+    def get_template_names(self, *args, **kwargs):
+        return ['admin/{0}/{1}/_list.html'.format(
+                self.get_model()._meta.app_label,
+                self.get_model()._meta.object_name.lower())]
+
+    def get_queryset(self):
+        pk_list = filter(bool, self.request.REQUEST.get('pks', '').split(','))
+        objects = self.get_model().objects.active().in_bulk(pk_list)
+        return (objects.get(int(pk)) for pk in pk_list)
+
+    def post(self, *args, **kwargs):
+        return self.get(*args, **kwargs)

@@ -18,7 +18,7 @@ class LatestGalleryFeed(Feed):
 
     def title(self):
         site = Site.objects.get_current()
-        return '%s - Galleries' %(site.name)
+        return '{0} - Galleries'.format(site.name)
 
     def items(self):
         return Gallery.objects.current_site().active().order_by(
