@@ -216,13 +216,13 @@ class AbstractYoutubeVideo(AbstractMediaItem):
         abstract = True
 
     def get_absolute_url(self):
-        return 'http://www.youtube.com/watch?v=%(video_id)s' %(
-            {'video_id': self.get_video_id()})
+        return 'http://www.youtube.com/watch?v={video_id}'.format(
+            video_id=self.get_video_id())
 
     def get_image(self, no_placeholder=False):
         if self.is_processed or no_placeholder:
-            return 'http://img.youtube.com/vi/%(video_id)s/0.jpg' %(
-                {'video_id': self.get_video_id()})
+            return 'http://img.youtube.com/vi/{video_id}/0.jpg'.format(
+                video_id=self.get_video_id())
         else:
             return utils.get_placeholder_image()
 
@@ -272,7 +272,7 @@ class AbstractVimeoVideo(AbstractMediaItem):
 
     def _get_api_data(self):
         base_uri = 'http://vimeo.com/api/v2/'
-        video_uri = '%svideo/%s.json' %(base_uri, self.get_video_id())
+        video_uri = '{0}video/{1}.json'.format(base_uri, self.get_video_id())
         response = urlopen(video_uri)
         return response.read()
 
@@ -284,7 +284,7 @@ class AbstractVimeoVideo(AbstractMediaItem):
 
     def _get_oembed_data(self):
         params = urlencode({'url': self.url})
-        uri = 'http://vimeo.com/api/oembed.json?%s' %(params)
+        uri = 'http://vimeo.com/api/oembed.json?{0}'.format(params)
         response = urlopen(uri)
         return response.read()
 
