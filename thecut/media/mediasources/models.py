@@ -227,10 +227,10 @@ class AbstractYoutubeVideo(AbstractMediaItem):
             return utils.get_placeholder_image()
 
     def get_video_id(self):
-        match = re.match(r'http://youtu.be/([-a-z0-9A-Z_]+)$', self.url)
+        match = re.match(r'https?://youtu.be/([-a-z0-9A-Z_]+)$', self.url)
         if not match:
             match = re.match(
-                r'^http://www.youtube.com/watch\?v=([-a-z0-9A-Z_]+)(?:&{,1}.*)$',
+                r'^https?://www.youtube.com/watch\?v=([-a-z0-9A-Z_]+)(?:&{,1}.*)$',
                 self.url)
         if match:
             return match.groups()[0]
