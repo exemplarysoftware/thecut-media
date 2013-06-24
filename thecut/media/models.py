@@ -25,6 +25,7 @@ class AbstractMediaItem(PublishableResource):
 
     class Meta(PublishableResource.Meta):
         abstract = True
+        ordering = ('-created_at',)
 
     def __str__(self):
         return self.title
