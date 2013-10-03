@@ -12,12 +12,25 @@ import re
 import warnings
 
 
-class AbstractDocument(AbstractMediaItem):
+class IsProcessedMixin(object):
+
+    @property
+    def is_processed(self):
+        warnings.warn('is_processed property is deprecated.',
+                      DeprecationWarning, stacklevel=2)
+        return True
+
+    @is_processed.setter
+    def is_processed(self, value):
+        warnings.warn('is_processed property is deprecated.',
+                      DeprecationWarning, stacklevel=2)
+        pass
+
+
+class AbstractDocument(IsProcessedMixin, AbstractMediaItem):
 
     file = models.FileField(max_length=250,
                             upload_to='uploads/media/documents/%Y/%m/%d')
-    is_processed = models.BooleanField(
-        default=not settings.GENERATE_THUMBNAILS_ON_SAVE)
 
     class Meta(AbstractMediaItem.Meta):
         abstract = True
@@ -39,7 +52,10 @@ class AbstractDocument(AbstractMediaItem):
         return self.file.name.split('/')[-1]
 
     def get_image(self, no_placeholder=False):
-        if self.file and (self.is_processed or no_placeholder):
+        if no_placeholder:
+            warnings.warn('no_placeholder argument is deprecated.',
+                          DeprecationWarning, stacklevel=2)
+        if self.file:
             try:
                 image = get_thumbnail(self.file, '1000x1000', upscale=False)
             except:
@@ -61,7 +77,6 @@ class AbstractDocument(AbstractMediaItem):
             else:
                 if existing.file != self.file:
                     utils.delete_file(self.__class__, existing)
-                    self.is_processed = not settings.GENERATE_THUMBNAILS_ON_SAVE
         return super(AbstractDocument, self).save(*args, **kwargs)
 
 
@@ -69,17 +84,14 @@ class Document(AbstractDocument):
 
     pass
 
-models.signals.post_save.connect(utils.generate_document_thumbnails,
-                                 sender=Document)
+models.signals.post_save.connect(utils.generate_thumbnails, sender=Document)
 models.signals.pre_delete.connect(utils.delete_file, sender=Document)
 
 
-class AbstractImage(AbstractMediaItem):
+class AbstractImage(IsProcessedMixin, AbstractMediaItem):
 
     file = models.ImageField(max_length=250,
                              upload_to='uploads/media/images/%Y/%m/%d')
-    is_processed = models.BooleanField(
-        default=not settings.GENERATE_THUMBNAILS_ON_SAVE)
 
     class Meta(AbstractMediaItem.Meta):
         abstract = True
@@ -101,10 +113,10 @@ class AbstractImage(AbstractMediaItem):
         return self.file.name.split('/')[-1]
 
     def get_image(self, no_placeholder=False):
-        if self.file and (self.is_processed or no_placeholder):
-            return self.file
-        else:
-            return utils.get_placeholder_image()
+        if no_placeholder:
+            warnings.warn('no_placeholder argument is deprecated.',
+                          DeprecationWarning, stacklevel=2)
+        return self.file
 
     def get_mime_type(self):
         mime = guess_type(self.file.path)
@@ -119,7 +131,6 @@ class AbstractImage(AbstractMediaItem):
             else:
                 if existing.file != self.file:
                     utils.delete_file(self.__class__, existing)
-                    self.is_processed = not settings.GENERATE_THUMBNAILS_ON_SAVE
         return super(AbstractImage, self).save(*args, **kwargs)
 
 
@@ -127,16 +138,14 @@ class Image(AbstractImage):
 
     pass
 
-models.signals.post_save.connect(utils.generate_image_thumbnails, sender=Image)
+models.signals.post_save.connect(utils.generate_thumbnails, sender=Image)
 models.signals.pre_delete.connect(utils.delete_file, sender=Image)
 
 
-class AbstractVideo(AbstractMediaItem):
+class AbstractVideo(IsProcessedMixin, AbstractMediaItem):
 
     file = models.FileField(max_length=250,
                             upload_to='uploads/media/videos/%Y/%m/%d')
-    is_processed = models.BooleanField(
-        default=not settings.GENERATE_THUMBNAILS_ON_SAVE)
     #image = models.ImageField(max_length=250,
     #                          upload_to='uploads/media/videos/%Y/%m/%d',
     #                          blank=True, default='')
@@ -160,11 +169,8 @@ class AbstractVideo(AbstractMediaItem):
     def get_filename(self):
         return self.file.name.split('/')[-1]
 
-    #def get_image(self, no_placeholder=False):
-    #    if self.file and (self.is_processed or no_placeholder):
-    #        return self.file
-    #    else:
-    #        return utils.get_placeholder_image()
+    #def get_image(self):
+    #    return self.file
 
     def get_mime_type(self):
         mime = guess_type(self.file.path)
@@ -194,7 +200,6 @@ class AbstractVideo(AbstractMediaItem):
             else:
                 if existing.file != self.file:
                     utils.delete_file(self.__class__, existing)
-                    self.is_processed = not settings.GENERATE_THUMBNAILS_ON_SAVE
         return super(AbstractVideo, self).save(*args, **kwargs)
 
 
@@ -202,15 +207,13 @@ class Video(AbstractVideo):
 
     pass
 
-models.signals.post_save.connect(utils.generate_video_thumbnails, sender=Video)
+models.signals.post_save.connect(utils.generate_thumbnails, sender=Video)
 models.signals.pre_delete.connect(utils.delete_file, sender=Video)
 
 
-class AbstractYoutubeVideo(AbstractMediaItem):
+class AbstractYoutubeVideo(IsProcessedMixin, AbstractMediaItem):
 
     url = models.URLField()
-    is_processed = models.BooleanField(
-        default=not settings.GENERATE_THUMBNAILS_ON_SAVE)
 
     class Meta(AbstractMediaItem.Meta):
         abstract = True
@@ -220,11 +223,11 @@ class AbstractYoutubeVideo(AbstractMediaItem):
             video_id=self.get_video_id())
 
     def get_image(self, no_placeholder=False):
-        if self.is_processed or no_placeholder:
-            return 'http://img.youtube.com/vi/{video_id}/0.jpg'.format(
-                video_id=self.get_video_id())
-        else:
-            return utils.get_placeholder_image()
+        if no_placeholder:
+            warnings.warn('no_placeholder argument is deprecated.',
+                          DeprecationWarning, stacklevel=2)
+        return 'http://img.youtube.com/vi/{video_id}/0.jpg'.format(
+            video_id=self.get_video_id())
 
     def get_video_id(self):
         match = re.match(r'https?://youtu.be/([-a-z0-9A-Z_]+)$', self.url)
@@ -240,15 +243,13 @@ class YoutubeVideo(AbstractYoutubeVideo):
 
     pass
 
-models.signals.post_save.connect(utils.generate_youtube_video_thumbnails,
+models.signals.post_save.connect(utils.generate_thumbnails,
                                  sender=YoutubeVideo)
 
 
-class AbstractVimeoVideo(AbstractMediaItem):
+class AbstractVimeoVideo(IsProcessedMixin, AbstractMediaItem):
 
     url = models.URLField(help_text='e.g. http://vimeo.com/123456')
-    is_processed = models.BooleanField(
-        default=not settings.GENERATE_THUMBNAILS_ON_SAVE)
     _api_data = models.TextField(blank=True, default='', editable=False)
     _oembed_data = models.TextField(blank=True, default='', editable=False)
 
@@ -259,10 +260,10 @@ class AbstractVimeoVideo(AbstractMediaItem):
         return self.url
 
     def get_image(self, no_placeholder=False):
-        if self.is_processed or no_placeholder:
-            return self.api_data['thumbnail_large']
-        else:
-            return utils.get_placeholder_image()
+        if no_placeholder:
+            warnings.warn('no_placeholder argument is deprecated.',
+                          DeprecationWarning, stacklevel=2)
+        return self.api_data['thumbnail_large']
 
     @property
     def api_data(self):
@@ -310,11 +311,10 @@ class VimeoVideo(AbstractVimeoVideo):
 
     pass
 
-models.signals.post_save.connect(utils.generate_vimeo_video_thumbnails,
-                                 sender=VimeoVideo)
+models.signals.post_save.connect(utils.generate_thumbnails, sender=VimeoVideo)
 
 
-class AbstractAudio(AbstractMediaItem):
+class AbstractAudio(IsProcessedMixin, AbstractMediaItem):
 
     file = models.FileField(max_length=250,
                             upload_to='uploads/media/audios/%Y/%m/%d')
@@ -351,7 +351,6 @@ class AbstractAudio(AbstractMediaItem):
             else:
                 if existing.file != self.file:
                     utils.delete_file(self.__class__, existing)
-                    self.is_processed = not settings.GENERATE_THUMBNAILS_ON_SAVE
         return super(AbstractAudio, self).save(*args, **kwargs)
 
 

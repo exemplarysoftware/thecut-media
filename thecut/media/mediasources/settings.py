@@ -1,61 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 from django.conf import settings
-from sorl.thumbnail.conf import settings as sorl_settings
-
-
-CELERY = 'djcelery' in settings.INSTALLED_APPS
-
-GENERATE_THUMBNAILS_ON_SAVE = CELERY and getattr(
-    settings, 'MEDIASOURCES_GENERATE_THUMBNAILS_ON_SAVE', not settings.DEBUG)
-
-STATIC_ROOT = getattr(settings, 'STATIC_ROOT', settings.MEDIA_ROOT)
-
-STATICFILES_STORAGE = getattr(settings, 'STATICFILES_STORAGE', False)
-
-PLACEHOLDER_IMAGE_PATH = getattr(
-    settings, 'MEDIASOURCES_PLACEHOLDER_IMAGE_PATH',
-    'media/placeholder.{0}'.format('svg' if not 'pil_engine' in
-                                   sorl_settings.THUMBNAIL_ENGINE else 'png'))
-
-ADMIN_IMAGE_THUMBNAILS = getattr(
-    settings, 'MEDIASOURCES_ADMIN_IMAGE_THUMBNAILS', [
-    # List of tuples containing geometry_size and options dict
-    ('60x45', {'crop': 'center'}),
-    ('100x75', {}),
-    ('140x106', {'crop': 'center'}),
-])
-
-IMAGE_THUMBNAILS = ADMIN_IMAGE_THUMBNAILS + getattr(
-    settings, 'MEDIASOURCES_IMAGE_THUMBNAILS', [])
-
-
-ADMIN_DOCUMENT_THUMBNAILS = getattr(
-    settings, 'MEDIASOURCES_ADMIN_DOCUMENT_THUMBNAILS', [
-    # List of tuples containing geometry_size and options dict
-    ('100x75', {}),
-])
-
-DOCUMENT_THUMBNAILS = ADMIN_DOCUMENT_THUMBNAILS + getattr(
-    settings, 'MEDIASOURCES_DOCUMENT_THUMBNAILS', [])
-
-
-ADMIN_VIDEO_THUMBNAILS = getattr(
-    settings, 'MEDIASOURCES_ADMIN_VIDEO_THUMBNAILS', [
-    # List of tuples containing geometry_size and options dict
-    ('60x45', {'crop': 'center'}),
-    ('100x75', {}),
-    ('140x106', {'crop': 'center'}),
-])
-
-VIDEO_THUMBNAILS = ADMIN_VIDEO_THUMBNAILS + getattr(
-    settings, 'MEDIASOURCES_VIDEO_THUMBNAILS', [])
-
-YOUTUBE_VIDEO_THUMBNAILS = ADMIN_VIDEO_THUMBNAILS + getattr(
-    settings, 'MEDIASOURCES_YOUTUBE_VIDEO_THUMBNAILS', [])
-
-VIMEO_VIDEO_THUMBNAILS = ADMIN_VIDEO_THUMBNAILS + getattr(
-    settings, 'MEDIASOURCES_VIMEO_VIDEO_THUMBNAILS', [])
+from thecut.media import settings as media_settings
 
 
 try:
@@ -67,3 +13,38 @@ else:
 
 USE_EXIFTOOL = EXIFTOOL and getattr(settings, 'MEDIASOURCES_USE_EXIFTOOL',
                                     True)
+
+
+QUEUE_THUMBNAILS = media_settings.QUEUE_THUMBNAILS
+
+
+# Deprecated settings - moved to thecut.media.
+
+CELERY = media_settings.CELERY
+
+STATIC_ROOT = media_settings.STATIC_ROOT
+
+STATICFILES_STORAGE = media_settings.STATICFILES_STORAGE
+
+PLACEHOLDER_IMAGE_PATH = media_settings.PLACEHOLDER_IMAGE_PATH
+
+
+# Deprecated settings - no longer in use.
+
+GENERATE_THUMBNAILS_ON_SAVE = media_settings.QUEUE_THUMBNAILS
+
+ADMIN_IMAGE_THUMBNAILS = media_settings.PREGENERATE_THUMBNAIL_SIZES
+
+IMAGE_THUMBNAILS = media_settings.PREGENERATE_THUMBNAIL_SIZES
+
+ADMIN_DOCUMENT_THUMBNAILS = media_settings.PREGENERATE_THUMBNAIL_SIZES
+
+DOCUMENT_THUMBNAILS = media_settings.PREGENERATE_THUMBNAIL_SIZES
+
+ADMIN_VIDEO_THUMBNAILS = media_settings.PREGENERATE_THUMBNAIL_SIZES
+
+VIDEO_THUMBNAILS = media_settings.PREGENERATE_THUMBNAIL_SIZES
+
+YOUTUBE_VIDEO_THUMBNAILS = media_settings.PREGENERATE_THUMBNAIL_SIZES
+
+VIMEO_VIDEO_THUMBNAILS = media_settings.PREGENERATE_THUMBNAIL_SIZES

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 from django.contrib.contenttypes.models import ContentType
+from django.core.files.images import ImageFile
 from django.db.models import get_models
 from thecut.media import settings
 
@@ -31,3 +32,18 @@ def get_media_source_content_types():
     """Returns list of tuples containing model and content type."""
     return [(model, ContentType.objects.get_for_model(model)) for model in \
             get_media_source_models()]
+
+
+def get_placeholder_image():
+    if settings.STATICFILES_STORAGE:
+        from django.core.files.storage import get_storage_class
+        storage_class = get_storage_class(settings.STATICFILES_STORAGE)
+        storage = storage_class()
+        placeholder = storage.open(settings.PLACEHOLDER_IMAGE_PATH)
+        image = ImageFile(placeholder)
+        image.storage = storage
+    else:
+        placeholder = open('{0}/{1}'.format(settings.STATIC_ROOT,
+                                            settings.PLACEHOLDER_IMAGE_PATH))
+        image = ImageFile(placeholder)
+    return image
