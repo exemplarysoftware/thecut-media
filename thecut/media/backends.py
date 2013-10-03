@@ -35,6 +35,7 @@ class ThumbnailBackend(base.ThumbnailBackend):
 
         else:
             # Queue thumbnail generation, and return placeholder
+            default.kvstore.delete(thumbnail, delete_thumbnails=False)
             tasks.generate_thumbnail.delay(file_, geometry_string, options)
             placeholder = utils.get_placeholder_image()
             return super(ThumbnailBackend, self).get_thumbnail(
