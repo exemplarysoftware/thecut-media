@@ -1,23 +1,16 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 from django.core.files.uploadedfile import TemporaryUploadedFile
+from thecut.media import utils as media_utils
 from thecut.media.mediasources import settings
+import warnings
 
 
-def get_placeholder_image():
-    from django.core.files.images import ImageFile
-    if settings.STATICFILES_STORAGE:
-        from django.core.files.storage import get_storage_class
-        storage_class = get_storage_class(settings.STATICFILES_STORAGE)
-        storage = storage_class()
-        placeholder = storage.open(settings.PLACEHOLDER_IMAGE_PATH)
-        image = ImageFile(placeholder)
-        image.storage = storage
-    else:
-        placeholder = open('{0}/{1}'.format(settings.STATIC_ROOT,
-                                            settings.PLACEHOLDER_IMAGE_PATH))
-        image = ImageFile(placeholder)
-    return image
+def get_placeholder_image(*args, **kwargs):
+    """Deprecated - moved to thecut.media.utils."""
+    warnings.warn('This function has been moved to thecut.media.utils.',
+                  DeprecationWarning, stacklevel=2)
+    return media_utils.get_placeholder_image(*args, **kwargs)
 
 
 def generate_thumbnails(instance, thumbnail_sizes):

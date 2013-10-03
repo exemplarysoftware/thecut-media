@@ -14,6 +14,15 @@ def generate_thumbnail(content_type_pk, object_pk, geometry_string, options):
                   **options)
     logger.info('Generated {0} thumbnail for {0}'.format(geometry_string, obj))
 
+#@task(ignore_result=True)
+#def generate_thumbnail(content_type_pk, object_pk, geometry_string, options):
+#    """Deprecated - moved to thecut.media.tasks."""
+#    warnings.warn('This function has been moved to thecut.media.tasks.',
+#                  DeprecationWarning, stacklevel=2)
+#    from thecut.media import tasks as media_tasks
+#    media_tasks.generate_thumbnail(content_type_pk, object_pk, geometry_string,
+#                                   options)
+
 
 @task(ignore_result=True)
 def generate_thumbnails(instance, thumbnail_sizes):

@@ -101,10 +101,10 @@ class AbstractImage(AbstractMediaItem):
         return self.file.name.split('/')[-1]
 
     def get_image(self, no_placeholder=False):
-        if self.file and (self.is_processed or no_placeholder):
-            return self.file
-        else:
-            return utils.get_placeholder_image()
+        #if self.file and (self.is_processed or no_placeholder):
+        return self.file
+        #else:
+        #    return utils.get_placeholder_image()
 
     def get_mime_type(self):
         mime = guess_type(self.file.path)
