@@ -6,42 +6,10 @@ from thecut.media.mediasources import settings
 import warnings
 
 
-def get_placeholder_image(*args, **kwargs):
-    """Deprecated - moved to thecut.media.utils."""
-    warnings.warn('This function has been moved to thecut.media.utils.',
-                  DeprecationWarning, stacklevel=2)
-    return media_utils.get_placeholder_image(*args, **kwargs)
-
-
-def generate_thumbnails(instance, thumbnail_sizes):
-    """Queue tasks to generate required thumbnails."""
-    from thecut.media.mediasources import tasks
-    tasks.generate_thumbnails.delay(instance, thumbnail_sizes)
-
-
-def generate_image_thumbnails(sender, instance, created, **kwargs):
-    if not instance.is_processed and settings.GENERATE_THUMBNAILS_ON_SAVE:
-        generate_thumbnails(instance, settings.IMAGE_THUMBNAILS)
-
-
-def generate_document_thumbnails(sender, instance, created, **kwargs):
-    if not instance.is_processed and settings.GENERATE_THUMBNAILS_ON_SAVE:
-        generate_thumbnails(instance, settings.DOCUMENT_THUMBNAILS)
-
-
-def generate_video_thumbnails(sender, instance, created, **kwargs):
-    if not instance.is_processed and settings.GENERATE_THUMBNAILS_ON_SAVE:
-        generate_thumbnails(instance, settings.VIDEO_THUMBNAILS)
-
-
-def generate_youtube_video_thumbnails(sender, instance, created, **kwargs):
-    if not instance.is_processed and settings.GENERATE_THUMBNAILS_ON_SAVE:
-        generate_thumbnails(instance, settings.YOUTUBE_VIDEO_THUMBNAILS)
-
-
-def generate_vimeo_video_thumbnails(sender, instance, created, **kwargs):
-    if not instance.is_processed and settings.GENERATE_THUMBNAILS_ON_SAVE:
-        generate_thumbnails(instance, settings.VIMEO_VIDEO_THUMBNAILS)
+def generate_thumbnails(sender, instance, created, **kwargs):
+    if created and settings.QUEUE_THUMBNAILS:
+        from thecut.media import tasks
+        tasks.generate_thumbnails(instance.get_image())
 
 
 def delete_file(sender, instance, **kwargs):
@@ -69,3 +37,48 @@ def get_metadata(uploaded_file):
         metadata = et.get_metadata(temp_file.temporary_file_path())
 
     return metadata
+
+
+## Deprecated functions
+
+
+def get_placeholder_image(*args, **kwargs):
+    """Deprecated - moved to thecut.media.utils."""
+    warnings.warn('This function has been moved to thecut.media.utils.',
+                  DeprecationWarning, stacklevel=2)
+    return media_utils.get_placeholder_image(*args, **kwargs)
+
+
+def generate_image_thumbnails(sender, instance, created, **kwargs):
+    """Deprecated - replaced by generate_thumbnails."""
+    warnings.warn('This function has been replaced by generate_thumbnails.',
+                  DeprecationWarning, stacklevel=2)
+    return generate_thumbnails(sender, instance, created, **kwargs)
+
+
+def generate_document_thumbnails(sender, instance, created, **kwargs):
+    """Deprecated - replaced by generate_thumbnails."""
+    warnings.warn('This function has been replaced by generate_thumbnails.',
+                  DeprecationWarning, stacklevel=2)
+    return generate_thumbnails(sender, instance, created, **kwargs)
+
+
+def generate_video_thumbnails(sender, instance, created, **kwargs):
+    """Deprecated - replaced by generate_thumbnails."""
+    warnings.warn('This function has been replaced by generate_thumbnails.',
+                  DeprecationWarning, stacklevel=2)
+    return generate_thumbnails(sender, instance, created, **kwargs)
+
+
+def generate_youtube_video_thumbnails(sender, instance, created, **kwargs):
+    """Deprecated - replaced by generate_thumbnails."""
+    warnings.warn('This function has been replaced by generate_thumbnails.',
+                  DeprecationWarning, stacklevel=2)
+    return generate_thumbnails(sender, instance, created, **kwargs)
+
+
+def generate_vimeo_video_thumbnails(sender, instance, created, **kwargs):
+    """Deprecated - replaced by generate_thumbnails."""
+    warnings.warn('This function has been replaced by generate_thumbnails.',
+                  DeprecationWarning, stacklevel=2)
+    return generate_thumbnails(sender, instance, created, **kwargs)

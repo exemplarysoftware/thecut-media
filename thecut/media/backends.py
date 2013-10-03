@@ -36,9 +36,6 @@ class ThumbnailBackend(base.ThumbnailBackend):
         else:
             # Queue thumbnail generation, and return placeholder
             tasks.generate_thumbnail.delay(file_, geometry_string, options)
-
-            # Re-run the get_thumbnail method from standard backend, but with
-            # placeholder file.
             placeholder = utils.get_placeholder_image()
             return super(ThumbnailBackend, self).get_thumbnail(
                 placeholder, geometry_string, **options)

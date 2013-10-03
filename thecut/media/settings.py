@@ -27,6 +27,17 @@ QUEUE_THUMBNAILS = CELERY and getattr(
     # Also check old setting name
     getattr(settings, 'MEDIASOURCES_GENERATE_THUMBNAILS_ON_SAVE', not DEBUG))
 
+ADMIN_THUMBNAIL_SIZES = getattr(
+    settings, 'MEDIA_ADMIN_THUMBNAIL_SIZES', [
+    # List of tuples containing geometry_size and options dict
+    ('60x45', {'crop': 'center'}),
+    ('100x75', {}),
+    ('140x106', {'crop': 'center'}),
+])
+
+PREGENERATE_THUMBNAIL_SIZES = ADMIN_THUMBNAIL_SIZES + getattr(
+    settings, 'MEDIA_PREGENERATE_THUMBNAIL_SIZES', [])
+
 STATIC_ROOT = getattr(settings, 'STATIC_ROOT', settings.MEDIA_ROOT)
 
 STATICFILES_STORAGE = getattr(settings, 'STATICFILES_STORAGE', False)
