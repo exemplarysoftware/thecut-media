@@ -54,13 +54,9 @@ class AttachedMediaItem(OrderMixin, models.Model):
         return '{0} - {1}: {2}'.format(self.order, self.content_type,
                                        self.content_object)
 
-
-# Let's be helpful, and add media generic relation field to Content model.
-Content.add_to_class(
-    'media',
-    generic.GenericRelation('media.AttachedMediaItem',
-                            content_type_field='parent_content_type',
-                            object_id_field='parent_object_id')
-)
-
 models.signals.pre_delete.connect(receivers.delete_media_attachments)
+
+
+# Let's be helpful, and add media generic relation field to anything that
+# extends the Content model.
+models.signals.class_prepared.connect(receivers.add_media_generic_relation)
