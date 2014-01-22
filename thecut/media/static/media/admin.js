@@ -38,7 +38,7 @@ media.jQuery(document).ready(function($) {
                     event.preventDefault();
                     return false;
                 });
-                inline_group.find('.media-content_type_list a').first().click();
+                inline_group.find('.media-content_type_list a:visible').first().click();
             },
         });
     };
