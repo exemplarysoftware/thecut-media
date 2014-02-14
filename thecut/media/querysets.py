@@ -26,12 +26,6 @@ class AttachedMediaItemQuerySet(models.query.QuerySet):
             attachments__pk__in=pks).order_by('attachments__order')
 
     def get_image(self):
-        # TODO: Decide if this should only return the first image
-        # from only images, or if it should return the first image
-        # from any object (e.g. document/video).
         images = self.images()[:1]
         if images:
             return images[0].get_image()
-        else:
-            items = self.all()[:1]
-            return items and items[0].content_object.get_image()
