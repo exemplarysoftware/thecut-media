@@ -54,9 +54,9 @@ class AudioAdmin(MediaUploadMixin, AuthorshipMixin, admin.ModelAdmin):
                         'classes': ('collapse',)}),
     )
     form = AudioAdminForm
-    list_display = ('title', 'publish_at', 'is_enabled', 'is_featured',
+    list_display = ('title', 'updated_at', 'is_enabled', 'is_featured',
                     preview_image)
-    list_filter = ('publish_at', 'is_enabled', 'is_featured')
+    list_filter = ('updated_at', 'is_enabled', 'is_featured')
     readonly_fields = ('created_at', 'created_by', 'updated_at', 'updated_by')
     search_fields = ('title',)
 
@@ -74,9 +74,9 @@ class DocumentAdmin(MediaUploadMixin, AuthorshipMixin, admin.ModelAdmin):
                         'classes': ('collapse',)}),
     )
     form = DocumentAdminForm
-    list_display = ('title', 'publish_at', 'is_enabled', 'is_featured',
+    list_display = ('title', 'updated_at', 'is_enabled', 'is_featured',
                     preview_image)
-    list_filter = ('publish_at', 'is_enabled', 'is_featured')
+    list_filter = ('updated_at', 'is_enabled', 'is_featured')
     readonly_fields = ('created_at', 'created_by', 'updated_at', 'updated_by')
     search_fields = ('title',)
 
@@ -94,9 +94,9 @@ class ImageAdmin(MediaUploadMixin, AuthorshipMixin, admin.ModelAdmin):
                         'classes': ('collapse',)}),
     )
     form = ImageAdminForm
-    list_display = ('title', 'publish_at', 'is_enabled', 'is_featured',
+    list_display = ('title', 'updated_at', 'is_enabled', 'is_featured',
                     preview_image)
-    list_filter = ('publish_at', 'is_enabled', 'is_featured')
+    list_filter = ('updated_at', 'is_enabled', 'is_featured')
     readonly_fields = ('created_at', 'created_by', 'updated_at', 'updated_by')
     search_fields = ('title',)
 
@@ -114,9 +114,9 @@ class VideoAdmin(MediaUploadMixin, AuthorshipMixin, admin.ModelAdmin):
                         'classes': ('collapse',)}),
     )
     form = VideoAdminForm
-    list_display = ('title', 'publish_at', 'is_enabled', 'is_featured',
+    list_display = ('title', 'updated_at', 'is_enabled', 'is_featured',
                     preview_image)
-    list_filter = ('publish_at', 'is_enabled', 'is_featured')
+    list_filter = ('updated_at', 'is_enabled', 'is_featured')
     readonly_fields = ('created_at', 'created_by', 'updated_at', 'updated_by')
     search_fields = ('title',)
 
@@ -134,9 +134,9 @@ class YoutubeVideoAdmin(AuthorshipMixin, admin.ModelAdmin):
                         'classes': ('collapse',)}),
     )
     form = YoutubeVideoAdminForm
-    list_display = ('title', 'publish_at', 'is_enabled', 'is_featured',
+    list_display = ('title', 'updated_at', 'is_enabled', 'is_featured',
                     preview_image)
-    list_filter = ('publish_at', 'is_enabled', 'is_featured')
+    list_filter = ('updated_at', 'is_enabled', 'is_featured')
     readonly_fields = ('created_at', 'created_by', 'updated_at', 'updated_by')
     search_fields = ('title',)
 
@@ -154,9 +154,9 @@ class VimeoVideoAdmin(AuthorshipMixin, admin.ModelAdmin):
                         'classes': ('collapse',)}),
     )
     form = VimeoVideoAdminForm
-    list_display = ('title', 'publish_at', 'is_enabled', 'is_featured',
+    list_display = ('title', 'updated_at', 'is_enabled', 'is_featured',
         preview_image)
-    list_filter = ('publish_at', 'is_enabled', 'is_featured')
+    list_filter = ('updated_at', 'is_enabled', 'is_featured')
     readonly_fields = ('created_at', 'created_by', 'updated_at', 'updated_by')
     search_fields = ('title',)
 
