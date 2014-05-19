@@ -5,7 +5,7 @@ from django.db import models
 from django.utils import simplejson
 from mimetypes import guess_type
 from sorl.thumbnail import get_thumbnail
-from thecut.media.mediasources import settings, utils
+from thecut.media.mediasources import utils
 from thecut.media.models import AbstractMediaItem
 from urllib import urlencode, urlopen
 import re
@@ -27,23 +27,31 @@ class IsProcessedMixin(object):
         pass
 
 
-class AbstractDocument(IsProcessedMixin, AbstractMediaItem):
+class FileFieldLengthMixin(object):
+
+    def clean(self, *args, **kwargs):
+        super(FileFieldLengthMixin, self).clean(*args, **kwargs)
+
+        # Check file names against lengths
+        for field in self._meta.fields:
+            if field.name not in kwargs.get('exclude', []) and \
+                    isinstance(field, models.FileField):
+                bound_field = getattr(self, field.name)
+                length = len(field.generate_filename(self, bound_field.name))
+                if length > field.max_length:
+                    raise ValidationError(
+                        '{0} name is too long. Rename the file to have a '
+                        'shorter name before uploading.'.format(field.name))
+
+
+class AbstractDocument(IsProcessedMixin, FileFieldLengthMixin,
+                       AbstractMediaItem):
 
     file = models.FileField(max_length=250,
                             upload_to='uploads/media/documents/%Y/%m/%d')
 
     class Meta(AbstractMediaItem.Meta):
         abstract = True
-
-    def clean(self, *args, **kwargs):
-        super(AbstractDocument, self).clean(*args, **kwargs)
-        if not 'file' in kwargs.get('exclude', []):
-            length = len(self.file.field.generate_filename(
-                self, self.file.name))
-            if length > self.file.field.max_length:
-                raise ValidationError(
-                    'Document filename is too long, please rename the file to '
-                    'a shorter name before uploading.')
 
     def get_absolute_url(self):
         return self.file.url
@@ -88,23 +96,13 @@ models.signals.post_save.connect(utils.generate_thumbnails, sender=Document)
 models.signals.pre_delete.connect(utils.delete_file, sender=Document)
 
 
-class AbstractImage(IsProcessedMixin, AbstractMediaItem):
+class AbstractImage(IsProcessedMixin, FileFieldLengthMixin, AbstractMediaItem):
 
     file = models.ImageField(max_length=250,
                              upload_to='uploads/media/images/%Y/%m/%d')
 
     class Meta(AbstractMediaItem.Meta):
         abstract = True
-
-    def clean(self, *args, **kwargs):
-        super(AbstractImage, self).clean(*args, **kwargs)
-        if not 'file' in kwargs.get('exclude', []):
-            length = len(self.file.field.generate_filename(
-                self, self.file.name))
-            if length > self.file.field.max_length:
-                raise ValidationError(
-                    'Image filename is too long, please rename the file to a '
-                    'shorter name before uploading.')
 
     def get_absolute_url(self):
         return self.file.url
@@ -142,7 +140,7 @@ models.signals.post_save.connect(utils.generate_thumbnails, sender=Image)
 models.signals.pre_delete.connect(utils.delete_file, sender=Image)
 
 
-class AbstractVideo(IsProcessedMixin, AbstractMediaItem):
+class AbstractVideo(IsProcessedMixin, FileFieldLengthMixin, AbstractMediaItem):
 
     file = models.FileField(max_length=250,
                             upload_to='uploads/media/videos/%Y/%m/%d')
@@ -152,16 +150,6 @@ class AbstractVideo(IsProcessedMixin, AbstractMediaItem):
 
     class Meta(AbstractMediaItem.Meta):
         abstract = True
-
-    def clean(self, *args, **kwargs):
-        super(AbstractVideo, self).clean(*args, **kwargs)
-        if not 'file' in kwargs.get('exclude', []):
-            length = len(self.file.field.generate_filename(
-                self, self.file.name))
-            if length > self.file.field.max_length:
-                raise ValidationError(
-                    'Video filename is too long, please rename the file to a '
-                    'shorter name before uploading.')
 
     def get_absolute_url(self):
         return self.file.url
@@ -314,23 +302,13 @@ class VimeoVideo(AbstractVimeoVideo):
 models.signals.post_save.connect(utils.generate_thumbnails, sender=VimeoVideo)
 
 
-class AbstractAudio(IsProcessedMixin, AbstractMediaItem):
+class AbstractAudio(IsProcessedMixin, FileFieldLengthMixin, AbstractMediaItem):
 
     file = models.FileField(max_length=250,
                             upload_to='uploads/media/audios/%Y/%m/%d')
 
     class Meta(AbstractMediaItem.Meta):
         abstract = True
-
-    def clean(self, *args, **kwargs):
-        super(AbstractAudio, self).clean(*args, **kwargs)
-        if not 'file' in kwargs.get('exclude', []):
-            length = len(self.file.field.generate_filename(self,
-                self.file.name))
-            if length > self.file.field.max_length:
-                raise ValidationError(
-                    'Audio filename is too long, please rename the file to a '
-                    'shorter name before uploading.')
 
     def get_absolute_url(self):
         return self.file.url
