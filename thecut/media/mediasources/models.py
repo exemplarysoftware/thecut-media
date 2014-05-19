@@ -4,7 +4,6 @@ from . import content_types, utils
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import simplejson
-from mimetypes import guess_type
 from sorl.thumbnail import get_thumbnail
 from thecut.media.models import AbstractMediaItem
 from urllib import urlencode, urlopen
@@ -52,16 +51,17 @@ class FileMixin(FileFieldLengthMixin, object):
     def clean(self, *args, **kwargs):
         super(FileMixin, self).clean(*args, **kwargs)
 
-        if 'file' not in kwargs.get('exclude', []):
-            if self.file and self.get_content_type() not in self.content_types:
-                raise ValidationError('This file type is not supported.')
+        if 'file' not in kwargs.get('exclude', []) and self.file:
+            content_type = self.get_content_type()
+            if content_type not in self.content_types:
+                raise ValidationError(
+                    '"{0}" is not a supported file type.'.format(content_type))
 
     def get_absolute_url(self):
         return self.file.url
 
     def get_content_type(self):
-        mime = guess_type(self.file.path)
-        return mime[0] if mime else None
+        return utils.get_content_type(self.file)
 
     def get_filename(self):
         return self.file.name.split('/')[-1]

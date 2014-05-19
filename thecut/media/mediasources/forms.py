@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+from .utils import get_content_type
 from django import forms
 from tagging.forms import TagField
 from thecut.media.widgets import MultipleFileInput
@@ -72,8 +73,11 @@ class MediaUploadForm(forms.Form):
 
     def clean_files(self, *args, **kwargs):
         files = self.cleaned_data['files']
-        if self.content_types is not None:
+        if self.files and self.content_types is not None:
             for upload in self.files.getlist('files'):
-                if upload.content_type not in self.content_types:
-                    raise forms.ValidationError('File type is not supported.')
+                content_type = get_content_type(upload)
+                if content_type not in self.content_types:
+                    raise forms.ValidationError(
+                        '"{0}" is not a supported file type.'.format(
+                            content_type))
         return files
