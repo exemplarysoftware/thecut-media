@@ -52,9 +52,11 @@ class MediaUploadForm(forms.Form):
 
     files = forms.FileField(
         widget=MultipleFileInput(attrs={'required': 'required'}))
+
     title = forms.CharField(
         required=False, max_length=200,
         widget=forms.TextInput(attrs={'class': 'vTextField'}))
+
     tags = TagField(required=False, help_text='Separate tags with spaces, '
                     'put quotes around multiple-word tags.',
                     widget=forms.TextInput(attrs={'class': 'vTextField'}))
@@ -63,3 +65,15 @@ class MediaUploadForm(forms.Form):
         css = {'all': ('media/mediasources-mediauploadform.css',)}
         js = ('media/jquery.js', 'media/jquery.init.js',
               'media/mediasources-mediauploadform.js')
+
+    def __init__(self, *args, **kwargs):
+        self.content_types = kwargs.pop('content_types', None)
+        return super(MediaUploadForm, self).__init__(*args, **kwargs)
+
+    def clean_files(self, *args, **kwargs):
+        files = self.cleaned_data['files']
+        if self.content_types is not None:
+            for upload in self.files.getlist('files'):
+                if upload.content_type not in self.content_types:
+                    raise forms.ValidationError('File type is not supported.')
+        return files

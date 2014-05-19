@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+from . import content_types, utils
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import simplejson
 from mimetypes import guess_type
 from sorl.thumbnail import get_thumbnail
-from thecut.media.mediasources import utils
 from thecut.media.models import AbstractMediaItem
 from urllib import urlencode, urlopen
 import re
@@ -44,20 +44,53 @@ class FileFieldLengthMixin(object):
                         'shorter name before uploading.'.format(field.name))
 
 
-class AbstractDocument(IsProcessedMixin, FileFieldLengthMixin,
-                       AbstractMediaItem):
+class FileMixin(FileFieldLengthMixin, object):
+    # Assumes FileField with name of 'file' on model.
 
-    file = models.FileField(max_length=250,
-                            upload_to='uploads/media/documents/%Y/%m/%d')
+    content_types = []
 
-    class Meta(AbstractMediaItem.Meta):
-        abstract = True
+    def clean(self, *args, **kwargs):
+        super(FileMixin, self).clean(*args, **kwargs)
+
+        if 'file' not in kwargs.get('exclude', []):
+            if self.file and self.get_content_type() not in self.content_types:
+                raise ValidationError('This file type is not supported.')
 
     def get_absolute_url(self):
         return self.file.url
 
+    def get_content_type(self):
+        mime = guess_type(self.file.path)
+        return mime[0] if mime else None
+
     def get_filename(self):
         return self.file.name.split('/')[-1]
+
+    def get_mime_type(self):
+        # Will be deprecated
+        return self.get_content_type()
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            try:
+                existing = self.__class__.objects.get(pk=self.pk)
+            except self.__class__.DoesNotExist:
+                pass
+            else:
+                if existing.file != self.file:
+                    utils.delete_file(self.__class__, existing)
+        return super(FileMixin, self).save(*args, **kwargs)
+
+
+class AbstractDocument(IsProcessedMixin, FileMixin, AbstractMediaItem):
+
+    file = models.FileField(max_length=250,
+                            upload_to='uploads/media/documents/%Y/%m/%d')
+
+    content_types = content_types.ALL_DOCUMENTS
+
+    class Meta(AbstractMediaItem.Meta):
+        abstract = True
 
     def get_image(self, no_placeholder=False):
         if no_placeholder:
@@ -72,21 +105,6 @@ class AbstractDocument(IsProcessedMixin, FileFieldLengthMixin,
         else:
             return utils.get_placeholder_image()
 
-    def get_mime_type(self):
-        mime = guess_type(self.file.path)
-        return mime[0] if mime else None
-
-    def save(self, *args, **kwargs):
-        if self.pk:
-            try:
-                existing = self.__class__.objects.get(pk=self.pk)
-            except self.__class__.DoesNotExist:
-                pass
-            else:
-                if existing.file != self.file:
-                    utils.delete_file(self.__class__, existing)
-        return super(AbstractDocument, self).save(*args, **kwargs)
-
 
 class Document(AbstractDocument):
 
@@ -96,40 +114,21 @@ models.signals.post_save.connect(utils.generate_thumbnails, sender=Document)
 models.signals.pre_delete.connect(utils.delete_file, sender=Document)
 
 
-class AbstractImage(IsProcessedMixin, FileFieldLengthMixin, AbstractMediaItem):
+class AbstractImage(IsProcessedMixin, FileMixin, AbstractMediaItem):
 
     file = models.ImageField(max_length=250,
                              upload_to='uploads/media/images/%Y/%m/%d')
 
+    content_types = content_types.IMAGE
+
     class Meta(AbstractMediaItem.Meta):
         abstract = True
-
-    def get_absolute_url(self):
-        return self.file.url
-
-    def get_filename(self):
-        return self.file.name.split('/')[-1]
 
     def get_image(self, no_placeholder=False):
         if no_placeholder:
             warnings.warn('no_placeholder argument is deprecated.',
                           DeprecationWarning, stacklevel=2)
         return self.file
-
-    def get_mime_type(self):
-        mime = guess_type(self.file.path)
-        return mime[0] if mime else None
-
-    def save(self, *args, **kwargs):
-        if self.pk:
-            try:
-                existing = self.__class__.objects.get(pk=self.pk)
-            except self.__class__.DoesNotExist:
-                pass
-            else:
-                if existing.file != self.file:
-                    utils.delete_file(self.__class__, existing)
-        return super(AbstractImage, self).save(*args, **kwargs)
 
 
 class Image(AbstractImage):
@@ -140,10 +139,13 @@ models.signals.post_save.connect(utils.generate_thumbnails, sender=Image)
 models.signals.pre_delete.connect(utils.delete_file, sender=Image)
 
 
-class AbstractVideo(IsProcessedMixin, FileFieldLengthMixin, AbstractMediaItem):
+class AbstractVideo(IsProcessedMixin, FileMixin, AbstractMediaItem):
 
     file = models.FileField(max_length=250,
                             upload_to='uploads/media/videos/%Y/%m/%d')
+
+    content_types = content_types.VIDEO
+
 #    image = models.ImageField(max_length=250,
 #                              upload_to='uploads/media/videos/%Y/%m/%d',
 #                              blank=True, default='')
@@ -151,18 +153,8 @@ class AbstractVideo(IsProcessedMixin, FileFieldLengthMixin, AbstractMediaItem):
     class Meta(AbstractMediaItem.Meta):
         abstract = True
 
-    def get_absolute_url(self):
-        return self.file.url
-
-    def get_filename(self):
-        return self.file.name.split('/')[-1]
-
 #    def get_image(self):
 #        return self.file
-
-    def get_mime_type(self):
-        mime = guess_type(self.file.path)
-        return mime[0] if mime else None
 
 #    def generate_image(self):
 #        if self.image:
@@ -180,17 +172,6 @@ class AbstractVideo(IsProcessedMixin, FileFieldLengthMixin, AbstractMediaItem):
 #        image = file_path #  ImageFile(open(file_path, 'rb'))
 #        self.image = image
 #        self.save()
-
-    def save(self, *args, **kwargs):
-        if self.pk:
-            try:
-                existing = self.__class__.objects.get(pk=self.pk)
-            except self.__class__.DoesNotExist:
-                pass
-            else:
-                if existing.file != self.file:
-                    utils.delete_file(self.__class__, existing)
-        return super(AbstractVideo, self).save(*args, **kwargs)
 
 
 class Video(AbstractVideo):
@@ -304,34 +285,15 @@ class VimeoVideo(AbstractVimeoVideo):
 models.signals.post_save.connect(utils.generate_thumbnails, sender=VimeoVideo)
 
 
-class AbstractAudio(IsProcessedMixin, FileFieldLengthMixin, AbstractMediaItem):
+class AbstractAudio(IsProcessedMixin, FileMixin, AbstractMediaItem):
 
     file = models.FileField(max_length=250,
                             upload_to='uploads/media/audios/%Y/%m/%d')
 
+    content_types = content_types.AUDIO
+
     class Meta(AbstractMediaItem.Meta):
         abstract = True
-
-    def get_absolute_url(self):
-        return self.file.url
-
-    def get_filename(self):
-        return self.file.name.split('/')[-1]
-
-    def get_mime_type(self):
-        mime = guess_type(self.file.path)
-        return mime[0] if mime else None
-
-    def save(self, *args, **kwargs):
-        if self.pk:
-            try:
-                existing = self.__class__.objects.get(pk=self.pk)
-            except self.__class__.DoesNotExist:
-                pass
-            else:
-                if existing.file != self.file:
-                    utils.delete_file(self.__class__, existing)
-        return super(AbstractAudio, self).save(*args, **kwargs)
 
 
 class Audio(AbstractAudio):

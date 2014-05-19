@@ -31,7 +31,7 @@ class UploadView(generic.FormView):
     def form_valid(self, form):
         admin = self.kwargs['admin']
         model = admin.model
-        files = self.request.FILES.getlist('files')
+        files = form.files.getlist('files')
 
         for upload in files:
             obj = model(title=form.cleaned_data['title'], file=upload,
@@ -57,6 +57,10 @@ class UploadView(generic.FormView):
             obj.save()
 
         return super(UploadView, self).form_valid(form)
+
+    def get_content_types(self):
+        admin = self.kwargs['admin']
+        return getattr(admin.model, 'content_types', None)
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(UploadView, self).get_context_data(*args,
@@ -89,6 +93,11 @@ class UploadView(generic.FormView):
         for key, value in defaults.items():
             context_data.setdefault(key, value)
         return context_data
+
+    def get_form_kwargs(self, *args, **kwargs):
+        form_kwargs = super(UploadView, self).get_form_kwargs(*args, **kwargs)
+        form_kwargs.update(content_types=self.get_content_types())
+        return form_kwargs
 
     def get_template_names(self):
         admin = self.kwargs['admin']
