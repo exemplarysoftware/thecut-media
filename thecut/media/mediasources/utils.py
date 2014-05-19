@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 from django.core.files.uploadedfile import TemporaryUploadedFile
+from magic import Magic
 from thecut.media import utils as media_utils
 from thecut.media.mediasources import settings
 import warnings
@@ -15,6 +16,16 @@ def generate_thumbnails(sender, instance, created, **kwargs):
 def delete_file(sender, instance, **kwargs):
     from sorl.thumbnail import delete
     delete(instance.file)
+
+
+def get_content_type(uploaded_file):
+    """Get the content type of an uploaded file."""
+
+    magic = Magic(mime=True)
+    uploaded_file.seek(0)
+    content_type = magic.from_buffer(uploaded_file.read())
+    uploaded_file.seek(0)
+    return content_type
 
 
 def get_metadata(uploaded_file):
@@ -39,7 +50,7 @@ def get_metadata(uploaded_file):
     return metadata
 
 
-## Deprecated functions
+# Deprecated functions
 
 
 def get_placeholder_image(*args, **kwargs):

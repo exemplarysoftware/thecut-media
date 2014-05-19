@@ -23,7 +23,7 @@ class GalleryAdmin(AttachedMediaItemMixin, AuthorshipMixin, admin.ModelAdmin):
     date_hierarchy = 'publish_at'
     fieldsets = (
         (None, {'fields': ('title', 'headline', 'featured_content', 'content',
-            'meta_description', 'tags')}),
+                           'meta_description', 'tags')}),
         ('Publishing', {'fields': ('categories', 'site', 'slug',
                                    ('publish_at', 'is_enabled'), 'expire_at',
                                    'publish_by', 'template', 'is_featured',

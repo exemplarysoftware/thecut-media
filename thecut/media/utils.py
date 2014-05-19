@@ -30,7 +30,7 @@ def get_media_source_models():
 
 def get_media_source_content_types():
     """Returns list of tuples containing model and content type."""
-    return [(model, ContentType.objects.get_for_model(model)) for model in \
+    return [(model, ContentType.objects.get_for_model(model)) for model in
             get_media_source_models()]
 
 

@@ -33,6 +33,4 @@ urls = patterns(
 
 )
 
-urlpatterns = patterns('',
-    (r'^', include(urls, namespace='galleries')),
-)
+urlpatterns = patterns('', (r'^', include(urls, namespace='galleries')))
