@@ -15,7 +15,7 @@ from thecut.media.mediasources.views import UploadView
 def conditionally_register(model, adminclass):
     """Register model with admin site if it is in MEDIA_SOURCES."""
     if 'thecut.media.mediasources.models.{0}'.format(model.__name__) in \
-        settings.MEDIA_SOURCES:
+            settings.MEDIA_SOURCES:
         admin.site.register(model, adminclass)
 
 
@@ -155,7 +155,7 @@ class VimeoVideoAdmin(AuthorshipMixin, admin.ModelAdmin):
     )
     form = VimeoVideoAdminForm
     list_display = ('title', 'updated_at', 'is_enabled', 'is_featured',
-        preview_image)
+                    preview_image)
     list_filter = ('updated_at', 'is_enabled', 'is_featured')
     readonly_fields = ('created_at', 'created_by', 'updated_at', 'updated_by')
     search_fields = ('title',)

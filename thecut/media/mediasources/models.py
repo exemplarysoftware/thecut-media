@@ -144,9 +144,9 @@ class AbstractVideo(IsProcessedMixin, FileFieldLengthMixin, AbstractMediaItem):
 
     file = models.FileField(max_length=250,
                             upload_to='uploads/media/videos/%Y/%m/%d')
-    #image = models.ImageField(max_length=250,
-    #                          upload_to='uploads/media/videos/%Y/%m/%d',
-    #                          blank=True, default='')
+#    image = models.ImageField(max_length=250,
+#                              upload_to='uploads/media/videos/%Y/%m/%d',
+#                              blank=True, default='')
 
     class Meta(AbstractMediaItem.Meta):
         abstract = True
@@ -157,27 +157,29 @@ class AbstractVideo(IsProcessedMixin, FileFieldLengthMixin, AbstractMediaItem):
     def get_filename(self):
         return self.file.name.split('/')[-1]
 
-    #def get_image(self):
-    #    return self.file
+#    def get_image(self):
+#        return self.file
 
     def get_mime_type(self):
         mime = guess_type(self.file.path)
         return mime[0] if mime else None
 
-    #def generate_image(self):
-    #    if self.image:
-    #        self.image.delete()
-    #    import subprocess
-    #    from django.conf import settings
-    #    #from django.core.files.images import ImageFile
-    #    from django.template.defaultfilters import slugify
-    #    file_name = slugify(self.title)
-    #    file_path = '%s/%s.jpg' %('uploads/videos/thumbnails', file_name)
-    #    command_line = 'ffmpegthumbnailer -i %s -o %s/%s -s %d' % (self.file.path, settings.MEDIA_ROOT, file_path, 720)
-    #    subprocess.check_call(command_line, shell=True)#, stderr=subprocess.STDOUT)
-    #    image = file_path#ImageFile(open(file_path, 'rb'))
-    #    self.image = image
-    #    self.save()
+#    def generate_image(self):
+#        if self.image:
+#            self.image.delete()
+#        import subprocess
+#        from django.conf import settings
+#        #from django.core.files.images import ImageFile
+#        from django.template.defaultfilters import slugify
+#        file_name = slugify(self.title)
+#        file_path = '%s/%s.jpg' %('uploads/videos/thumbnails', file_name)
+#        command_line = 'ffmpegthumbnailer -i %s -o %s/%s -s %d' % (
+#            self.file.path, settings.MEDIA_ROOT, file_path, 720)
+#        subprocess.check_call(command_line, shell=True)
+#        # for debugging add 'stderr=subprocess.STDOUT'
+#        image = file_path #  ImageFile(open(file_path, 'rb'))
+#        self.image = image
+#        self.save()
 
     def save(self, *args, **kwargs):
         if self.pk:
@@ -221,8 +223,8 @@ class AbstractYoutubeVideo(IsProcessedMixin, AbstractMediaItem):
         match = re.match(r'https?://youtu.be/([-a-z0-9A-Z_]+)$', self.url)
         if not match:
             match = re.match(
-                r'^https?://www.youtube.com/watch\?v=([-a-z0-9A-Z_]+)(?:&{,1}.*)$',
-                self.url)
+                r'^https?://www.youtube.com/watch\?v=([-a-z0-9A-Z_]+)'
+                '(?:&{,1}.*)$', self.url)
         if match:
             return match.groups()[0]
 
@@ -268,7 +270,7 @@ class AbstractVimeoVideo(IsProcessedMixin, AbstractMediaItem):
     @property
     def oembed_data(self):
         if not self._oembed_data:
-             self._oembed_data = self._get_oembed_data()
+            self._oembed_data = self._get_oembed_data()
         return simplejson.loads(self._oembed_data)
 
     def _get_oembed_data(self):

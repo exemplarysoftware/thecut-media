@@ -2,15 +2,16 @@
 from __future__ import absolute_import, unicode_literals
 from celery.task import task
 from django.contrib.contenttypes.models import ContentType
+import warnings
 
 
-## Deprecated
+# Deprecated
 
 
 @task(ignore_result=True)
 def generate_thumbnail(content_type_pk, object_pk, geometry_string, options):
     """Deprecated - replaced by thecut.media.tasks.generate_thumbnail."""
-    warnings.warn('This function has been replaced by ' \
+    warnings.warn('This function has been replaced by '
                   'thecut.media.tasks.generate_thumbnail.',
                   DeprecationWarning, stacklevel=2)
     from thecut.media import tasks
@@ -22,7 +23,7 @@ def generate_thumbnail(content_type_pk, object_pk, geometry_string, options):
 @task(ignore_result=True)
 def generate_thumbnails(instance, thumbnail_sizes):
     """Deprecated - replaced by thecut.media.tasks.generate_thumbnails."""
-    warnings.warn('This function has been replaced by ' \
+    warnings.warn('This function has been replaced by '
                   'thecut.media.tasks.generate_thumbnails.',
                   DeprecationWarning, stacklevel=2)
     from thecut.media import tasks

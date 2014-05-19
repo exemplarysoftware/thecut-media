@@ -27,12 +27,15 @@ class AttachedMediaItemMixin(admin.ModelAdmin):
     inlines = (AttachedMediaItemInline,)
 
     def get_urls(self):
-        urlpatterns = patterns('thecut.media.views',
+        urlpatterns = patterns(
+            'thecut.media.views',
             url(r'^(?:\d+|add)/media/contenttype/$',
                 views.AdminContentTypeList.as_view()),
-            url(r'^(?:\d+|add)/media/contenttype/(?P<content_type_pk>\d+)/picker$',
+            url(r'^(?:\d+|add)/media/contenttype/(?P<content_type_pk>\d+)'
+                '/picker$',
                 views.AdminContentTypeObjectList.as_view()),
-            url(r'^(?:\d+|add)/media/contenttype/(?P<content_type_pk>\d+)/list$',
+            url(r'^(?:\d+|add)/media/contenttype/(?P<content_type_pk>\d+)'
+                '/list$',
                 views.AdminContentTypeSelectedObjectList.as_view()),
         )
         urlpatterns += super(AttachedMediaItemMixin, self).get_urls()

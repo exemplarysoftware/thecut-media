@@ -18,9 +18,11 @@ CELERY = 'djcelery' in settings.INSTALLED_APPS
 PLACEHOLDER_IMAGE_PATH = getattr(
     settings, 'MEDIA_PLACEHOLDER_IMAGE_PATH',
     # Also check old setting name
-    getattr(settings, 'MEDIASOURCES_PLACEHOLDER_IMAGE_PATH',
-    'media/placeholder.{0}'.format('svg' if not 'pil_engine' in
-                                   sorl_settings.THUMBNAIL_ENGINE else 'png')))
+    getattr(
+        settings, 'MEDIASOURCES_PLACEHOLDER_IMAGE_PATH',
+        'media/placeholder.{0}'.format('svg' if 'pil_engine' not in
+                                       sorl_settings.THUMBNAIL_ENGINE
+                                       else 'png')))
 
 QUEUE_THUMBNAILS = CELERY and getattr(
     settings, 'MEDIA_QUEUE_THUMBNAILS',
@@ -29,11 +31,11 @@ QUEUE_THUMBNAILS = CELERY and getattr(
 
 ADMIN_THUMBNAIL_SIZES = getattr(
     settings, 'MEDIA_ADMIN_THUMBNAIL_SIZES', [
-    # List of tuples containing geometry_size and options dict
-    ('60x45', {'crop': 'center'}),
-    ('100x75', {}),
-    ('140x106', {'crop': 'center'}),
-])
+        # List of tuples containing geometry_size and options dict
+        ('60x45', {'crop': 'center'}),
+        ('100x75', {}),
+        ('140x106', {'crop': 'center'}),
+    ])
 
 PREGENERATE_THUMBNAIL_SIZES = ADMIN_THUMBNAIL_SIZES + getattr(
     settings, 'MEDIA_PREGENERATE_THUMBNAIL_SIZES', [])

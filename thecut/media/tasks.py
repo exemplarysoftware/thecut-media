@@ -9,7 +9,7 @@ from thecut.media import settings
 def generate_thumbnail(file_, geometry_string, options):
     logger = generate_thumbnail.get_logger()
     options.update({'no_placeholder': True})
-    thumbnail = get_thumbnail(file_, geometry_string, **options)
+    get_thumbnail(file_, geometry_string, **options)
     logger.info('Generated {0} thumbnail for {1}'.format(geometry_string,
                                                          file_))
 

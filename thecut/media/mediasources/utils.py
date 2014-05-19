@@ -39,7 +39,7 @@ def get_metadata(uploaded_file):
     return metadata
 
 
-## Deprecated functions
+# Deprecated functions
 
 
 def get_placeholder_image(*args, **kwargs):

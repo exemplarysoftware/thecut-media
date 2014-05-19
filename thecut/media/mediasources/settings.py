@@ -7,11 +7,9 @@ from thecut.media import settings as media_settings
 try:
     from exiftool import ExifTool
 except ImportError:
-    EXIFTOOL = False
-else:
-    EXIFTOOL = True
+    ExifTool = False
 
-USE_EXIFTOOL = EXIFTOOL and getattr(settings, 'MEDIASOURCES_USE_EXIFTOOL',
+USE_EXIFTOOL = ExifTool and getattr(settings, 'MEDIASOURCES_USE_EXIFTOOL',
                                     True)
 
 

@@ -84,7 +84,7 @@ class UploadView(generic.FormView):
                     'content_type_id': content_type.id,
                     'change_form_template': '{0}/change_form.html'.format(
                         admin.admin_site.name),
-        }
+                    }
 
         for key, value in defaults.items():
             context_data.setdefault(key, value)

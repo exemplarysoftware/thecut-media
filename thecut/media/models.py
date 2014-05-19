@@ -6,7 +6,7 @@ from model_utils.managers import PassThroughManager
 from tagging.fields import TagField
 from thecut.media import querysets, receivers
 from thecut.ordering.models import OrderMixin
-from thecut.publishing.models import PublishableResource, Content
+from thecut.publishing.models import PublishableResource
 from thecut.publishing.utils import python_2_unicode_compatible
 
 

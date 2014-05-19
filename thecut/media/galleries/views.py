@@ -36,7 +36,7 @@ class ListView(generic.ListView):
             category = self.get_category()
             if category:
                 return redirect('galleries:category_gallery_list',
-                    slug=category.slug, permanent=True)
+                                slug=category.slug, permanent=True)
             else:
                 return redirect('galleries:gallery_list', permanent=True)
         return super(ListView, self).get(*args, **kwargs)
