@@ -16,11 +16,13 @@ To install this application (whilst in the project's activated virtualenv)::
     pip install git+ssh://git@git.thecut.net.au/thecut-media
 
 
-Add the ``thecut.media`` to the project's ``INSTALLED_APPS`` setting::
+Add the ``thecut.media`` and ``thecut.media.mediasources`` to the project's
+``INSTALLED_APPS`` setting::
 
     INSTALLED_APPS = (
         ...
         'thecut.media',
+        'thecut.media.mediasources'
     )
 
 
