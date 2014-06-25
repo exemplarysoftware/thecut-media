@@ -6,7 +6,7 @@ setup(
     name='thecut-media',
     author='The Cut',
     author_email='development@thecut.net.au',
-    url='http://projects.thecut.net.au/projects/thecut-media',
+    url='https://projects.thecut.net.au/projects/thecut-media',
     namespace_packages=['thecut'],
     version=get_git_version(),
     packages=find_packages(),

@@ -46,4 +46,4 @@ class ContentTypeRetrieveAPIView(APIMixin, generics.RetrieveAPIView):
     permission_classes = APIMixin.permission_classes + [
         permissions.MediaPermissions]
 
-    serializer_class = serializers.ContentTypeWithObjectsSerializer
+    serializer_class = serializers.ContentTypeSerializer

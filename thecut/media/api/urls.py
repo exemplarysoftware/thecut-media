@@ -16,6 +16,9 @@ urls = patterns(
     url(r'^contenttypes/(?P<pk>\d+)/$',
         views.ContentTypeRetrieveAPIView.as_view(), name='contenttype_detail'),
 
+    url(r'^contenttypes/(?P<pk>\d+)/objects/$',
+        views.ContentTypeListAPIView.as_view(), name='contenttype_object_list'),
+
 )
 
 
