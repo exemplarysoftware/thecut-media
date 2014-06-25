@@ -25,9 +25,8 @@ class AdminContentTypeList(generic.TemplateView):
 
     @method_decorator(never_cache)
     @method_decorator(user_passes_test(
-        lambda u:
-            u.has_perm('media.add_attachedmediaitem') or
-            u.has_perm('media.change_attachedmediaitem')))
+        lambda u: u.has_perm('media.add_attachedmediaitem') or u.has_perm(
+            'media.change_attachedmediaitem')))
     def dispatch(self, request, *args, **kwargs):
         if request.is_ajax() or settings.DEBUG:
             return super(AdminContentTypeList, self).dispatch(
