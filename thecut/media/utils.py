@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+from . import settings
 from django.contrib.contenttypes.models import ContentType
 from django.core.files.images import ImageFile
 from django.db.models import get_models
-from thecut.media import settings
+import warnings
 
 
 def get_media_source_classes(model_list=None):
     """Returns classes for the each string in list."""
-    from thecut.media.models import AbstractMediaItem
+    from .models import AbstractMediaItem
     model_list = model_list or settings.MEDIA_SOURCES
     source_classes = []
     for import_string in model_list:
@@ -23,15 +24,9 @@ def get_media_source_classes(model_list=None):
 
 def get_media_source_models():
     """Returns list of models which subclass AbstractMediaItem."""
-    from thecut.media.models import AbstractMediaItem
+    from .models import AbstractMediaItem
     return [model for model in get_models() if issubclass(
             model, AbstractMediaItem)]
-
-
-def get_media_source_content_types():
-    """Returns list of tuples containing model and content type."""
-    return [(model, ContentType.objects.get_for_model(model)) for model in
-            get_media_source_models()]
 
 
 def get_placeholder_image():
@@ -47,3 +42,18 @@ def get_placeholder_image():
                                             settings.PLACEHOLDER_IMAGE_PATH))
         image = ImageFile(placeholder)
     return image
+
+
+def get_media_source_content_types():
+    """Deprecated method. Use MediaContentType.objects.
+
+    Returns list of tuples containing model and content type.
+
+    """
+
+    warnings.warn('get_media_source_content_types is deprecated. Use '
+                  'MediaContentType.objects.', DeprecationWarning,
+                  stacklevel=2)
+    from .models import MediaContentType
+    return [(content_type.model_class(), content_type) for content_type
+            in MediaContentType.objects.all()]
