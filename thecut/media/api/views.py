@@ -11,9 +11,13 @@ from rest_framework.views import APIView
 class APIMixin(object):
 
     authentication_classes = [authentication.SessionAuthentication]
+
     paginate_by = 10
+
     paginate_by_param = 'limit'
+
     max_paginate_by = 100
+
     permission_classes = [permissions.IsAdminUser]
 
 
@@ -28,14 +32,18 @@ class MediaRootAPIView(APIMixin, APIView):
 class ContentTypeListAPIView(APIMixin, generics.ListAPIView):
 
     model = MediaContentType
+
     permission_classes = APIMixin.permission_classes + [
-        permissions.IssuePermissions]
+        permissions.MediaPermissions]
+
     serializer_class = serializers.ContentTypeSerializer
 
 
 class ContentTypeRetrieveAPIView(APIMixin, generics.RetrieveAPIView):
 
     model = MediaContentType
+
     permission_classes = APIMixin.permission_classes + [
-        permissions.IssuePermissions]
+        permissions.MediaPermissions]
+
     serializer_class = serializers.ContentTypeWithObjectsSerializer

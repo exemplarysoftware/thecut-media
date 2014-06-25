@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 from . import settings
-from django.contrib.contenttypes.models import ContentType
 from django.core.files.images import ImageFile
 from django.db.models import get_models
 import warnings

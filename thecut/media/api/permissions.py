@@ -3,18 +3,19 @@ from __future__ import absolute_import, unicode_literals
 from rest_framework.permissions import IsAdminUser, DjangoModelPermissions
 
 
-__all__ = ['IssuePermissions', 'IsAdminUser']
+__all__ = ['MediaPermissions', 'IsAdminUser']
 
 
-class IssuePermissions(DjangoModelPermissions):
+class MediaPermissions(DjangoModelPermissions):
     """Extended version of DjangoModelPermissions which checks for ``change``
     permissions for GET, OPTIONS, and HEAD requests."""
+
     perms_map = {
-        'GET': ['moderation.change_issue'],
-        'OPTIONS': ['moderation.change_issue'],
-        'HEAD': ['moderation.change_issue'],
-        'POST': ['moderation.add_issue'],
-        'PUT': ['moderation.change_issue'],
-        'PATCH': ['moderation.change_issue'],
-        'DELETE': ['moderation.delete_issue'],
+        'GET': ['media.change_attachedmediaitem'],
+        'OPTIONS': ['media.change_attachedmediaitem'],
+        'HEAD': ['media.change_attachedmediaitem'],
+        'POST': ['media.add_attachedmediaitem'],
+        'PUT': ['media.change_attachedmediaitem'],
+        'PATCH': ['media.change_attachedmediaitem'],
+        'DELETE': ['media.delete_attachedmediaitem'],
     }
