@@ -51,9 +51,6 @@ class UploadView(generic.FormView):
                     obj.tags = ' '.join('"{0}"'.format(tag) if ' ' in tag else
                                         tag for tag in tags)
 
-            if not obj.title and hasattr(obj, 'get_filename'):
-                obj.title = '.'.join(obj.get_filename().split('.')[:-1])
-
             obj.save()
 
         return super(UploadView, self).form_valid(form)

@@ -79,6 +79,10 @@ class FileMixin(FileFieldLengthMixin, object):
             else:
                 if existing.file != self.file:
                     utils.delete_file(self.__class__, existing)
+
+        if not self.title:
+            self.title = '.'.join(self.get_filename().split('.')[:-1])
+
         return super(FileMixin, self).save(*args, **kwargs)
 
 
