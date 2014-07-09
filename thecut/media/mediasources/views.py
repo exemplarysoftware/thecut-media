@@ -1,21 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
-from distutils.version import StrictVersion
-from django import get_version
+from . import settings
+from .forms import MediaUploadForm
+from .utils import get_metadata
 from django.contrib.admin.options import csrf_protect_m
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import PermissionDenied
 from django.utils.encoding import force_unicode
 from django.utils.safestring import mark_safe
-from thecut.media.mediasources import settings
-from thecut.media.mediasources.forms import MediaUploadForm
-from thecut.media.mediasources.utils import get_metadata
+from django.views import generic
 
-if StrictVersion(get_version()) < StrictVersion('1.3'):
-    # Pre-Django 1.3 compatibility
-    import cbv as generic
-else:
-    from django.views import generic
 
 
 class UploadView(generic.FormView):
