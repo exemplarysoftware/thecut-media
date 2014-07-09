@@ -11,16 +11,83 @@ from django.utils.safestring import mark_safe
 from django.views import generic
 
 
+class AdminAddMixin(object):
 
-class UploadView(generic.FormView):
-    form_class = MediaUploadForm
     success_url = '../'
+
+    template_name = 'change_form.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(AdminAddMixin, self).get_context_data(*args,
+                                                                   **kwargs)
+
+        admin = self.kwargs['admin']
+        form = kwargs['form']
+        opts = admin.model._meta
+        content_type = ContentType.objects.get_for_model(admin.model)
+
+        defaults = {'current_app': admin.admin_site.name, 'opts': opts,
+                    'app_label': opts.app_label, 'add': True,
+                    'content_type': content_type, 'form_url': '',
+                    'title': 'Add {0}'.format(
+                        force_unicode(opts.verbose_name_plural)),
+                    'root_path': getattr(admin.admin_site, 'root_path', None),
+                    'media': mark_safe(admin.media + form.media),
+                    'errors': form.errors,
+
+                    'change': False, 'is_popup': False, 'save_as': False,
+                    'save_on_top': False, 'show_delete': False,
+                    'has_file_field': True, 'has_add_permission': False,
+                    'has_change_permission': False,
+                    'has_delete_permission': False,
+                    'content_type_id': content_type.id,
+                    'change_form_template': '{0}/change_form.html'.format(
+                        admin.admin_site.name),
+                    }
+
+        for key, value in defaults.items():
+            context_data.setdefault(key, value)
+
+        return context_data
+
+    def get_template_names(self):
+        admin = self.kwargs['admin']
+        current_app = admin.admin_site.name
+        app_label = admin.model._meta.app_label
+        model_name = admin.model._meta.object_name.lower()
+
+        return [
+            '{admin}/{app}/{model}/{template}'.format(
+                admin=current_app, app=app_label, model=model_name,
+                template=self.template_name),
+            '{admin}/{app}/{template}'.format(admin=current_app, app=app_label,
+                                              template=self.template_name),
+            '{admin}/{template}'.format(admin=current_app,
+                                        template=self.template_name),
+            'admin/{app}/{model}/{template}'.format(
+                app=app_label, model=model_name, template=self.template_name),
+            'admin/{app}/{template}'.format(app=app_label,
+                                            template=self.template_name),
+            'admin/{template}'.format(template=self.template_name)]
 
     @csrf_protect_m
     def dispatch(self, request, *args, **kwargs):
         if not kwargs['admin'].has_add_permission(request):
             raise PermissionDenied()
-        return super(UploadView, self).dispatch(request, *args, **kwargs)
+        return super(AdminAddMixin, self).dispatch(request, *args, **kwargs)
+
+    def render_to_response(self, *args, **kwargs):
+        admin = self.kwargs['admin']
+        current_app = admin.admin_site.name
+        return super(AdminAddMixin, self).render_to_response(
+            *args, current_app=current_app, **kwargs)
+
+
+class UploadView(AdminAddMixin, generic.FormView):
+
+    form_class = MediaUploadForm
+
+    template_name = 'media_upload_form.html'
 
     def form_valid(self, form):
         admin = self.kwargs['admin']
@@ -54,61 +121,7 @@ class UploadView(generic.FormView):
         admin = self.kwargs['admin']
         return getattr(admin.model, 'content_types', None)
 
-    def get_context_data(self, *args, **kwargs):
-        context_data = super(UploadView, self).get_context_data(*args,
-                                                                **kwargs)
-
-        admin = self.kwargs['admin']
-        form = kwargs['form']
-        opts = admin.model._meta
-        content_type = ContentType.objects.get_for_model(admin.model)
-
-        defaults = {'current_app': admin.admin_site.name, 'opts': opts,
-                    'app_label': opts.app_label, 'add': True,
-                    'content_type': content_type, 'form_url': '',
-                    'title': 'Add {0}'.format(
-                        force_unicode(opts.verbose_name_plural)),
-                    'root_path': getattr(admin.admin_site, 'root_path', None),
-                    'media': mark_safe(admin.media + form.media),
-                    'errors': form.errors,
-
-                    'change': False, 'is_popup': False, 'save_as': False,
-                    'save_on_top': False, 'show_delete': False,
-                    'has_file_field': True, 'has_add_permission': False,
-                    'has_change_permission': False,
-                    'has_delete_permission': False,
-                    'content_type_id': content_type.id,
-                    'change_form_template': '{0}/change_form.html'.format(
-                        admin.admin_site.name),
-                    }
-
-        for key, value in defaults.items():
-            context_data.setdefault(key, value)
-        return context_data
-
     def get_form_kwargs(self, *args, **kwargs):
         form_kwargs = super(UploadView, self).get_form_kwargs(*args, **kwargs)
         form_kwargs.update(content_types=self.get_content_types())
         return form_kwargs
-
-    def get_template_names(self):
-        admin = self.kwargs['admin']
-        current_app = admin.admin_site.name
-        app_label = admin.model._meta.app_label
-        model_name = admin.model._meta.object_name.lower()
-
-        return [
-            '{0}/{1}/{2}/media_upload_form.html'.format(current_app, app_label,
-                                                        model_name),
-            '{0}/{1}/media_upload_form.html'.format(current_app, app_label),
-            '{0}/media_upload_form.html'.format(current_app),
-            'admin/{0}/{1}/media_upload_form.html'.format(app_label,
-                                                          model_name),
-            'admin/{0}/media_upload_form.html'.format(app_label),
-            'admin/media_upload_form.html']
-
-    def render_to_response(self, *args, **kwargs):
-        admin = self.kwargs['admin']
-        current_app = admin.admin_site.name
-        return super(UploadView, self).render_to_response(
-            *args, current_app=current_app, **kwargs)
