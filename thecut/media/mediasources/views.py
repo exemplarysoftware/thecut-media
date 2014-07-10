@@ -37,9 +37,10 @@ class AdminAddMixin(object):
 
                     'change': False, 'is_popup': False, 'save_as': False,
                     'save_on_top': False, 'show_delete': False,
-                    'has_file_field': True, 'has_add_permission': False,
-                    'has_change_permission': False,
-                    'has_delete_permission': False,
+                    'has_file_field': True,
+                    'has_add_permission': self.has_add_permission(),
+                    'has_change_permission': self.has_change_permission(),
+                    'has_delete_permission': self.has_delete_permission(),
                     'content_type_id': content_type.id,
                     'change_form_template': '{0}/change_form.html'.format(
                         admin.admin_site.name),
@@ -75,6 +76,15 @@ class AdminAddMixin(object):
         if not kwargs['admin'].has_add_permission(request):
             raise PermissionDenied()
         return super(AdminAddMixin, self).dispatch(request, *args, **kwargs)
+
+    def has_add_permission(self):
+        return self.kwargs['admin'].has_add_permission(self.request)
+
+    def has_change_permission(self):
+        return self.kwargs['admin'].has_change_permission(self.request)
+
+    def has_delete_permission(self):
+        return self.kwargs['admin'].has_delete_permission(self.request)
 
     def render_to_response(self, *args, **kwargs):
         admin = self.kwargs['admin']
@@ -125,3 +135,27 @@ class UploadView(AdminAddMixin, generic.FormView):
         form_kwargs = super(UploadView, self).get_form_kwargs(*args, **kwargs)
         form_kwargs.update(content_types=self.get_content_types())
         return form_kwargs
+
+
+from s3upload.views import DropzoneS3UploadFormView
+
+
+class DropzoneUploadView(AdminAddMixin, DropzoneS3UploadFormView):
+    # Assumes FileField with name of 'file' on model.
+
+    template_name = 's3upload_form.html'
+
+    def form_valid(self, form, *args, **kwargs):
+        model = self.kwargs['admin'].model
+        obj = model.objects.create(file=form.get_file_path(),
+                                   created_by=self.request.user,
+                                   updated_by=self.request.user)
+        return super(DropzoneUploadView, self).form_valid(form)
+
+    def get_upload_to(self):
+        model = self.kwargs['admin'].model
+        field = model._meta.get_field_by_name('file')[0]
+        return field.generate_filename(model, '').rstrip('.')
+
+
+UploadView = DropzoneUploadView
