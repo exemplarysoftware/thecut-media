@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+from . import settings
+from .forms import (AudioAdminForm, DocumentAdminForm, ImageAdminForm,
+                    VideoAdminForm, YoutubeVideoAdminForm, VimeoVideoAdminForm)
+from .models import Audio, Document, Image, Video, YoutubeVideo, VimeoVideo
+from .views import UploadView
 from django.contrib import admin
+from django.utils.functional import LazyObject
 from sorl.thumbnail import get_thumbnail
 from thecut.authorship.admin import AuthorshipMixin
-from thecut.media import settings
-from thecut.media.mediasources.forms import (
-    AudioAdminForm, DocumentAdminForm, ImageAdminForm, VideoAdminForm,
-    YoutubeVideoAdminForm, VimeoVideoAdminForm)
-from thecut.media.mediasources.models import (Audio, Document, Image, Video,
-                                              YoutubeVideo, VimeoVideo)
-from thecut.media.mediasources.views import UploadView
+from thecut.media.settings import MEDIA_SOURCES
 
 
 def conditionally_register(model, adminclass):
     """Register model with admin site if it is in MEDIA_SOURCES."""
-    if 'thecut.media.mediasources.models.{0}'.format(model.__name__) in \
-            settings.MEDIA_SOURCES:
+    if 'thecut.media.mediasources.models.{0}'.format(model.__name__) \
+            in MEDIA_SOURCES:
         admin.site.register(model, adminclass)
 
 
@@ -37,7 +37,20 @@ preview_image.allow_tags = True
 class MediaUploadMixin(object):
 
     def add_view(self, request, form_url='', extra_context=None):
+        field = self.model._meta.get_field_by_name('file')[0]
+
         view = UploadView.as_view()
+        if settings.USE_DROPZONE:
+            from .views.dropzone import DropzoneUploadView
+            from storages.backends.s3boto import S3BotoStorage
+            storage = field.storage
+            if isinstance(storage, LazyObject):
+                # Unwrap lazy storage
+                storage._setup()
+                storage = storage._wrapped
+            if isinstance(storage, S3BotoStorage):
+                view = DropzoneUploadView.as_view()
+
         response = view(request, admin=self)
         return hasattr(response, 'render') and callable(response.render) and \
             response.render() or response

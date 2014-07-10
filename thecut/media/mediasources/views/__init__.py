@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
-from . import settings
-from .forms import MediaUploadForm
-from .utils import get_metadata
+from .. import settings
+from ..forms import MediaUploadForm
+from ..utils import get_metadata
 from django.contrib.admin.options import csrf_protect_m
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import PermissionDenied
@@ -135,27 +135,3 @@ class UploadView(AdminAddMixin, generic.FormView):
         form_kwargs = super(UploadView, self).get_form_kwargs(*args, **kwargs)
         form_kwargs.update(content_types=self.get_content_types())
         return form_kwargs
-
-
-from s3upload.views import DropzoneS3UploadFormView
-
-
-class DropzoneUploadView(AdminAddMixin, DropzoneS3UploadFormView):
-    # Assumes FileField with name of 'file' on model.
-
-    template_name = 's3upload_form.html'
-
-    def form_valid(self, form, *args, **kwargs):
-        model = self.kwargs['admin'].model
-        obj = model.objects.create(file=form.get_file_path(),
-                                   created_by=self.request.user,
-                                   updated_by=self.request.user)
-        return super(DropzoneUploadView, self).form_valid(form)
-
-    def get_upload_to(self):
-        model = self.kwargs['admin'].model
-        field = model._meta.get_field_by_name('file')[0]
-        return field.generate_filename(model, '').rstrip('.')
-
-
-UploadView = DropzoneUploadView
