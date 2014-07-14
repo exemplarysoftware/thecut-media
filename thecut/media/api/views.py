@@ -47,3 +47,39 @@ class ContentTypeRetrieveAPIView(APIMixin, generics.RetrieveAPIView):
         permissions.MediaPermissions]
 
     serializer_class = serializers.ContentTypeSerializer
+
+
+class ContentTypeObjectListAPIView(APIMixin, generics.ListAPIView):
+
+    permission_classes = APIMixin.permission_classes + [
+        permissions.MediaPermissions]
+
+    serializer_class = serializers.MediaSerializer
+
+    def get_content_type(self):
+        return generics.get_object_or_404(MediaContentType,
+                                          pk=self.kwargs.get('contenttype_pk'))
+
+    def initial(self, *args, **kwargs):
+        # Model needs to be set on the class for permission checks
+        self.model = self.get_model()
+        return super(ContentTypeObjectListAPIView, self).initial(*args,
+                                                                 **kwargs)
+
+    def get_model(self):
+        return self.get_content_type().model_class()
+
+    def get_serializer_class(self):
+        # Set ``model`` on a new serializer class
+
+        class Serializer(self.serializer_class):
+            class Meta(self.serializer_class.Meta):
+                model = self.model
+
+        return Serializer
+
+    def get_view_name(self, *args, **kwargs):
+        view_name = super(ContentTypeObjectListAPIView, self).get_view_name(
+            *args, **kwargs)
+        return '{0} ({1})'.format(
+            view_name, self.get_model()._meta.verbose_name_plural.title())
