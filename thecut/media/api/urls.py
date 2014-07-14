@@ -20,6 +20,10 @@ urls = patterns(
         views.ContentTypeObjectListAPIView.as_view(),
         name='contenttype_object_list'),
 
+    url(r'^contenttypes/(?P<contenttype_pk>\d+)/objects/(?P<pk>\d+)/$',
+        views.ContentTypeObjectDetailAPIView.as_view(),
+        name='contenttype_object_detail'),
+
 )
 
 

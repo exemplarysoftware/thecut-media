@@ -28,7 +28,8 @@ class ContentTypeSerializer(serializers.HyperlinkedModelSerializer):
     def get_objects_url(self, content_type):
         return reverse('admin:media_api:contenttype_object_list',
                        kwargs={'contenttype_pk': content_type.pk},
-                       request=self.context['request'])
+                       request=self.context['request'],
+                       format=self.context['format'])
 
     def get_verbose_name(self, content_type):
         return content_type.model_class()._meta.verbose_name.title()
@@ -43,11 +44,23 @@ class MediaSerializer(serializers.ModelSerializer):
 
     name = serializers.Field(source='__str__')
 
+    url = serializers.SerializerMethodField('get_url')
+
     thumbnail = serializers.SerializerMethodField('get_thumbnail')
 
     class Meta(serializers.ModelSerializer.Meta):
-        fields = ['id', 'name', 'thumbnail', 'created_at', 'updated_at']
+        fields = ['id', 'url', 'name', 'thumbnail', 'created_at', 'updated_at']
+
+    def get_content_type(self):
+        return MediaContentType.objects.get_for_model(self.Meta.model)
 
     def get_thumbnail(self, obj):
         # TODO
         return obj.get_image().url
+
+    def get_url(self, obj):
+        return reverse('admin:media_api:contenttype_object_detail',
+                       kwargs={'pk': obj.pk,
+                               'contenttype_pk': self.get_content_type().pk},
+                       request=self.context['request'],
+                       format=self.context['format'])
