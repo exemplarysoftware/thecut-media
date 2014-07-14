@@ -29,7 +29,7 @@ class MediaRootAPIView(APIMixin, APIView):
                                       request=request)})
 
 
-class BaseContentTypeAPIView(APIMixin):
+class BaseContentTypeAPIMixin(APIMixin):
 
     model = MediaContentType
 
@@ -39,18 +39,18 @@ class BaseContentTypeAPIView(APIMixin):
     serializer_class = serializers.ContentTypeSerializer
 
 
-class ContentTypeListAPIView(BaseContentTypeAPIView, generics.ListAPIView):
+class ContentTypeListAPIView(BaseContentTypeAPIMixin, generics.ListAPIView):
 
     pass
 
 
-class ContentTypeRetrieveAPIView(BaseContentTypeAPIView,
+class ContentTypeRetrieveAPIView(BaseContentTypeAPIMixin,
                                  generics.RetrieveAPIView):
 
     pass
 
 
-class BaseContentTypeObjectAPIView(APIMixin):
+class BaseContentTypeObjectAPIMixin(APIMixin):
 
     permission_classes = APIMixin.permission_classes + [
         permissions.MediaPermissions]
@@ -64,7 +64,7 @@ class BaseContentTypeObjectAPIView(APIMixin):
     def initial(self, *args, **kwargs):
         # Model needs to be set on the class for permission checks
         self.model = self.get_model()
-        return super(BaseContentTypeObjectAPIView, self).initial(*args,
+        return super(BaseContentTypeObjectAPIMixin, self).initial(*args,
                                                                  **kwargs)
 
     def get_model(self):
@@ -80,19 +80,19 @@ class BaseContentTypeObjectAPIView(APIMixin):
         return Serializer
 
     def get_view_name(self, *args, **kwargs):
-        view_name = super(BaseContentTypeObjectAPIView, self).get_view_name(
+        view_name = super(BaseContentTypeObjectAPIMixin, self).get_view_name(
             *args, **kwargs)
         return '{0} ({1})'.format(
             view_name, self.get_model()._meta.verbose_name_plural.title())
 
 
-class ContentTypeObjectListAPIView(BaseContentTypeObjectAPIView,
+class ContentTypeObjectListAPIView(BaseContentTypeObjectAPIMixin,
                                    generics.ListAPIView):
 
     pass
 
 
-class ContentTypeObjectDetailAPIView(BaseContentTypeObjectAPIView,
+class ContentTypeObjectDetailAPIView(BaseContentTypeObjectAPIMixin,
                                      generics.RetrieveAPIView):
 
     pass
