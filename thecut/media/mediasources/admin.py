@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 from . import settings
+from ..utils import get_preview_thumbnail
 from .forms import (AudioAdminForm, DocumentAdminForm, ImageAdminForm,
                     VideoAdminForm, YoutubeVideoAdminForm, VimeoVideoAdminForm)
 from .models import Audio, Document, Image, Video, YoutubeVideo, VimeoVideo
 from .views import UploadView
 from django.contrib import admin
 from django.utils.functional import LazyObject
-from sorl.thumbnail import get_thumbnail
 from thecut.authorship.admin import AuthorshipMixin
 from thecut.media.settings import MEDIA_SOURCES
 
@@ -23,7 +23,7 @@ def preview_image(obj):
     html = ''
     if hasattr(obj, 'get_image'):
         try:
-            thumb = get_thumbnail(obj.get_image(), '100x75')
+            thumb = get_preview_thumbnail(obj.get_image())
         except:
             pass
         else:
@@ -32,6 +32,12 @@ def preview_image(obj):
     return html
 preview_image.short_description = 'Preview'
 preview_image.allow_tags = True
+
+
+class AdminMediaMixin(object):
+
+    class Media(object):
+        css = {'all': ['media/mediasources/image-preview.css']}
 
 
 class MediaUploadMixin(object):
@@ -56,7 +62,8 @@ class MediaUploadMixin(object):
             response.render() or response
 
 
-class AudioAdmin(MediaUploadMixin, AuthorshipMixin, admin.ModelAdmin):
+class AudioAdmin(MediaUploadMixin, AuthorshipMixin, AdminMediaMixin,
+                 admin.ModelAdmin):
 
     fieldsets = (
         (None, {'fields': ('file', 'title', 'caption', 'content', 'tags')}),
@@ -76,7 +83,8 @@ class AudioAdmin(MediaUploadMixin, AuthorshipMixin, admin.ModelAdmin):
 conditionally_register(Audio, AudioAdmin)
 
 
-class DocumentAdmin(MediaUploadMixin, AuthorshipMixin, admin.ModelAdmin):
+class DocumentAdmin(MediaUploadMixin, AuthorshipMixin, AdminMediaMixin,
+                    admin.ModelAdmin):
 
     fieldsets = (
         (None, {'fields': ('file', 'title', 'caption', 'content', 'tags')}),
@@ -96,7 +104,8 @@ class DocumentAdmin(MediaUploadMixin, AuthorshipMixin, admin.ModelAdmin):
 conditionally_register(Document, DocumentAdmin)
 
 
-class ImageAdmin(MediaUploadMixin, AuthorshipMixin, admin.ModelAdmin):
+class ImageAdmin(MediaUploadMixin, AuthorshipMixin, AdminMediaMixin,
+                 admin.ModelAdmin):
 
     fieldsets = (
         (None, {'fields': ('file', 'title', 'caption', 'content', 'tags')}),
@@ -116,7 +125,8 @@ class ImageAdmin(MediaUploadMixin, AuthorshipMixin, admin.ModelAdmin):
 conditionally_register(Image, ImageAdmin)
 
 
-class VideoAdmin(MediaUploadMixin, AuthorshipMixin, admin.ModelAdmin):
+class VideoAdmin(MediaUploadMixin, AuthorshipMixin, AdminMediaMixin,
+                 admin.ModelAdmin):
 
     fieldsets = (
         (None, {'fields': ('file', 'title', 'caption', 'content', 'tags')}),
@@ -136,7 +146,7 @@ class VideoAdmin(MediaUploadMixin, AuthorshipMixin, admin.ModelAdmin):
 conditionally_register(Video, VideoAdmin)
 
 
-class YoutubeVideoAdmin(AuthorshipMixin, admin.ModelAdmin):
+class YoutubeVideoAdmin(AuthorshipMixin, AdminMediaMixin, admin.ModelAdmin):
 
     fieldsets = (
         (None, {'fields': ('url', 'title', 'caption', 'content', 'tags')}),
@@ -156,7 +166,7 @@ class YoutubeVideoAdmin(AuthorshipMixin, admin.ModelAdmin):
 conditionally_register(YoutubeVideo, YoutubeVideoAdmin)
 
 
-class VimeoVideoAdmin(AuthorshipMixin, admin.ModelAdmin):
+class VimeoVideoAdmin(AuthorshipMixin, AdminMediaMixin, admin.ModelAdmin):
 
     fieldsets = (
         (None, {'fields': ('url', 'title', 'caption', 'content', 'tags')}),

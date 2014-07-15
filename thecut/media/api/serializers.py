@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+from .. import utils
 from ..models import MediaContentType
 from rest_framework import serializers
 from rest_framework.reverse import reverse
@@ -55,8 +56,11 @@ class MediaSerializer(serializers.ModelSerializer):
         return MediaContentType.objects.get_for_model(self.Meta.model)
 
     def get_thumbnail(self, obj):
-        # TODO
-        return obj.get_image().url
+        if hasattr(obj, 'get_image'):
+            try:
+                return utils.get_preview_thumbnail(obj.get_image()).url
+            except:
+                pass
 
     def get_url(self, obj):
         return reverse('admin:media_api:contenttype_object_detail',

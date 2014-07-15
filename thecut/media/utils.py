@@ -3,6 +3,7 @@ from __future__ import absolute_import, unicode_literals
 from . import settings
 from django.core.files.images import ImageFile
 from django.db.models import get_models
+from sorl.thumbnail import get_thumbnail
 import warnings
 
 
@@ -41,6 +42,12 @@ def get_placeholder_image():
                                             settings.PLACEHOLDER_IMAGE_PATH))
         image = ImageFile(placeholder)
     return image
+
+
+def get_preview_thumbnail(image):
+    geometry_size = '360x360'  # TODO: Fetch this from settings
+    options = {'quality': 50}  # TODO: Fetch this from settings
+    return get_thumbnail(image, geometry_size, **options)
 
 
 def get_media_source_content_types():

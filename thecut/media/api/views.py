@@ -65,7 +65,7 @@ class BaseContentTypeObjectAPIMixin(APIMixin):
         # Model needs to be set on the class for permission checks
         self.model = self.get_model()
         return super(BaseContentTypeObjectAPIMixin, self).initial(*args,
-                                                                 **kwargs)
+                                                                  **kwargs)
 
     def get_model(self):
         return self.get_content_type().model_class()

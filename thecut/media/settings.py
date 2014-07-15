@@ -32,9 +32,10 @@ QUEUE_THUMBNAILS = CELERY and getattr(
 ADMIN_THUMBNAIL_SIZES = getattr(
     settings, 'MEDIA_ADMIN_THUMBNAIL_SIZES', [
         # List of tuples containing geometry_size and options dict
-        ('60x45', {'crop': 'center'}),
-        ('100x75', {}),
-        ('140x106', {'crop': 'center'}),
+        ('60x45', {'crop': 'center'}),  # TODO OLD
+        ('100x75', {}),  # TODO OLD
+        ('140x106', {'crop': 'center'}),  # TODO OLD
+        ('360x360', {'quality': 50}),  # NEW
     ])
 
 PREGENERATE_THUMBNAIL_SIZES = ADMIN_THUMBNAIL_SIZES + getattr(
