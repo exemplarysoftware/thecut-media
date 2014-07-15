@@ -8,14 +8,6 @@ from thecut.media.models import AttachedMediaItem
 
 class AttachedMediaItemInlineForm(forms.ModelForm):
 
-    def __init__(self, *args, **kwargs):
-        super(AttachedMediaItemInlineForm, self).__init__(*args, **kwargs)
-        content_types = [ContentType.objects.get_for_model(model) for model in
-                         MEDIA_SOURCE_CLASSES]
-        filtered_queryset = self.fields['content_type'].queryset.filter(
-            pk__in=[ct.pk for ct in content_types])
-        self.fields['content_type'].queryset = filtered_queryset
-
     class Media(object):
         css = {'all': ['media/smoothness/jquery-ui-1.8.10.custom.css',
                        'media/admin.css']}
