@@ -20,6 +20,8 @@ class AttachedMediaItemInline(GenericStackedInline):
 
     model = AttachedMediaItem
 
+    template = 'media/admin/media/_attachedmediaitem_inline.html'
+
 
 class AttachedMediaItemMixin(admin.ModelAdmin):
 

@@ -1,0 +1,88 @@
+.attachedmediaitem.manager:after,
+.attachedmediaitem.manager .contenttypes:after,
+.attachedmediaitem.manager .picker:after,
+.attachedmediaitem.manager .attachments:after {
+  display: block;
+  position: absolute;
+  padding: 5px 10px;
+  background-color: #ffffff;
+  border: dashed 1px #555753;
+  top: -1em;
+  right: -1em;
+  content: "Label";
+  text-transform: uppercase;
+  color: #a40000;
+  font-weight: bold;
+  font-size: 75%;
+}
+
+
+
+  .attachedmediaitem.manager {
+  position: relative;
+  padding: 50px;
+  margin: 50px;
+  border: dashed 1px #555753;
+}
+
+  .attachedmediaitem.manager:after {
+    content: "Manager";
+  }
+
+
+
+
+.attachedmediaitem.manager .contenttypes {
+  position: relative;
+  border-bottom: solid 1px #555753;
+  background-color: #eeeeec;
+  background-image: repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.5) 35px, rgba(255,255,255,.5) 70px);
+}
+
+  .attachedmediaitem.manager .contenttypes:after {
+    content: "Content Types";
+  }
+
+  .attachedmediaitem.manager .contenttypes li {
+    display: inline-block;
+    padding: 20px;
+    cursor: pointer;
+  }
+
+  .attachedmediaitem.manager .contenttypes li.active,
+  .attachedmediaitem.manager .contenttypes li:hover {
+    color: #ffffff;
+    background-color: rgba(58, 87, 83, 0.5);
+  }
+
+
+
+
+.attachedmediaitem.manager .picker,
+.attachedmediaitem.manager .attachments {
+  position: relative;
+  margin: 50px 0;
+  padding: 50px;
+  background-color: #eeeeec;
+  background-image: repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.5) 35px, rgba(255,255,255,.5) 70px);
+}
+
+
+
+
+.attachedmediaitem.manager .picker {
+}
+
+  .attachedmediaitem.manager .picker:after {
+    content: "Picker";
+  }
+
+
+
+
+.attachedmediaitem.manager .attachments {
+}
+
+  .attachedmediaitem.manager .attachments:after {
+    content: "Attachments";
+  }

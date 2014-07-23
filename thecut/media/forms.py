@@ -9,12 +9,14 @@ from thecut.media.models import AttachedMediaItem
 class AttachedMediaItemInlineForm(forms.ModelForm):
 
     class Media(object):
-        css = {'all': ['media/smoothness/jquery-ui-1.8.10.custom.css',
-                       'media/admin.css']}
-        js = ['media/jquery.js', 'media/jquery-ui.js', 'media/jquery.init.js',
-              'media/csrf.js', 'media/admin.js']
+        css = {'all': ['media/attachedmediaitem_inline.css']}
+        # TODO: require.js / namespacing
+        js = ['media/require.config.js',
+              'media/lib/require.js',
+              'media/attachedmediaitem_inline.js']
 
     class Meta(object):
+        # TODO: fields = []
         model = AttachedMediaItem
 
 
