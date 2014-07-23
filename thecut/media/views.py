@@ -8,7 +8,7 @@ from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
-from tagging.models import Tag, TaggedItem
+from taggit.models import Tag, TaggedItem
 from thecut.media import settings, MEDIA_SOURCE_CLASSES
 from thecut.media.forms import MediaSearchForm
 
@@ -98,8 +98,7 @@ class AdminContentTypeObjectList(generic.ListView):
         # If tags have been selected, then filter queryset and form some more
         selected_tags = form.cleaned_data.get('tags')
         if selected_tags:
-            queryset = TaggedItem.objects.get_intersection_by_model(
-                queryset, Tag.objects.filter(pk__in=selected_tags))
+            queryset = queryset.filter(tags__in=selected_tags).distinct()
             tags = self.get_tags(queryset)
 
         self.form = MediaSearchForm(
@@ -108,7 +107,17 @@ class AdminContentTypeObjectList(generic.ListView):
         return queryset
 
     def get_tags(self, queryset):
-        return Tag.objects.usage_for_queryset(queryset, counts=True)
+        """
+        Return a queryset of Tag objects with which any of the items in the
+        given queryset are tagged.
+
+        """
+
+        content_type = ContentType.objects.get_for_model(queryset.model)
+        tagged_items = TaggedItem.objects.filter(
+            content_type=content_type, object_id__in=queryset)#.distinct()
+        tag_ids = tagged_items.values_list('tag_id', flat=True)
+        return Tag.objects.filter(pk__in=tag_ids)
 
     def get_template_names(self, *args, **kwargs):
         return ['admin/{0}/{1}/_picker.html'.format(
