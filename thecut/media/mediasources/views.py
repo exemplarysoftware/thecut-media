@@ -29,7 +29,6 @@ class UploadView(generic.FormView):
 
         for upload in files:
             obj = model(title=form.cleaned_data['title'], file=upload,
-                        tags=form.cleaned_data['tags'],
                         created_by=self.request.user,
                         updated_by=self.request.user)
 
@@ -46,6 +45,8 @@ class UploadView(generic.FormView):
                                         tag for tag in tags)
 
             obj.save()
+            tags = form.cleaned_data['tags']
+            obj.tags.add(*tags)
 
         return super(UploadView, self).form_valid(form)
 
