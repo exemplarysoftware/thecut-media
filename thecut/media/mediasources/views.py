@@ -11,7 +11,6 @@ from django.utils.safestring import mark_safe
 from django.views import generic
 
 
-
 class UploadView(generic.FormView):
     form_class = MediaUploadForm
     success_url = '../'
@@ -32,23 +31,28 @@ class UploadView(generic.FormView):
                         created_by=self.request.user,
                         updated_by=self.request.user)
 
+
             if settings.USE_EXIFTOOL:
                 # Try to populate missing data from the file's metadata
                 metadata = get_metadata(upload)
                 obj.title = obj.title or metadata.get('XMP:Title', '')[:200]
                 obj.caption = obj.caption or metadata.get('XMP:Description',
                                                           '')
-                tags = ['{0}'.format(keyword) for keyword in metadata.get(
-                        'IPTC:Keywords', [])]
-                if not obj.tags:
-                    obj.tags = ' '.join('"{0}"'.format(tag) if ' ' in tag else
-                                        tag for tag in tags)
 
             obj.save()
-            tags = form.cleaned_data['tags']
+            tags = self.get_tags(form, upload)
             obj.tags.add(*tags)
 
         return super(UploadView, self).form_valid(form)
+
+    def get_tags(self, form, upload):
+        tags = []
+        if settings.USE_EXIFTOOL:
+            metadata = get_metadata(upload)
+            keywords = metadata.get('IPTC:Keywords')
+            tags = keywords if isinstance(keywords, list) else [keywords]
+
+        return form.cleaned_data['tags'] or tags
 
     def get_content_types(self):
         admin = self.kwargs['admin']
