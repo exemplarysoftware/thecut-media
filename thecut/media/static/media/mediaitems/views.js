@@ -19,7 +19,16 @@ define(['backbone.marionette', 'mediaitems/collections'], function(Marionette, c
 
         childView: MediaItemView,
 
-        childViewContainer: 'ol',
+        childViewContainer: '@ui.itemList',
+
+        collectionEvents: {
+            'reset': 'render'
+        },
+
+        events: {
+            'click @ui.controls .previous': 'onClickNext',
+            'click @ui.controls .next': 'onClickPrevious'
+        },
 
         initialize: function(options) {
             this.collection = new collections.MediaItemCollection([], {
@@ -27,7 +36,27 @@ define(['backbone.marionette', 'mediaitems/collections'], function(Marionette, c
             });
         },
 
-        template: 'script[type="text/template"][data-name="mediaitem_list"]'
+        template: 'script[type="text/template"][data-name="mediaitem_list"]',
+
+        ui: {
+            'itemList': 'ol',
+            'controls': '.controls'
+        },
+
+        onClickPrevious: function() {
+            this.collection.getNextPage();
+        },
+
+        onClickNext: function() {
+            this.collection.getPreviousPage();
+        },
+
+        serializeData: function() {
+            data = MediaItemCollectionView.__super__.serializeData.call(this);
+            data['hasPreviousPage'] = this.collection.hasPreviousPage();
+            data['hasNextPage'] = this.collection.hasNextPage();
+            return data;
+        }
 
     });
 

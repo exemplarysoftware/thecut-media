@@ -24,6 +24,10 @@
 
   <script data-name="mediaitem_list" type="text/template">
     <ol></ol>
+    <ul class="controls">
+      <% if (hasPreviousPage) { %><li><span class="previous">Previous</span></li><% } %>
+      <% if (hasNextPage) { %><li><span class="next">Next</span></li><% } %>
+    </ul>
   </script>
 
 
