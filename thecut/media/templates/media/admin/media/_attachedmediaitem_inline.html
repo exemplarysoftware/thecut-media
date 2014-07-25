@@ -5,22 +5,25 @@
 
   <ul class="contenttypes" data-api-href="/django-admin/site/homepage/media/api/contenttypes/"></ul>
 
+
+  <div class="picker">
+    <ol></ol>
+  </div>
+
+
+  <div class="attachments">
+    <ol></ol>
+  </div>
+
+
   <script data-name="contenttype_detail" type="text/template">
     <%= verbose_name_plural %>
   </script>
 
 
-  <div class="picker"></div>
-
-  <script data-name="item_detail" type="text/template">
-    <%= name %>
-  </script>
-
-
-  <ul class="attachments"></ul>
-
-  <script data-name="attachment_detail" type="text/template">
-    <%= name %>
+  <script data-name="mediaitem_detail" type="text/template">
+    <h4><%= name %></h4>
+    <% if (thumbnail) { %><img src="<%= thumbnail %>" alt="<%= name %>" style="max-width: 100px; max-height: 100px;" /><% } %>
   </script>
 
 

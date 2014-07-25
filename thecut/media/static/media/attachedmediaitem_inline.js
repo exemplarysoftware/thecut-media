@@ -51,7 +51,7 @@ var attachedMediaItemRequire = requirejs.config({
 });
 
 
-attachedMediaItemRequire(['jquery', 'vent', 'backbone.marionette', 'contenttypes/views'], function(jQuery, vent, Marionette, contenttypeViews) {
+attachedMediaItemRequire(['jquery', 'vent', 'backbone.marionette', 'contenttypes/views', 'mediaitems/views'], function(jQuery, vent, Marionette, contenttypesViews, mediaitemsViews) {
 
 
     jQuery(document).ready(function($) {
@@ -69,17 +69,27 @@ attachedMediaItemRequire(['jquery', 'vent', 'backbone.marionette', 'contenttypes
 
         // Initialise contenttypes region
         application.addInitializer(function(options) {
-            var contenttypeCollectionView = new contenttypeViews.ContentTypeCollectionView({
+            var contenttypeCollectionView = new contenttypesViews.ContentTypeCollectionView({
                 'collectionUrl': this.getRegion('contenttypes').$el.attr('data-api-href')
             });
             this.getRegion('contenttypes').show(contenttypeCollectionView);
             contenttypeCollectionView.collection.fetch();
         });
 
-        vent.on('contenttype:selected', function(contenttype) {alert('contenttype: ' + contenttype.get('verbose_name'))});
+        vent.on('contenttype:selected', function(contenttype) {
+            console.log('contenttype: ' + contenttype.get('verbose_name'))
+
+            var mediaItemCollectionView = new mediaitemsViews.MediaItemCollectionView({
+                'collectionUrl': contenttype.get('objects')
+            });
+            application.getRegion('picker').show(mediaItemCollectionView);
+            mediaItemCollectionView.collection.fetch();
+        });
 
         // Start
         application.start();
+
+        window.MediaItemCollectionView = mediaitemsViews.MediaItemCollectionView;
 
         // Debug
         $manager.data('application', application);
