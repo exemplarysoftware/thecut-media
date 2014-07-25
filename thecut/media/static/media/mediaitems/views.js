@@ -15,15 +15,19 @@ define(['backbone.marionette', 'mediaitems/collections'], function(Marionette, c
     });
 
 
-    var MediaItemCollectionView = Marionette.CollectionView.extend({
+    var MediaItemCollectionView = Marionette.CompositeView.extend({
 
         childView: MediaItemView,
+
+        childViewContainer: 'ol',
 
         initialize: function(options) {
             this.collection = new collections.MediaItemCollection([], {
                 url: options.collectionUrl
             });
-        }
+        },
+
+        template: 'script[type="text/template"][data-name="mediaitem_list"]'
 
     });
 

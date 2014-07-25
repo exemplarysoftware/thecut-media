@@ -35,9 +35,20 @@ define(['vent', 'backbone.marionette', 'contenttypes/collections'], function(ven
     });
 
 
-    var ContentTypeCollectionView = Marionette.CollectionView.extend({
+    var ContentTypeCollectionView = Marionette.CompositeView.extend({
+
+        childSelected: function(childView) {
+            this.collection.each(function(model) {
+                if (childView.model != model && model.get('is_selected')) {
+                    model.set('is_selected', false);
+                }
+            });
+            this.render();  // TODO: Don't know why this isn't happening automatically from the model's 'change' event
+        },
 
         childView: ContentTypeItemView,
+
+        childViewContainer: 'ol',
 
         initialize: function(options) {
             this.collection = new collections.ContentTypeCollection([], {
@@ -48,14 +59,7 @@ define(['vent', 'backbone.marionette', 'contenttypes/collections'], function(ven
 
         },
 
-        childSelected: function(childView) {
-            this.collection.each(function(model) {
-                if (childView.model != model && model.get('is_selected')) {
-                    model.set('is_selected', false);
-                }
-            });
-            this.render();  // TODO: Don't know why this isn't happening automatically from the model's 'change' event
-        }
+        template: 'script[type="text/template"][data-name="contenttype_list"]'
 
     });
 

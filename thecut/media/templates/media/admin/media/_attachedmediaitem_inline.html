@@ -3,21 +3,27 @@
 <div class="attachedmediaitem manager">
 
 
-  <ul class="contenttypes" data-api-href="/django-admin/site/homepage/media/api/contenttypes/"></ul>
+  <div class="contenttypes" data-api-href="/django-admin/site/homepage/media/api/contenttypes/"></div>
 
 
-  <div class="picker">
+  <div class="picker"></div>
+
+
+  <div class="attachments"></div>
+
+
+  <script data-name="contenttype_list" type="text/template">
     <ol></ol>
-  </div>
-
-
-  <div class="attachments">
-    <ol></ol>
-  </div>
+  </script>
 
 
   <script data-name="contenttype_detail" type="text/template">
     <%= verbose_name_plural %>
+  </script>
+
+
+  <script data-name="mediaitem_list" type="text/template">
+    <ol></ol>
   </script>
 
 
