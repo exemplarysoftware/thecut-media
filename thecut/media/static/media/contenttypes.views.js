@@ -1,7 +1,7 @@
-define(['backbone.marionette', 'contenttypes.collections'], function(Marionette, collections) {
+define(['vent', 'backbone.marionette', 'contenttypes.collections'], function(vent, Marionette, collections) {
 
 
-    var ContentTypeItemView = Backbone.Marionette.ItemView.extend({
+    var ContentTypeItemView = Marionette.ItemView.extend({
 
         tagName: 'li',
 
@@ -9,7 +9,25 @@ define(['backbone.marionette', 'contenttypes.collections'], function(Marionette,
             'click': 'onClick'
         },
 
-        onClick: function(event) {alert(this.model.get('verbose_name'));},
+        selected: function(model) {
+            this.trigger('selected');
+            vent.trigger('contenttype:selected', model);
+        },
+
+        modelEvents: {
+            'change': 'render',
+            'selected': 'selected'
+        },
+
+        onClick: function(event) {
+            this.model.set('is_selected', true);
+        },
+
+        onRender: function(event) {
+            if(this.model.get('is_selected')) {
+                this.$el.addClass('selected');
+            }
+        },
 
         // TODO: We should find the template within the inline admin container
         template: 'script[type="text/template"][data-name="contenttype_detail"]'
@@ -17,23 +35,33 @@ define(['backbone.marionette', 'contenttypes.collections'], function(Marionette,
     });
 
 
-    var ContentTypeCollectionView = Backbone.Marionette.CollectionView.extend({
+    var ContentTypeCollectionView = Marionette.CollectionView.extend({
 
         childView: ContentTypeItemView,
 
-        initialize: function() {
+        initialize: function(options) {
             this.collection = new collections.ContentTypeCollection([], {
-                url: this.$el.attr('data-api-href')
+                url: options.collectionUrl
             });
+
+            this.on('childview:selected', this.childSelected);
+
+        },
+
+        childSelected: function(childView) {
+            this.collection.each(function(model) {
+                if (childView.model != model && model.get('is_selected')) {
+                    model.set('is_selected', false);
+                }
+            });
+            this.render();  // TODO: Don't know why this isn't happening automatically from the model's 'change' event
         }
 
     });
 
 
     return {
-
-            'ContentTypeCollectionView': ContentTypeCollectionView
-
+        'ContentTypeCollectionView': ContentTypeCollectionView
     };
 
 

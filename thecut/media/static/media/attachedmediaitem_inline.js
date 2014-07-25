@@ -51,19 +51,38 @@ var attachedMediaItemRequire = requirejs.config({
 });
 
 
-attachedMediaItemRequire(['jquery', 'contenttypes.views'], function(jQuery, views) {
+attachedMediaItemRequire(['jquery', 'vent', 'backbone.marionette', 'contenttypes.views'], function(jQuery, vent, Marionette, contenttypeViews) {
 
 
     jQuery(document).ready(function($) {
 
-        var $manager = $('.attachedmediaitem.manager');
-        var $contenttypes = $manager.find('.contenttypes');
+        var $manager = $('.attachedmediaitem.manager');  // We just say manager
+        var application = new Marionette.Application();
 
-        window.view = new views.ContentTypeCollectionView({
-            'el': $contenttypes
+        // Define regions
+        application.addRegions({
+            'manager': $manager,
+            'contenttypes': $manager.find('.contenttypes'),
+            'picker': $manager.find('.picker'),
+            'attachments': $manager.find('.attachments')
         });
 
-        window.view.collection.fetch();
+        // Initialise contenttypes region
+        application.addInitializer(function(options) {
+            var contenttypeCollectionView = new contenttypeViews.ContentTypeCollectionView({
+                'collectionUrl': this.getRegion('contenttypes').$el.attr('data-api-href')
+            });
+            this.getRegion('contenttypes').show(contenttypeCollectionView);
+            contenttypeCollectionView.collection.fetch();
+        });
+
+        vent.on('contenttype:selected', function(contenttype) {alert('contenttype: ' + contenttype.get('verbose_name'))});
+
+        // Start
+        application.start();
+
+        // Debug
+        $manager.data('application', application);
 
     });
 

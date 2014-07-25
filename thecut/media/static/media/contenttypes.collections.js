@@ -39,9 +39,7 @@ define(['backbone.paginator', 'contenttypes.models'], function(PageableCollectio
 
 
     return {
-
         'ContentTypeCollection': ContentTypeCollection
-
     };
 
 

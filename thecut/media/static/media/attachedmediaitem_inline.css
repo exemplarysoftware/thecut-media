@@ -49,7 +49,7 @@
     cursor: pointer;
   }
 
-  .attachedmediaitem.manager .contenttypes li.active,
+  .attachedmediaitem.manager .contenttypes li.selected,
   .attachedmediaitem.manager .contenttypes li:hover {
     color: #ffffff;
     background-color: rgba(58, 87, 83, 0.5);
