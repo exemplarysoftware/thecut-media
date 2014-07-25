@@ -1,4 +1,4 @@
-define(['vent', 'backbone.marionette', 'contenttypes.collections'], function(vent, Marionette, collections) {
+define(['vent', 'backbone.marionette', 'contenttypes/collections'], function(vent, Marionette, collections) {
 
 
     var ContentTypeItemView = Marionette.ItemView.extend({

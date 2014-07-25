@@ -1,4 +1,4 @@
-define(['backbone.paginator', 'contenttypes.models'], function(PageableCollection, models) {
+define(['backbone.paginator', 'contenttypes/models'], function(PageableCollection, models) {
 
 
     var ContentTypeCollection = PageableCollection.extend({

@@ -51,7 +51,7 @@ var attachedMediaItemRequire = requirejs.config({
 });
 
 
-attachedMediaItemRequire(['jquery', 'vent', 'backbone.marionette', 'contenttypes.views'], function(jQuery, vent, Marionette, contenttypeViews) {
+attachedMediaItemRequire(['jquery', 'vent', 'backbone.marionette', 'contenttypes/views'], function(jQuery, vent, Marionette, contenttypeViews) {
 
 
     jQuery(document).ready(function($) {
