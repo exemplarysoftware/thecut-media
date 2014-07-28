@@ -102,7 +102,10 @@
     }
 
     .attachedmediaitem.manager ol li img {
-      font-size: 1px;
+      display: block;
+      overflow: hidden;
+      max-height: 100px;
+      max-width: 100px;
     }
 
   .attachedmediaitem.manager .picker .pagination {
