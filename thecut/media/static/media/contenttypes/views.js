@@ -9,14 +9,8 @@ define(['vent', 'backbone.marionette', 'contenttypes/collections'], function(ven
             'click': 'onClick'
         },
 
-        selected: function(model) {
-            this.trigger('selected');
-            vent.trigger('contenttype:selected', model);
-        },
-
         modelEvents: {
             'change': 'render',
-            'selected': 'selected'
         },
 
         onClick: function(event) {
@@ -37,12 +31,13 @@ define(['vent', 'backbone.marionette', 'contenttypes/collections'], function(ven
 
     var ContentTypeCollectionView = Marionette.CompositeView.extend({
 
-        childSelected: function(childView) {
+        childSelected: function(selectedModel) {
             this.collection.each(function(model) {
-                if (childView.model != model && model.get('is_selected')) {
+                if (selectedModel != model && model.get('is_selected')) {
                     model.set('is_selected', false);
                 }
             });
+            vent.trigger('contenttype:selected', selectedModel);
             this.render();  // TODO: Don't know why this isn't happening automatically from the model's 'change' event
         },
 
@@ -50,15 +45,17 @@ define(['vent', 'backbone.marionette', 'contenttypes/collections'], function(ven
 
         childViewContainer: 'ol',
 
+        collectionEvents: {
+            'selected': 'childSelected'
+        },
+
         initialize: function(options) {
             this.collection = new collections.ContentTypeCollection([], {
                 url: options.collectionUrl
             });
-
-            this.on('childview:selected', this.childSelected);
-
         },
 
+        // TODO: We should find the template within the inline admin container
         template: 'script[type="text/template"][data-name="contenttype_list"]'
 
     });
