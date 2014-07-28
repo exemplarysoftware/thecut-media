@@ -22,7 +22,7 @@ define(['backbone.marionette', 'mediaitems/collections'], function(Marionette, c
         childViewContainer: '@ui.itemList',
 
         collectionEvents: {
-            'reset': 'render'
+            'add': 'render'
         },
 
         events: {
@@ -56,7 +56,6 @@ define(['backbone.marionette', 'mediaitems/collections'], function(Marionette, c
             data['hasPreviousPage'] = this.collection.hasPreviousPage();
             data['hasNextPage'] = this.collection.hasNextPage();
             data['state'] = this.collection.state;
-            console.log(this.collection.state);
             return data;
         }
 

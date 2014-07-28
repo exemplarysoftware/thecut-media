@@ -3,8 +3,6 @@ define(['backbone.paginator'], function(BasePageableCollection) {
 
     var PageableCollection = BasePageableCollection.extend({
 
-        mode: 'infinite',
-
         queryParams: {
             currentPage: 'page',
             pageSize: 'limit',
