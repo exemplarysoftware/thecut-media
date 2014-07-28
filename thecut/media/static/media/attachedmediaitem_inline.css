@@ -88,28 +88,33 @@
     content: "Picker";
   }
 
-  .attachedmediaitem.manager li {
+  .attachedmediaitem.manager ol li {
     display: inline-block;
     padding: 20px;
     max-width: 100px;
     vertical-align: top;
   }
 
-    .attachedmediaitem.manager li .name {
+    .attachedmediaitem.manager ol li .name {
       font-size: 75%;
       height: 50px;
       overflow: hidden;
     }
 
-    .attachedmediaitem.manager li img {
+    .attachedmediaitem.manager ol li img {
       font-size: 1px;
     }
 
   .attachedmediaitem.manager .picker .pagination {
     background-color: rgba(85, 87, 83, 0.5);
-    text-align: right;
     overflow: hidden;
+    text-align: right;
   }
+
+    .attachedmediaitem.manager .picker .pagination li {
+      display: inline-block;
+      padding: 20px;
+    }
 
     .attachedmediaitem.manager .picker .pagination .status {
       float: left;
