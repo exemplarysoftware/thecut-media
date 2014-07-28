@@ -32,8 +32,8 @@ define(['vent', 'backbone.marionette', 'contenttypes/collections'], function(ven
     var ContentTypeCollectionView = Marionette.CompositeView.extend({
 
         childSelected: function(selectedModel) {
-            this.collection.each(function(model) {
-                if (selectedModel != model && model.get('is_selected')) {
+            _.each(this.collection.where({'is_selected': true}), function(model) {
+                if (selectedModel != model) {
                     model.set('is_selected', false);
                 }
             });
