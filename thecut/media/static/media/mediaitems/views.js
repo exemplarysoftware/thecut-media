@@ -26,8 +26,8 @@ define(['backbone.marionette', 'mediaitems/collections'], function(Marionette, c
         },
 
         events: {
-            'click @ui.controls .previous': 'onClickNext',
-            'click @ui.controls .next': 'onClickPrevious'
+            'click @ui.pagination .previous': 'paginateNext',
+            'click @ui.pagination .next': 'paginatePrevious'
         },
 
         initialize: function(options) {
@@ -36,25 +36,27 @@ define(['backbone.marionette', 'mediaitems/collections'], function(Marionette, c
             });
         },
 
+        paginatePrevious: function() {
+            this.collection.getNextPage();
+        },
+
+        paginateNext: function() {
+            this.collection.getPreviousPage();
+        },
+
         template: 'script[type="text/template"][data-name="mediaitem_list"]',
 
         ui: {
             'itemList': 'ol',
-            'controls': '.controls'
-        },
-
-        onClickPrevious: function() {
-            this.collection.getNextPage();
-        },
-
-        onClickNext: function() {
-            this.collection.getPreviousPage();
+            'pagination': '.pagination'
         },
 
         serializeData: function() {
             data = MediaItemCollectionView.__super__.serializeData.call(this);
             data['hasPreviousPage'] = this.collection.hasPreviousPage();
             data['hasNextPage'] = this.collection.hasNextPage();
+            data['state'] = this.collection.state;
+            console.log(this.collection.state);
             return data;
         }
 

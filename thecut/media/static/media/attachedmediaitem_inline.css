@@ -80,7 +80,29 @@
   .attachedmediaitem.manager li {
     display: inline-block;
     padding: 20px;
+    max-width: 100px;
+    vertical-align: top;
   }
+
+    .attachedmediaitem.manager li .name {
+      font-size: 75%;
+      height: 50px;
+      overflow: hidden;
+    }
+
+    .attachedmediaitem.manager li img {
+      font-size: 1px;
+    }
+
+  .attachedmediaitem.manager .picker .pagination {
+    background-color: rgba(85, 87, 83, 0.5);
+    text-align: right;
+    overflow: hidden;
+  }
+
+    .attachedmediaitem.manager .picker .pagination .status {
+      float: left;
+    }
 
 
 

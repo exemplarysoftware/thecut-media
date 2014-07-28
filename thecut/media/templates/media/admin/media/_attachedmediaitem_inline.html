@@ -24,15 +24,16 @@
 
   <script data-name="mediaitem_list" type="text/template">
     <ol></ol>
-    <ul class="controls">
-      <% if (hasPreviousPage) { %><li><span class="previous">Previous</span></li><% } %>
-      <% if (hasNextPage) { %><li><span class="next">Next</span></li><% } %>
+    <ul class="pagination">
+      <li class="status"><%= state.totalRecords %> items</li>
+      <% if (hasPreviousPage) { %><li><span class="button previous">Previous</span></li><% } %>
+      <% if (hasNextPage) { %><li><span class="button next">Next</span></li><% } %>
     </ul>
   </script>
 
 
   <script data-name="mediaitem_detail" type="text/template">
-    <h4><%= name %></h4>
+    <div class="name"><%= name %></div>
     <% if (thumbnail) { %><img src="<%= thumbnail %>" alt="<%= name %>" style="max-width: 100px; max-height: 100px;" /><% } %>
   </script>
 

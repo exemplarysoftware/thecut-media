@@ -9,6 +9,10 @@ define(['djangorestframework', 'mediaitems/models'], function(djangorestframewor
             this.url = options['url'];
         },
 
+        state: {
+            pageSize: 5
+        }
+
     });
 
 
