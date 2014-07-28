@@ -1,4 +1,5 @@
 .button {
+  cursor: pointer;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -17,8 +18,8 @@
   padding: 5px 10px;
   background-color: #ffffff;
   border: dashed 1px #555753;
-  top: -1em;
-  right: -1em;
+  top: -0.75em;
+  right: -0.75em;
   content: "Label";
   text-transform: uppercase;
   color: #a40000;
@@ -28,10 +29,10 @@
 
 
 
-  .attachedmediaitem.manager {
+.attachedmediaitem.manager {
   position: relative;
-  padding: 50px;
-  margin: 50px;
+  padding: 10px;
+  margin: -10px;
   border: dashed 1px #555753;
 }
 
@@ -71,8 +72,8 @@
 .attachedmediaitem.manager .picker,
 .attachedmediaitem.manager .attachments {
   position: relative;
-  margin: 50px 0;
-  padding: 50px;
+  margin: 20px 0;
+  padding: 20px;
   background-color: #eeeeec;
   background-image: repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.5) 35px, rgba(255,255,255,.5) 70px);
 }
