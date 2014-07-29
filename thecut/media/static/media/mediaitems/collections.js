@@ -1,23 +1,38 @@
 define(['djangorestframework', 'mediaitems/models'], function(djangorestframework, models) {
 
 
-    var MediaItemCollection = djangorestframework.PageableCollection.extend({
+    var MediaItemCollectionMixin = {
 
         model: models.MediaItem,
 
         initialize: function(models, options) {
-            this.url = options['url'];
-        },
+            if (options && options['url']) {
+                this.url = options['url'];
+            }
+        }
+
+    }
+
+
+    var MediaItemCollection = Backbone.Collection.extend({
+
+    });
+    _.extend(MediaItemCollection.prototype, MediaItemCollectionMixin);
+
+
+    var PageableMediaItemCollection = djangorestframework.PageableCollection.extend({
 
         state: {
             pageSize: 5
         }
 
     });
+    _.extend(PageableMediaItemCollection.prototype, MediaItemCollectionMixin);
 
 
     return {
-        'MediaItemCollection': MediaItemCollection
+        'MediaItemCollection': MediaItemCollection,
+        'PageableMediaItemCollection': PageableMediaItemCollection
     };
 
 

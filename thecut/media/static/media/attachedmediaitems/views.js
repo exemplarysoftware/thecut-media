@@ -1,4 +1,4 @@
-define(['jquery', 'backbone.marionette', 'attachedmediaitems/models'], function(jQuery, Marionette, models) {
+define(['jquery', 'backbone.marionette', 'attachedmediaitems/collections', 'attachedmediaitems/models'], function(jQuery, Marionette, collections, models) {
 
 
     var AttachedMediaItemManagementView = Marionette.LayoutView.extend({
@@ -12,6 +12,16 @@ define(['jquery', 'backbone.marionette', 'attachedmediaitems/models'], function(
                 region.attachView(new AttachedMediaItemInlineView({'el': region.el}));
             }, this);
 
+            // Reset collection
+            this.resetCollection();
+        },
+
+        resetCollection: function() {
+            models = new Array();
+            _.each(this.regions, function(value, key) {
+                models.push(this.getRegion(key).currentView.model);
+            }, this);
+            this.options.collection.reset(models);
         },
 
         regions: function(options) {

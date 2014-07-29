@@ -42,7 +42,7 @@ define(['backbone.marionette', 'mediaitems/collections'], function(Marionette, c
         },
 
         initialize: function(options) {
-            this.collection = new collections.MediaItemCollection([], {
+            this.collection = new collections.PageableMediaItemCollection([], {
                 url: options.collectionUrl
             });
         },
@@ -72,9 +72,30 @@ define(['backbone.marionette', 'mediaitems/collections'], function(Marionette, c
     });
 
 
+    var MediaItemAttachmentsCollectionView = MediaItemCollectionView.extend({
+
+        initialize: function(options) {
+            collection = new collections.MediaItemCollection();
+
+            _.each(options.attachments, function(attachment) {
+                var mediaitem = attachment.getContentObject();
+                mediaitem.fetch({
+                    success: function() {
+                        this.collection.add(mediaitem);
+                    }
+                });
+            });
+
+            this.collection = collection;
+        }
+
+    });
+
+
     return {
         'MediaItemCollectionView': MediaItemCollectionView,
-        'PaginatedMediaItemCollectionView': PaginatedMediaItemCollectionView
+        'PaginatedMediaItemCollectionView': PaginatedMediaItemCollectionView,
+        'MediaItemAttachmentsCollectionView': MediaItemAttachmentsCollectionView
     };
 
 
