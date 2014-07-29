@@ -50,9 +50,14 @@ define(['vent', 'backbone.marionette', 'contenttypes/collections'], function(ven
         },
 
         initialize: function(options) {
-            this.collection = new collections.ContentTypeCollection([], {
+            // Should this be at the application level, before constructing view?
+            var collection = new collections.ContentTypeCollection([], {
                 url: options.collectionUrl
             });
+            collection.fetch({
+                success: function() {collection.first().set('is_selected', true);}
+            });
+            this.collection = collection;
         },
 
         // TODO: We should find the template within the inline admin container

@@ -87,7 +87,6 @@ attachedMediaItemRequire(['jquery', 'vent', 'backbone.marionette', 'contenttypes
                 'collectionUrl': this.getRegion('contenttypes').$el.attr('data-api-href')
             });
             region.show(view);
-            view.collection.fetch();
         });
 
         // Show picker on contenttype selection
