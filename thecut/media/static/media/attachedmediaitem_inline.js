@@ -71,27 +71,37 @@ attachedMediaItemRequire(['jquery', 'vent', 'backbone.marionette', 'contenttypes
             'test': $manager.find('#media-attachedmediaitem-parent_content_type-parent_object_id-0')
         });
 
-        // Initialise contenttypes region
+        // Initialise managementForm region
         application.addInitializer(function(options) {
-            var contenttypeCollectionView = new contenttypesViews.ContentTypeCollectionView({
-                'collectionUrl': this.getRegion('contenttypes').$el.attr('data-api-href')
-            });
-            this.getRegion('contenttypes').show(contenttypeCollectionView);
-            contenttypeCollectionView.collection.fetch();
+            var region = this.getRegion('managementForm');
+            var view = new attachedmediaitemsViews.AttachedMediaItemManagementView({
+                'el': region.el
+            })
+            region.attachView(view);
         });
 
+        // Initialise contenttypes region
+        application.addInitializer(function(options) {
+            var region = this.getRegion('contenttypes');
+            var view = new contenttypesViews.ContentTypeCollectionView({
+                'collectionUrl': this.getRegion('contenttypes').$el.attr('data-api-href')
+            });
+            region.show(view);
+            view.collection.fetch();
+        });
+
+        // Show picker on contenttype selection
         vent.on('contenttype:selected', function(contenttype) {
-            var mediaItemCollectionView = new mediaitemsViews.MediaItemCollectionView({
+            var region = application.getRegion('picker');
+            var view = new mediaitemsViews.MediaItemCollectionView({
                 'collectionUrl': contenttype.get('objects')
             });
-            application.getRegion('picker').show(mediaItemCollectionView);
-            mediaItemCollectionView.collection.fetch();
+            region.show(view);
+            view.collection.fetch();
         });
 
         // Start
         application.start();
-
-        window.attachedmediaitemsViews = attachedmediaitemsViews;
 
         // Debug
         $manager.data('application', application);

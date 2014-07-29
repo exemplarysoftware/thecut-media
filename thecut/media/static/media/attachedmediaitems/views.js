@@ -1,9 +1,26 @@
 define(['jquery', 'backbone.marionette', 'attachedmediaitems/models'], function(jQuery, Marionette, models) {
 
 
-    var AttachedMediaItemManagementView = Marionette.View.extend({
+    var AttachedMediaItemManagementView = Marionette.LayoutView.extend({
 
-        //media-attachedmediaitem-parent_content_type-parent_object_id-group
+        initialize: function(options) {
+            this.bindUIElements();  // Bind UI elements to existing HTML
+
+            // Attach inline views to regions
+            _.each(this.regions, function(value, key) {
+                region = this.getRegion(key);
+                region.attachView(new AttachedMediaItemInlineView({'el': region.el}));
+            }, this);
+
+        },
+
+        regions: function(options) {
+            regions = {};
+            $(options.el).find('.inline-related:not(empty-form)').each(function(index) {
+                regions[$(this).attr('id')] = '#' + $(this).attr('id');
+            });
+            return regions;
+        },
 
         ui: {
             'initialForms': '[name$="-INITIAL_FORMS"]',
