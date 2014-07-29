@@ -51,7 +51,7 @@ var attachedMediaItemRequire = requirejs.config({
 });
 
 
-attachedMediaItemRequire(['jquery', 'vent', 'backbone.marionette', 'contenttypes/views', 'mediaitems/views'], function(jQuery, vent, Marionette, contenttypesViews, mediaitemsViews) {
+attachedMediaItemRequire(['jquery', 'vent', 'backbone.marionette', 'contenttypes/views', 'mediaitems/views', 'attachedmediaitems/views'], function(jQuery, vent, Marionette, contenttypesViews, mediaitemsViews, attachedmediaitemsViews) {
 
 
     jQuery(document).ready(function($) {
@@ -64,7 +64,11 @@ attachedMediaItemRequire(['jquery', 'vent', 'backbone.marionette', 'contenttypes
             'manager': $manager,
             'contenttypes': $manager.find('.contenttypes'),
             'picker': $manager.find('.picker'),
-            'attachments': $manager.find('.attachments')
+            'attachments': $manager.find('.attachments'),
+
+            // TODO
+            'managementForm': $manager.find('.inline-group'),
+            'test': $manager.find('#media-attachedmediaitem-parent_content_type-parent_object_id-0')
         });
 
         // Initialise contenttypes region
@@ -77,8 +81,6 @@ attachedMediaItemRequire(['jquery', 'vent', 'backbone.marionette', 'contenttypes
         });
 
         vent.on('contenttype:selected', function(contenttype) {
-            console.log('contenttype: ' + contenttype.get('verbose_name'))
-
             var mediaItemCollectionView = new mediaitemsViews.MediaItemCollectionView({
                 'collectionUrl': contenttype.get('objects')
             });
@@ -89,7 +91,7 @@ attachedMediaItemRequire(['jquery', 'vent', 'backbone.marionette', 'contenttypes
         // Start
         application.start();
 
-        window.MediaItemCollectionView = mediaitemsViews.MediaItemCollectionView;
+        window.attachedmediaitemsViews = attachedmediaitemsViews;
 
         // Debug
         $manager.data('application', application);
