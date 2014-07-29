@@ -21,7 +21,7 @@
   </script>
 
 
-  <script data-name="mediaitem_list" type="text/template">
+  <script data-name="paginated_mediaitem_list" type="text/template">
     <ol></ol>
     <ul class="pagination">
       <% if (state.totalRecords) { %>
@@ -30,6 +30,11 @@
         <% if (hasNextPage) { %><li><span class="button next">Next</span></li><% } %>
       <% } %>
     </ul>
+  </script>
+
+
+  <script data-name="mediaitem_list" type="text/template">
+    <ol></ol>
   </script>
 
 

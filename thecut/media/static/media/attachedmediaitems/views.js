@@ -16,7 +16,7 @@ define(['jquery', 'backbone.marionette', 'attachedmediaitems/models'], function(
 
         regions: function(options) {
             regions = {};
-            $(options.el).find('.inline-related:not(empty-form)').each(function(index) {
+            $(options.el).find('.inline-related:not(.empty-form)').each(function(index) {
                 regions[$(this).attr('id')] = '#' + $(this).attr('id');
             });
             return regions;

@@ -21,6 +21,17 @@ define(['backbone.marionette', 'mediaitems/collections'], function(Marionette, c
 
         childViewContainer: '@ui.itemList',
 
+        template: 'script[type="text/template"][data-name="mediaitem_list"]',
+
+        ui: {
+            'itemList': 'ol'
+        }
+
+    });
+
+
+    var PaginatedMediaItemCollectionView = MediaItemCollectionView.extend({
+
         collectionEvents: {
             'add': 'render'
         },
@@ -44,26 +55,26 @@ define(['backbone.marionette', 'mediaitems/collections'], function(Marionette, c
             this.collection.getPreviousPage();
         },
 
-        template: 'script[type="text/template"][data-name="mediaitem_list"]',
-
-        ui: {
-            'itemList': 'ol',
-            'pagination': '.pagination'
-        },
-
         serializeData: function() {
-            data = MediaItemCollectionView.__super__.serializeData.call(this);
+            data = PaginatedMediaItemCollectionView.__super__.serializeData.call(this);
             data['hasPreviousPage'] = this.collection.hasPreviousPage();
             data['hasNextPage'] = this.collection.hasNextPage();
             data['state'] = this.collection.state;
             return data;
-        }
+        },
+
+        template: 'script[type="text/template"][data-name="paginated_mediaitem_list"]',
+
+        ui: _.extend({
+            'pagination': '.pagination'
+        }, MediaItemCollectionView.prototype.ui)
 
     });
 
 
     return {
-        'MediaItemCollectionView': MediaItemCollectionView
+        'MediaItemCollectionView': MediaItemCollectionView,
+        'PaginatedMediaItemCollectionView': PaginatedMediaItemCollectionView
     };
 
 

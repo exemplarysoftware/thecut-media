@@ -92,7 +92,7 @@ attachedMediaItemRequire(['jquery', 'vent', 'backbone.marionette', 'contenttypes
         // Show picker on contenttype selection
         vent.on('contenttype:selected', function(contenttype) {
             var region = application.getRegion('picker');
-            var view = new mediaitemsViews.MediaItemCollectionView({
+            var view = new mediaitemsViews.PaginatedMediaItemCollectionView({
                 'collectionUrl': contenttype.get('objects')
             });
             region.show(view);
