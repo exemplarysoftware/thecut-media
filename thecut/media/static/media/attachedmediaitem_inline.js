@@ -54,13 +54,13 @@ var attachedMediaItemRequire = requirejs.config({
 
 attachedMediaItemRequire(
 
-    ['jquery', 'vent', 'backbone.marionette', 'attachedmediaitems/collections',
-     'attachedmediaitems/views', 'contenttypes/views', 'mediaitems/views',
-     'domReady!'],
+    ['jquery', 'backbone.marionette', 'attachedmediaitems/collections',
+     'attachedmediaitems/views', 'contenttypes/collections',
+     'contenttypes/views', 'mediaitems/views', 'domReady!'],
 
-    function(jQuery, vent, Marionette, attachedmediaitemsCollections,
-             attachedmediaitemsViews, contenttypesViews, mediaitemsViews,
-             document) {
+    function(jQuery, Marionette, attachedmediaitemsCollections,
+             attachedmediaitemsViews, contenttypesCollections,
+             contenttypesViews, mediaitemsViews, document) {
 
 
     var $manager = $('.attachedmediaitem.manager');  // We just say manager
@@ -75,10 +75,51 @@ attachedMediaItemRequire(
         'attachments': $manager.find('.attachments')
     });
 
+
+    // Initialise contentypes collection
+    application.addInitializer(function() {
+
+        this.contenttypesCollection = new contenttypesCollections.ContentTypeCollection([], {
+            'url': this.getRegion('contenttypes').$el.attr('data-api-href')
+        });
+
+        collection = this.contenttypesCollection;
+        this.contenttypesCollection.fetch({
+            success: function() {collection.first().set('is_selected', true);}
+        });
+
+
+        // Show picker on contenttype selection
+        this.contenttypesCollection.on('selected', function(contenttype) {
+            var region = application.getRegion('picker');
+            var view = new mediaitemsViews.PaginatedMediaItemCollectionView({
+                'collectionUrl': contenttype.get('objects')
+            });
+            region.show(view);
+            view.collection.fetch();
+        });
+
+
+        // Show attachments on contenttype selection
+        this.contenttypesCollection.on('selected', function(contenttype) {
+            var region = application.getRegion('attachments');
+            var view = new mediaitemsViews.MediaItemAttachmentsCollectionView({
+                //collection: new Backbone.Collection()
+                attachments: application.attachmentsCollection.where({'content_type': contenttype.get('id').toString()})
+            });
+            region.show(view);
+        });
+
+    });
+
+
     // Initialise attachments collection
     application.addInitializer(function() {
-        this.attachmentsCollection = new attachedmediaitemsCollections.AttachedMediaItemCollection()
+        this.attachmentsCollection = new attachedmediaitemsCollections.AttachedMediaItemCollection({
+            'contenttypesCollection': this.contenttypesCollection
+        });
     });
+
 
     // Initialise inlineGroup region
     application.addInitializer(function() {
@@ -90,32 +131,12 @@ attachedMediaItemRequire(
         region.attachView(view);
     });
 
+
     // Initialise contenttypes region
     application.addInitializer(function() {
         var region = this.getRegion('contenttypes');
         var view = new contenttypesViews.ContentTypeCollectionView({
-            'collectionUrl': region.$el.attr('data-api-href')
-        });
-        region.show(view);
-    });
-
-
-    // Show picker on contenttype selection
-    vent.on('contenttype:selected', function(contenttype) {
-        var region = application.getRegion('picker');
-        var view = new mediaitemsViews.PaginatedMediaItemCollectionView({
-            'collectionUrl': contenttype.get('objects')
-        });
-        region.show(view);
-        view.collection.fetch();
-    });
-
-    // Show attachments on contenttype selection
-    vent.on('contenttype:selected', function(contenttype) {
-        var region = application.getRegion('attachments');
-        var view = new mediaitemsViews.MediaItemAttachmentsCollectionView({
-            //collection: new Backbone.Collection()
-            attachments: application.attachmentsCollection.where({'content_type': contenttype.get('id').toString()})
+            'collection': this.contenttypesCollection
         });
         region.show(view);
     });

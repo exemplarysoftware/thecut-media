@@ -1,4 +1,4 @@
-define(['vent', 'backbone.marionette', 'contenttypes/collections'], function(vent, Marionette, collections) {
+define(['backbone.marionette', 'contenttypes/collections'], function(Marionette, collections) {
 
 
     var ContentTypeItemView = Marionette.ItemView.extend({
@@ -18,8 +18,10 @@ define(['vent', 'backbone.marionette', 'contenttypes/collections'], function(ven
         },
 
         onRender: function(event) {
-            if(this.model.get('is_selected')) {
+            if (this.model.get('is_selected')) {
                 this.$el.addClass('selected');
+            } else {
+                this.$el.removeClass('selected');
             }
         },
 
@@ -37,8 +39,6 @@ define(['vent', 'backbone.marionette', 'contenttypes/collections'], function(ven
                     model.set('is_selected', false);
                 }
             });
-            vent.trigger('contenttype:selected', selectedModel);
-            this.render();  // TODO: Don't know why this isn't happening automatically from the model's 'change' event
         },
 
         childView: ContentTypeItemView,
@@ -49,16 +49,7 @@ define(['vent', 'backbone.marionette', 'contenttypes/collections'], function(ven
             'selected': 'childSelected'
         },
 
-        initialize: function(options) {
-            // Should this be at the application level, before constructing view?
-            var collection = new collections.ContentTypeCollection([], {
-                url: options.collectionUrl
-            });
-            collection.fetch({
-                success: function() {collection.first().set('is_selected', true);}
-            });
-            this.collection = collection;
-        },
+        // TODO onFetch: function() {alert('fetch')},
 
         // TODO: We should find the template within the inline admin container
         template: 'script[type="text/template"][data-name="contenttype_list"]'
