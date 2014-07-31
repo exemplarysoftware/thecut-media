@@ -105,7 +105,7 @@ attachedMediaItemRequire(
             var region = application.getRegion('attachments');
             var view = new mediaitemsViews.MediaItemAttachmentsCollectionView({
                 //collection: new Backbone.Collection()
-                attachments: application.attachmentsCollection.where({'content_type': contenttype.get('id').toString()})
+                attachments: application.attachmentsCollection.where({'delete': false, 'content_type': contenttype.get('id').toString()})
             });
             region.show(view);
         });

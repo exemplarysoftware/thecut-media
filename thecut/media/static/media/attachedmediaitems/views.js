@@ -65,6 +65,7 @@ define(['jquery', 'backbone.marionette', 'attachedmediaitems/collections', 'atta
             this.model.set('order', this.ui.order.val());
             this.model.set('content_type', this.ui.contenttype.val());
             this.model.set('object_id', this.ui.objectId.val());
+            this.model.set('delete', this.ui.delete.prop('checked'));
         },
 
         updateFields: function() {
@@ -72,6 +73,7 @@ define(['jquery', 'backbone.marionette', 'attachedmediaitems/collections', 'atta
             this.ui.order.val(this.model.get('order'));
             this.ui.contenttype.val(this.model.get('content_type'));
             this.ui.objectId.val(this.model.get('object_id'));
+            this.ui.delete.prop('checked', this.model.get('delete'));
         },
 
         ui: {
