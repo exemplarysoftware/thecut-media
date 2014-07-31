@@ -4,7 +4,8 @@ define(['backbone'], function(Backbone) {
     var MediaItem = Backbone.Model.extend({
 
         defaults: {
-            'attachment': null
+            'attachment': null,
+            'contenttype': null
         },
 
         initialize: function(attributes, options) {

@@ -1,4 +1,4 @@
-define(['backbone.marionette', 'mediaitems/collections'], function(Marionette, collections) {
+define(['vent', 'backbone.marionette', 'mediaitems/collections', 'mediaitems/models'], function(vent, Marionette, collections, models) {
 
 
     var MediaItemView = Marionette.ItemView.extend({
@@ -15,9 +15,22 @@ define(['backbone.marionette', 'mediaitems/collections'], function(Marionette, c
     });
 
 
+    var MediaItemPickerView = MediaItemView.extend({
+
+        events: {
+            'click': 'select',
+        },
+
+        select: function() {
+            vent.trigger('picker:mediaitem:selected', this.model);
+        }
+
+    });
+
+
     var MediaItemCollectionView = Marionette.CompositeView.extend({
 
-        childView: MediaItemView,
+        childView: MediaItemPickerView,
 
         childViewContainer: '@ui.itemList',
 
@@ -54,7 +67,9 @@ define(['backbone.marionette', 'mediaitems/collections'], function(Marionette, c
         initialize: function(options) {
             this.displayClose();
             this.collection = new collections.PageableMediaItemCollection([], {
-                url: options.collectionUrl
+                // TODO
+                model: models.MediaItem.extend({defaults: _.extend(models.MediaItem.prototype.defaults, {contenttype: options.contenttype})}),
+                url: options.contenttype.get('objects')
             });
         },
 
