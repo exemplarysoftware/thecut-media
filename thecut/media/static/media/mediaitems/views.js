@@ -78,7 +78,7 @@ define(['backbone.marionette', 'mediaitems/collections'], function(Marionette, c
             collection = new collections.MediaItemCollection();
 
             _.each(options.attachments, function(attachment) {
-                var mediaitem = attachment.getContentObject();
+                var mediaitem = attachment.getMediaItem();
                 mediaitem.fetch({
                     success: function() {
                         this.collection.add(mediaitem);

@@ -3,10 +3,9 @@ define(['backbone', 'mediaitems/models'], function(Backbone, mediaitemsModels) {
 
     var AttachedMediaItem = Backbone.Model.extend({
 
-        getContentObject: function() {
-            // TODO
-            //var url = '../media/api/contenttypes/' + this.get('content_type') + '/objects/' + this.get('object_id') + '/';
-            var url = this.collection.contenttypesCollection.url + this.get('content_type') + '/objects/' + this.get('object_id') + '/';
+        getMediaItem: function() {
+            var contenttype = this.collection.contenttypesCollection.get(this.get('content_type'));
+            var url = contenttype.get('objects') + this.get('object_id') + '/';
             return new mediaitemsModels.MediaItem({url: url});
         }
 
