@@ -72,7 +72,26 @@ define(['backbone.marionette', 'mediaitems/collections'], function(Marionette, c
     });
 
 
+    var MediaItemAttachmentView = MediaItemView.extend({
+
+        events: {
+            'click @ui.remove': 'removeFromCollection',
+        },
+
+        removeFromCollection: function() {
+            this.model.collection.remove(this.model);
+        },
+
+        ui: {
+            'remove': '.remove'
+        }
+
+    });
+
+
     var MediaItemAttachmentsCollectionView = MediaItemCollectionView.extend({
+
+        childView: MediaItemAttachmentView,
 
         initialize: function(options) {
             collection = new collections.MediaItemCollection();
@@ -87,6 +106,15 @@ define(['backbone.marionette', 'mediaitems/collections'], function(Marionette, c
             });
 
             this.collection = collection;
+        },
+
+        collectionEvents: {
+            'remove': 'deleteAttachment',
+            'change': 'render'
+        },
+
+        deleteAttachment: function(model) {
+            model.get('attachment').set('delete', true);
         }
 
     });
