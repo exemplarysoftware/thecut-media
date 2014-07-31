@@ -36,12 +36,23 @@ define(['backbone.marionette', 'mediaitems/collections'], function(Marionette, c
             'add': 'render'
         },
 
+        displayClose: function() {
+            this.$el.removeClass('opened').addClass('closed');
+        },
+
+        displayOpen: function() {
+            this.$el.removeClass('closed').addClass('opened');
+        },
+
         events: {
+            'click @ui.display .close': 'displayClose',
+            'click @ui.display .open': 'displayOpen',
             'click @ui.pagination .previous': 'paginateNext',
             'click @ui.pagination .next': 'paginatePrevious'
         },
 
         initialize: function(options) {
+            this.displayClose();
             this.collection = new collections.PageableMediaItemCollection([], {
                 url: options.collectionUrl
             });
@@ -66,7 +77,8 @@ define(['backbone.marionette', 'mediaitems/collections'], function(Marionette, c
         template: 'script[type="text/template"][data-name="paginated_mediaitem_list"]',
 
         ui: _.extend({
-            'pagination': '.pagination'
+            'display': '.display.controls',
+            'pagination': '.pagination.controls'
         }, MediaItemCollectionView.prototype.ui)
 
     });

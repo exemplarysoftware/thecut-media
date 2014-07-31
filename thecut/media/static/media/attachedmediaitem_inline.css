@@ -88,6 +88,20 @@
     content: "Picker";
   }
 
+  .attachedmediaitem.manager .picker .display.controls li {
+    display: inline-block;
+  }
+
+  .attachedmediaitem.manager .picker .closed {
+    max-height: 30px;
+    overflow: hidden;
+  }
+
+    .attachedmediaitem.manager .picker .closed .display.controls .close,
+    .attachedmediaitem.manager .picker .opened .display.controls .open {
+      display: none;
+    }
+
   .attachedmediaitem.manager ol li {
     display: inline-block;
     padding: 20px;
