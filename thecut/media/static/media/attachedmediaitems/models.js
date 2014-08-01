@@ -5,7 +5,7 @@ define(['backbone', 'mediaitems/models'], function(Backbone, mediaitemsModels) {
 
         defaults: {
             'order': 0,
-            'delete': false,
+            //'delete': false,
         },
 
         getMediaItem: function() {
