@@ -3,17 +3,36 @@ define(['jquery', 'backbone.marionette', 'attachedmediaitems/collections', 'atta
 
     var AttachedMediaItemManagementView = Marionette.LayoutView.extend({
 
+        addInlineView: function(model) {
+            var index = this.getTotalForms();  // index is zero-based so no need to add 1
+            var view = new NewAttachedMediaItemInlineView({index: index, model: model});
+            this.foo = view;
+            view.render();
+            this.ui.totalForms.val(this.getInlineForms().length);
+        },
+
         initialize: function(options) {
             this.bindUIElements();  // Bind UI elements to existing HTML
 
             // Attach inline views to regions
             _.each(this.regions, function(value, key) {
                 region = this.getRegion(key);
-                region.attachView(new AttachedMediaItemInlineView({'el': region.el}));
+                region.attachView(new ExistingAttachedMediaItemInlineView({'el': region.el}));
             }, this);
 
             // Reset collection
             this.resetCollection();
+
+            this.collection.on('add', this.addInlineView, this);
+
+        },
+
+        getInlineForms: function() {
+            return this.$el.find('.inline-related:not(.empty-form)');
+        },
+
+        getTotalForms: function() {
+            return parseInt(this.ui.totalForms.val(), 10);
         },
 
         resetCollection: function() {
@@ -41,24 +60,21 @@ define(['jquery', 'backbone.marionette', 'attachedmediaitems/collections', 'atta
     });
 
 
-    var AttachedMediaItemInlineView = Marionette.ItemView.extend({
+    var BaseAttachedMediaItemInlineView = Marionette.ItemView.extend({
+
+        emptyInlineRelatedSelector: '#media-attachedmediaitem-parent_content_type-parent_object_id-empty',  // TODO
 
         events: {
             'change': 'updateModel'
         },
 
         initialize: function(options) {
-            this.model = new models.AttachedMediaItem();
-            this.bindUIElements();  // Bind UI elements to existing HTML
-            this.updateModel();
+            this.$emptyInlineForm = $(this.emptyInlineRelatedSelector);
         },
 
         modelEvents: {
             'change': 'updateFields'
         },
-
-        // TODO: We should find the template within the inline admin container
-        //template: '#media-attachedmediaitem-parent_content_type-parent_object_id-empty',
 
         updateModel: function() {
             // Update the model attributes based on the field values
@@ -86,9 +102,46 @@ define(['jquery', 'backbone.marionette', 'attachedmediaitems/collections', 'atta
     });
 
 
+    var NewAttachedMediaItemInlineView = BaseAttachedMediaItemInlineView.extend({
+
+        initialize: function(options) {
+            NewAttachedMediaItemInlineView.__super__.initialize.call(this);
+            this.template = this.$emptyInlineForm.prop('outerHTML');
+        },
+
+        onRender: function() {
+            // Set inline id and class
+            var prefix = this.$emptyInlineForm.closest('[data-form-prefix]').attr('data-form-prefix');  // TODO
+            this.$el.attr('id', prefix + '-' + this.options.index);
+            this.$el.addClass('inline-related ' + prefix);
+
+            // Replace __prefix__ with index
+            var newHtml = this.$el.html().replace(new RegExp('__prefix__', 'g'), this.options.index);
+            this.$el.html(newHtml);
+
+            // Insert and rebind UI / update fields with model data
+            this.$emptyInlineForm.before(this.$el);
+            this.bindUIElements();
+            this.updateFields();
+        }
+
+    });
+
+
+    var ExistingAttachedMediaItemInlineView = BaseAttachedMediaItemInlineView.extend({
+
+        initialize: function(options) {
+            NewAttachedMediaItemInlineView.__super__.initialize.call(this);
+            this.model = new models.AttachedMediaItem();
+            this.bindUIElements();  // Bind UI elements to existing HTML
+            this.updateModel();
+        }
+
+    });
+
+
     return {
-        'AttachedMediaItemManagementView': AttachedMediaItemManagementView,
-        'AttachedMediaItemInlineView': AttachedMediaItemInlineView
+        'AttachedMediaItemManagementView': AttachedMediaItemManagementView
     };
 
 

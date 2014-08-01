@@ -141,11 +141,12 @@ attachedMediaItemRequire(
         region.show(view);
     });
 
+    // Debug
+    application.addInitializer(function() {
+        this.getRegion('manager').$el.data('application', this);
+    });
+
     // Start
     application.start();
-
-    // Debug
-    $manager.data('application', application);
-
 
 });

@@ -17,7 +17,7 @@ define(['backbone.marionette', 'contenttypes/collections'], function(Marionette,
             this.model.set('is_selected', true);
         },
 
-        onRender: function(event) {
+        onRender: function() {
             if (this.model.get('is_selected')) {
                 this.$el.addClass('selected');
             } else {
