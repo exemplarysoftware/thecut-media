@@ -105,7 +105,8 @@ attachedMediaItemRequire(
         this.contenttypesCollection.on('selected', function(contenttype) {
             var region = application.getRegion('attachments');
             var view = new mediaitemsViews.MediaItemAttachmentsCollectionView({
-                'attachments': application.attachmentsCollection.where({'delete': false, 'content_type': contenttype.get('id').toString()})
+                'contenttype': contenttype,
+                'attachmentsCollection': application.attachmentsCollection
             });
             region.show(view);
         });

@@ -84,7 +84,7 @@ define(['jquery', 'backbone.marionette', 'attachedmediaitems/collections', 'atta
         updateModel: function() {
             // Update the model attributes based on the field values
             this.model.set('order', this.ui.order.val());
-            this.model.set('content_type', this.ui.contenttype.val());
+            this.model.set('content_type', parseInt(this.ui.contenttype.val(), 10));
             this.model.set('object_id', this.ui.objectId.val());
             this.model.set('delete', this.ui.delete.prop('checked'));
         },

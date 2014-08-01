@@ -121,13 +121,14 @@ define(['vent', 'backbone.marionette', 'mediaitems/collections', 'mediaitems/mod
         childView: MediaItemAttachmentView,
 
         initialize: function(options) {
-            collection = new collections.MediaItemCollection();
+            var collection = new collections.MediaItemCollection();
+            var attachments = options.attachmentsCollection.where({'delete': false, 'content_type': options.contenttype.get('id')});
 
-            _.each(options.attachments, function(attachment) {
+            _.each(attachments, function(attachment) {
                 var mediaitem = attachment.getMediaItem();
                 mediaitem.fetch({
                     success: function() {
-                        this.collection.add(mediaitem);
+                        collection.add(mediaitem);
                     }
                 });
             });
