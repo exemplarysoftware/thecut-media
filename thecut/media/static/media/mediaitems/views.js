@@ -118,22 +118,28 @@ define(['vent', 'backbone.marionette', 'mediaitems/collections', 'mediaitems/mod
 
     var MediaItemAttachmentsCollectionView = MediaItemCollectionView.extend({
 
-        childView: MediaItemAttachmentView,
-
-        initialize: function(options) {
-            var collection = new collections.MediaItemCollection();
-            var attachments = options.attachmentsCollection.where({'delete': false, 'content_type': options.contenttype.get('id')});
-
-            _.each(attachments, function(attachment) {
+        addMediaItemFromAttachment: function(attachment) {
+            // Only add attachment if it matches the selected contenttype, and is not flagged for deletion
+            if (attachment.get('content_type') == this.collection.contenttype && (!attachment.get('delete'))) {
                 var mediaitem = attachment.getMediaItem();
+                var collection = this.collection;
                 mediaitem.fetch({
                     success: function() {
                         collection.add(mediaitem);
                     }
                 });
-            });
+            }
+        },
 
-            this.collection = collection;
+        childView: MediaItemAttachmentView,
+
+        initialize: function(options) {
+            this.collection = new collections.MediaItemCollection();
+            this.collection.contenttype = options.contenttype.get('id');
+            options.attachmentsCollection.each(function(attachment) {
+                this.addMediaItemFromAttachment(attachment)
+            }, this);
+            options.attachmentsCollection.on('add', this.addMediaItemFromAttachment, this);
         },
 
         collectionEvents: {
