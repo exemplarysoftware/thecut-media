@@ -6,9 +6,13 @@ define(['jquery', 'backbone.marionette', 'attachedmediaitems/collections', 'atta
         addInlineView: function(model) {
             var index = this.getTotalForms();  // index is zero-based so no need to add 1
             var view = new NewAttachedMediaItemInlineView({index: index, model: model});
-            this.foo = view;
             view.render();
-            this.ui.totalForms.val(this.getInlineForms().length);
+            this.updateTotalForms();
+        },
+
+        collectionEvents: {
+            'add': 'addInlineView',
+            'remove': 'updateTotalForms'
         },
 
         initialize: function(options) {
@@ -22,9 +26,6 @@ define(['jquery', 'backbone.marionette', 'attachedmediaitems/collections', 'atta
 
             // Reset collection
             this.resetCollection();
-
-            this.collection.on('add', this.addInlineView, this);
-
         },
 
         getInlineForms: function() {
@@ -55,7 +56,11 @@ define(['jquery', 'backbone.marionette', 'attachedmediaitems/collections', 'atta
             'initialForms': '[name$="-INITIAL_FORMS"]',
             'maxNumForms': '[name$="-MAX_NUM_FORMS"]',
             'totalForms': '[name$="-TOTAL_FORMS"]'
-        }
+        },
+
+        updateTotalForms: function() {
+            this.ui.totalForms.val(this.getInlineForms().length);
+        },
 
     });
 
@@ -89,7 +94,15 @@ define(['jquery', 'backbone.marionette', 'attachedmediaitems/collections', 'atta
             this.ui.order.val(this.model.get('order'));
             this.ui.contenttype.val(this.model.get('content_type'));
             this.ui.objectId.val(this.model.get('object_id'));
-            this.ui.delete.prop('checked', this.model.get('delete'));
+
+            if (this.ui.delete.length) {
+                // An existing view, just mark the delete input.
+                this.ui.delete.prop('checked', this.model.get('delete'));
+            } else if (this.model.get('delete')) {
+                // A new view, delete it.
+                this.model.collection.remove(this.model);
+                this.destroy();  // TODO
+            }
         },
 
         ui: {
