@@ -4,8 +4,7 @@ define(['backbone', 'mediaitems/models'], function(Backbone, mediaitemsModels) {
     var AttachedMediaItem = Backbone.Model.extend({
 
         defaults: {
-            'order': 0,
-            'delete': false,
+            'order': 0
         },
 
         getMediaItem: function() {

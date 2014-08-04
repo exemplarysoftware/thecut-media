@@ -83,33 +83,33 @@ attachedMediaItemRequire(
             'url': this.getRegion('contenttypes').$el.attr('data-api-href')
         });
 
-        collection = this.contenttypesCollection;
+        var contenttypesCollection = this.contenttypesCollection;
         this.contenttypesCollection.fetch({
-            'success': function() {collection.first().set('is_selected', true);}
+            'success': function() {contenttypesCollection.first().set('is_selected', true);}
         });
 
 
         // Show picker on contenttype selection
         this.contenttypesCollection.on('selected', function(contenttype) {
-            var region = application.getRegion('picker');
+            var region = this.getRegion('picker');
             var view = new mediaitemsViews.PaginatedMediaItemCollectionView({
                 'contenttype': contenttype,
                 'attachmentsCollection': this.attachmentsCollection
             });
             region.show(view);
             view.collection.fetch();
-        });
+        }, this);
 
 
         // Show attachments on contenttype selection
         this.contenttypesCollection.on('selected', function(contenttype) {
-            var region = application.getRegion('attachments');
+            var region = this.getRegion('attachments');
             var view = new mediaitemsViews.MediaItemAttachmentsCollectionView({
                 'contenttype': contenttype,
-                'attachmentsCollection': application.attachmentsCollection
+                'attachmentsCollection': this.attachmentsCollection
             });
             region.show(view);
-        });
+        }, this);
 
     });
 

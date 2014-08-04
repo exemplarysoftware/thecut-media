@@ -28,6 +28,23 @@ define(['vent', 'backbone.marionette', 'mediaitems/collections', 'mediaitems/mod
     });
 
 
+    var MediaItemAttachmentView = MediaItemView.extend({
+
+        events: {
+            'click @ui.remove': 'removeFromCollection',
+        },
+
+        removeFromCollection: function() {
+            this.model.collection.remove(this.model);
+        },
+
+        ui: {
+            'remove': '.remove'
+        }
+
+    });
+
+
     var MediaItemCollectionView = Marionette.CompositeView.extend({
 
         childView: MediaItemPickerView,
@@ -99,28 +116,11 @@ define(['vent', 'backbone.marionette', 'mediaitems/collections', 'mediaitems/mod
     });
 
 
-    var MediaItemAttachmentView = MediaItemView.extend({
-
-        events: {
-            'click @ui.remove': 'removeFromCollection',
-        },
-
-        removeFromCollection: function() {
-            this.model.collection.remove(this.model);
-        },
-
-        ui: {
-            'remove': '.remove'
-        }
-
-    });
-
-
     var MediaItemAttachmentsCollectionView = MediaItemCollectionView.extend({
 
         addMediaItemFromAttachment: function(attachment) {
-            // Only add attachment if it matches the selected contenttype, and is not flagged for deletion
-            if (attachment.get('content_type') == this.collection.contenttype && (!attachment.get('delete'))) {
+            // Only add attachment if it matches the selected contenttype, is not flagged for deletion
+            if (attachment.get('content_type') == this.collection.contenttype && !(attachment.has('delete') && attachment.get('delete'))) {
                 var mediaitem = attachment.getMediaItem();
                 var collection = this.collection;
                 mediaitem.fetch({
@@ -148,7 +148,15 @@ define(['vent', 'backbone.marionette', 'mediaitems/collections', 'mediaitems/mod
         },
 
         deleteAttachment: function(model) {
-            model.get('attachment').set('delete', true);
+            // When deleting an attachment, either flag it for deletion (if
+            // existing), or just remove it from the collection.
+            var attachment = model.get('attachment');
+            if (attachment.has('delete')) {
+                attachment.set('delete', true);
+            }
+            else {
+                attachment.collection.remove(attachment);
+            }
         }
 
     });
