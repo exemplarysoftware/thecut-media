@@ -63,7 +63,18 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models'], f
         },
 
         childEvents: {
+            'render': 'childViewRendered',
             'select': 'childViewSelected'
+        },
+
+        childViewRendered: function(childView) {
+            var attachments = this.options.attachmentsCollection.findWhere({
+                'content_type': this.options.contenttype.get('id'),
+                'object_id': childView.model.get('id')
+            });
+            if (attachments) {
+                childView.$el.addClass('selected');
+            }
         },
 
         childViewSelected: function(childView) {
@@ -144,6 +155,7 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models'], f
             options.attachmentsCollection.each(function(attachment) {
                 this.addMediaItemFromAttachment(attachment)
             }, this);
+
             options.attachmentsCollection.on('add', this.addMediaItemFromAttachment, this);
         },
 

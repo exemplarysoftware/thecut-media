@@ -114,6 +114,10 @@
     vertical-align: top;
   }
 
+  .attachedmediaitem.manager ol li.selected {
+    opacity: 0.5;
+  }
+
     .attachedmediaitem.manager ol li .name {
       font-size: 75%;
       height: 50px;
