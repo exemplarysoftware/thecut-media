@@ -66,6 +66,7 @@ attachedMediaItemRequire(
     var $manager = $('.attachedmediaitem.manager');  // We just say manager
     var application = new Marionette.Application();
 
+
     // Define regions
     application.addRegions({
         'manager': $manager,
@@ -85,9 +86,10 @@ attachedMediaItemRequire(
 
         var contenttypesCollection = this.contenttypesCollection;
         this.contenttypesCollection.fetch({
-            'success': function() {contenttypesCollection.first().set('is_selected', true);}
+            'success': function() {
+                contenttypesCollection.first().set('is_selected', true);
+            }
         });
-
 
         // Show picker on contenttype selection
         this.contenttypesCollection.on('selected', function(contenttype) {
@@ -97,9 +99,7 @@ attachedMediaItemRequire(
                 'attachmentsCollection': this.attachmentsCollection
             });
             region.show(view);
-            view.collection.fetch();
         }, this);
-
 
         // Show attachments on contenttype selection
         this.contenttypesCollection.on('selected', function(contenttype) {
@@ -141,6 +141,7 @@ attachedMediaItemRequire(
         });
         region.show(view);
     });
+
 
     // Debug
     application.addInitializer(function() {

@@ -1,37 +1,34 @@
 define(['djangorestframework', 'mediaitems/models'], function(djangorestframework, models) {
 
 
-    var MediaItemCollectionMixin = {
+    var MediaItemAttachmentsCollection = Backbone.Collection.extend({
+
+        comparator: function(model) {
+            return model.get('attachment').get('order');
+        },
+
+        model: models.MediaItem
+
+    });
+
+
+    var PageableMediaItemCollection = djangorestframework.PageableCollection.extend({
 
         model: models.MediaItem,
 
         initialize: function(models, options) {
-            if (options && options['url']) {
-                this.url = options['url'];
-            }
-        }
-
-    }
-
-
-    var MediaItemCollection = Backbone.Collection.extend({
-
-    });
-    _.extend(MediaItemCollection.prototype, MediaItemCollectionMixin);
-
-
-    var PageableMediaItemCollection = djangorestframework.PageableCollection.extend({
+            this.url = options['url'];
+        },
 
         state: {
             pageSize: 5
         }
 
     });
-    _.extend(PageableMediaItemCollection.prototype, MediaItemCollectionMixin);
 
 
     return {
-        'MediaItemCollection': MediaItemCollection,
+        'MediaItemAttachmentsCollection': MediaItemAttachmentsCollection,
         'PageableMediaItemCollection': PageableMediaItemCollection
     };
 

@@ -1,4 +1,4 @@
-define(['vent', 'backbone.marionette', 'mediaitems/collections', 'mediaitems/models'], function(vent, Marionette, collections, models) {
+define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models'], function(Marionette, collections, models) {
 
 
     var MediaItemView = Marionette.ItemView.extend({
@@ -17,13 +17,9 @@ define(['vent', 'backbone.marionette', 'mediaitems/collections', 'mediaitems/mod
 
     var MediaItemPickerView = MediaItemView.extend({
 
-        events: {
-            'click': 'select',
+        triggers: {
+            'click': 'select'
         },
-
-        select: function() {
-            vent.trigger('picker:mediaitem:selected', this.model);
-        }
 
     });
 
@@ -66,6 +62,14 @@ define(['vent', 'backbone.marionette', 'mediaitems/collections', 'mediaitems/mod
             'add': 'render'
         },
 
+        childEvents: {
+            'select': 'childViewSelected'
+        },
+
+        childViewSelected: function(childView) {
+            this.options.attachmentsCollection.addFromMediaItem(childView.model);
+        },
+
         displayClose: function() {
             this.$el.removeClass('opened').addClass('closed');
         },
@@ -88,6 +92,7 @@ define(['vent', 'backbone.marionette', 'mediaitems/collections', 'mediaitems/mod
                 model: models.MediaItem.extend({defaults: _.extend(models.MediaItem.prototype.defaults, {contenttype: options.contenttype})}),
                 url: options.contenttype.get('objects')
             });
+            this.collection.fetch();
         },
 
         paginatePrevious: function() {
@@ -134,7 +139,7 @@ define(['vent', 'backbone.marionette', 'mediaitems/collections', 'mediaitems/mod
         childView: MediaItemAttachmentView,
 
         initialize: function(options) {
-            this.collection = new collections.MediaItemCollection();
+            this.collection = new collections.MediaItemAttachmentsCollection();
             this.collection.contenttype = options.contenttype.get('id');
             options.attachmentsCollection.each(function(attachment) {
                 this.addMediaItemFromAttachment(attachment)

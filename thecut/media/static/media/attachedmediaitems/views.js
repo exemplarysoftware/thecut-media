@@ -127,7 +127,7 @@ define(['jquery', 'backbone.marionette', 'attachedmediaitems/collections', 'atta
             // Reset collection
             this.resetCollection();
 
-            // Bind events
+            // Bind child add/remove so the form total is updated.
             this.on('add:child', this.updateTotalForms);
             this.on('remove:child', this.updateTotalForms);
         },
