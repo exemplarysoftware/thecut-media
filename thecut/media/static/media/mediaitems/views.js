@@ -3,7 +3,13 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
 
     var MediaItemView = Marionette.ItemView.extend({
 
-        tagName: 'li',
+        deleteAttachment: function() {
+            this.model.get('attachment').delete();
+        },
+
+        events: {
+            'click @ui.remove': 'deleteAttachment'
+        },
 
         modelEvents: {
             'change': 'render',
@@ -17,37 +23,18 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
             }
         },
 
+        tagName: 'li',
+
         // TODO: We should find the template within the inline admin container
-        template: 'script[type="text/template"][data-name="mediaitem_detail"]'
-
-    });
-
-
-    var MediaItemPickerView = MediaItemView.extend({
+       template: 'script[type="text/template"][data-name="mediaitem_detail"]',
 
         triggers: {
             'click @ui.select': 'select'
         },
 
         ui: {
+            'remove': '.action.remove',
             'select': '.action.select'
-        }
-
-    });
-
-
-    var MediaItemAttachmentView = MediaItemView.extend({
-
-        events: {
-            'click @ui.remove': 'removeFromCollection'
-        },
-
-        removeFromCollection: function() {
-            this.model.collection.remove(this.model);
-        },
-
-        ui: {
-            'remove': '.action.remove'
         }
 
     });
@@ -55,7 +42,7 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
 
     var MediaItemCollectionView = Marionette.CompositeView.extend({
 
-        childView: MediaItemPickerView,
+        childView: MediaItemView,
 
         childViewContainer: '@ui.itemList',
 
@@ -72,7 +59,7 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
     var PaginatedMediaItemCollectionView = MediaItemCollectionView.extend({
 
         associateAttachment: function(mediaitem, attachment) {
-            attachment.on('delete', function() {mediaitem.set({'attachment': null})});
+            attachment.on('delete', function() {mediaitem.set({'attachment': null});});
             mediaitem.set({'attachment': attachment});
         },
 
@@ -175,6 +162,8 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
                     'attachment': attachment
                 });
 
+                attachment.on('delete', function() {mediaitem.collection.remove(mediaitem);});
+
                 var collection = this.collection;
                 mediaitem.fetch({
                     success: function() {
@@ -185,7 +174,7 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
             }
         },
 
-        childView: MediaItemAttachmentView,
+        childView: MediaItemView,
 
         events: {
             'sortupdate': 'onSortUpdate'
@@ -201,13 +190,7 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
         },
 
         collectionEvents: {
-            'remove': 'deleteAttachment',
             'change': 'render'
-        },
-
-        deleteAttachment: function(model) {
-            var attachment = model.get('attachment');
-            attachment.delete();
         },
 
         onRender: function() {
