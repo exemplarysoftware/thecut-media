@@ -22,6 +22,8 @@ class AttachedMediaItemInline(GenericStackedInline):
 
     template = 'media/admin/media/_attachedmediaitem_inline.html'
 
+    verbose_name_plural = 'Attached Media'
+
 
 class AttachedMediaItemMixin(admin.ModelAdmin):
 

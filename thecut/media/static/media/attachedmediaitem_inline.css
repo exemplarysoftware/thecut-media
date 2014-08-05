@@ -41,6 +41,10 @@
   }
 
 
+.attachedmediaitem.manager .inline-related,
+.attachedmediaitem.manager .add-row {
+  display: none;
+}
 
 
 .attachedmediaitem.manager .contenttypes {
