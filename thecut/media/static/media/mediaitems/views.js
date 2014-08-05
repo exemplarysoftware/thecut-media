@@ -1,4 +1,4 @@
-define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'attachedmediaitems/models'], function(Marionette, collections, models, attachedmediaitemsModels) {
+define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'attachedmediaitems/filters', 'attachedmediaitems/models'], function(Marionette, collections, models, filters, attachedmediaitemsModels) {
 
 
     var MediaItemView = Marionette.ItemView.extend({
@@ -26,8 +26,12 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
     var MediaItemPickerView = MediaItemView.extend({
 
         triggers: {
-            'click': 'select'
+            'click @ui.select': 'select'
         },
+
+        ui: {
+            'select': '.action.select'
+        }
 
     });
 
@@ -43,7 +47,7 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
         },
 
         ui: {
-            'remove': '.remove'
+            'remove': '.action.remove'
         }
 
     });
@@ -67,18 +71,13 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
 
     var PaginatedMediaItemCollectionView = MediaItemCollectionView.extend({
 
-        associateAttachment: function(mediaitem) {
-            var attachment = this.options.attachmentsCollection.findWhere({
-                'content_type': mediaitem.get('contenttype').get('id'),
-                'object_id': mediaitem.get('id')
-            });
-            mediaitem.set({'attachment': attachment ? attachment : null});
-            this.render();  // Needed to render pagination controls
+        associateAttachment: function(mediaitem, attachment) {
+            attachment.on('delete', function() {mediaitem.set({'attachment': null})});
+            mediaitem.set({'attachment': attachment});
         },
 
         collectionEvents: {
-            'add': 'associateAttachment',
-            'remove': 'associateAttachment'
+            'add': 'findAttachment'
         },
 
         childEvents: {
@@ -91,7 +90,7 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
                     'object_id': childView.model.get('id'),
                     'content_type': childView.model.get('contenttype').get('id')
                 });
-                childView.model.set('attachment', attachment);
+                this.associateAttachment(childView.model, attachment);
             }
             this.options.attachmentsCollection.add(childView.model.get('attachment'));
         },
@@ -109,6 +108,21 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
             'click @ui.display .open': 'displayOpen',
             'click @ui.pagination .previous': 'paginateNext',
             'click @ui.pagination .next': 'paginatePrevious'
+        },
+
+        findAttachment: function(mediaitem) {
+            // Find an active
+            var activeAttachments = _.filter(this.options.attachmentsCollection.where({
+                'content_type': mediaitem.get('contenttype').get('id'),
+                'object_id': mediaitem.get('id')
+            }), filters.activeAttachmentsFilter);
+            var attachment = _.first(activeAttachments);
+
+            if (attachment) {
+                this.associateAttachment(mediaitem, attachment);
+            }
+
+            this.render();  // TODO: Needed to render pagination controls
         },
 
         initialize: function(options) {
@@ -153,7 +167,7 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
 
         addMediaItemFromAttachment: function(attachment) {
             // Only add attachment if it matches the selected contenttype, is not flagged for deletion
-            if (attachment.get('content_type') == this.options.contenttype.get('id') && !(attachment.has('delete') && attachment.get('delete'))) {
+            if (attachment.get('content_type') == this.options.contenttype.get('id') && filters.activeAttachmentsFilter(attachment)) {
 
                 var mediaitem = new models.MediaItem({
                     'id': attachment.get('object_id'),

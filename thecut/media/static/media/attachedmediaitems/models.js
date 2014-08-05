@@ -16,6 +16,7 @@ define(['backbone'], function(Backbone) {
             else if (this.collection) {
                 this.collection.remove(this);
             }
+            this.trigger('delete');
         }
 
     });

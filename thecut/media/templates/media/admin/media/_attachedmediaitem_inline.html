@@ -42,7 +42,7 @@
   <script data-name="mediaitem_detail" type="text/template">
     <div class="name"><%= name %></div>
     <% if (thumbnail) { %><img src="<%= thumbnail %>" alt="<%= name %>" /><% } %>
-    <% if (attachment) { %><span class="remove">remove</span><% } %>
+    <% if (attachment) { %><span class="action remove">remove</span><% } else { %><span class="action select">select</span><% } %>
   </script>
 
 
