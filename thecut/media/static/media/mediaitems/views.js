@@ -39,7 +39,7 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
     var MediaItemAttachmentView = MediaItemView.extend({
 
         events: {
-            'click @ui.remove': 'removeFromCollection',
+            'click @ui.remove': 'removeFromCollection'
         },
 
         removeFromCollection: function() {
@@ -187,6 +187,10 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
 
         childView: MediaItemAttachmentView,
 
+        events: {
+            'sortupdate': 'onSortUpdate'
+        },
+
         initialize: function(options) {
             this.collection = new collections.MediaItemAttachmentsCollection();
             options.attachmentsCollection.each(function(attachment) {
@@ -204,6 +208,16 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
         deleteAttachment: function(model) {
             var attachment = model.get('attachment');
             attachment.delete();
+        },
+
+        onRender: function() {
+            this.ui.itemList.sortable();
+        },
+
+        onSortUpdate: function(event, ui) {
+            this.children.each(function(childView) {
+                childView.model.get('attachment').set('order', childView.$el.index());
+            });
         }
 
     });

@@ -1,4 +1,4 @@
-define(['jquery', 'backbone.marionette', 'attachedmediaitems/collections', 'attachedmediaitems/models'], function(jQuery, Marionette, collections, models) {
+define(['jquery', 'jquery-ui', 'backbone.marionette', 'attachedmediaitems/collections', 'attachedmediaitems/models'], function(jQuery, jQueryUi, Marionette, collections, models) {
 
 
     var BaseAttachedMediaItemInlineView = Marionette.ItemView.extend({

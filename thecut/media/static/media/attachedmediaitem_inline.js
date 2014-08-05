@@ -11,6 +11,7 @@ var attachedMediaItemRequire = requirejs.config({
         'backbone.wreqr': 'lib/backbone.wreqr',
         'domReady': 'lib/domReady',
         'jquery': 'lib/jquery',
+        'jquery-ui': 'lib/jquery-ui',
         'json2': 'lib/json2',
         'underscore': 'lib/underscore'
     },
@@ -40,6 +41,9 @@ var attachedMediaItemRequire = requirejs.config({
         'jquery': {
             exports: 'jQuery',
             init: function () {return this.jQuery.noConflict();}
+        },
+        'jquery-ui': {
+            exports: 'jQueryUi'
         },
         'json2': {
             exports: 'JSON'
