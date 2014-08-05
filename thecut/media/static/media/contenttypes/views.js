@@ -33,7 +33,8 @@ define(['backbone.marionette', 'contenttypes/collections'], function(Marionette,
 
     var ContentTypeCollectionView = Marionette.CompositeView.extend({
 
-        childSelected: function(selectedModel) {
+        contenttypeSelected: function(selectedModel) {
+            // Ensure other models in the collection are 'unselected'.
             _.each(this.collection.where({'is_selected': true}), function(model) {
                 if (selectedModel != model) {
                     model.set('is_selected', false);
@@ -46,10 +47,15 @@ define(['backbone.marionette', 'contenttypes/collections'], function(Marionette,
         childViewContainer: 'ol',
 
         collectionEvents: {
-            'selected': 'childSelected'
+            'selected': 'contenttypeSelected'
         },
 
-        // TODO onFetch: function() {alert('fetch')},
+        initialize: function(options) {
+            var collection = this.collection;
+            collection.fetch({
+                'success': function() {collection.first().set('is_selected', true);}
+            });
+        },
 
         // TODO: We should find the template within the inline admin container
         template: 'script[type="text/template"][data-name="contenttype_list"]'

@@ -77,18 +77,17 @@ attachedMediaItemRequire(
     });
 
 
+    // Initialise attachments collection
+    application.addInitializer(function() {
+        this.attachmentsCollection = new attachedmediaitemsCollections.AttachedMediaItemCollection();
+    });
+
+
     // Initialise contentypes collection
     application.addInitializer(function() {
 
         this.contenttypesCollection = new contenttypesCollections.ContentTypeCollection([], {
             'url': this.getRegion('contenttypes').$el.attr('data-api-href')
-        });
-
-        var contenttypesCollection = this.contenttypesCollection;
-        this.contenttypesCollection.fetch({
-            'success': function() {
-                contenttypesCollection.first().set('is_selected', true);
-            }
         });
 
         // Show picker on contenttype selection
@@ -111,14 +110,6 @@ attachedMediaItemRequire(
             region.show(view);
         }, this);
 
-    });
-
-
-    // Initialise attachments collection
-    application.addInitializer(function() {
-        this.attachmentsCollection = new attachedmediaitemsCollections.AttachedMediaItemCollection({
-            'contenttypesCollection': this.contenttypesCollection
-        });
     });
 
 

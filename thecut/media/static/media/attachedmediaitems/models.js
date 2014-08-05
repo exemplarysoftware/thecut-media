@@ -1,4 +1,4 @@
-define(['backbone', 'mediaitems/models'], function(Backbone, mediaitemsModels) {
+define(['backbone'], function(Backbone) {
 
 
     var AttachedMediaItem = Backbone.Model.extend({
@@ -7,10 +7,15 @@ define(['backbone', 'mediaitems/models'], function(Backbone, mediaitemsModels) {
             'order': 0
         },
 
-        getMediaItem: function() {
-            var contenttype = this.collection.contenttypesCollection.get(this.get('content_type'));
-            var url = contenttype.get('objects') + this.get('object_id') + '/';
-            return new mediaitemsModels.MediaItem({'url': url, 'contenttype': contenttype, 'attachment': this});
+        delete: function() {
+            // When deleting an attachment, either flag it for deletion (if
+            // pre-existing), or just remove it from it's collection.
+            if (this.has('delete')) {
+                this.set('delete', true);
+            }
+            else if (this.collection) {
+                this.collection.remove(this);
+            }
         }
 
     });

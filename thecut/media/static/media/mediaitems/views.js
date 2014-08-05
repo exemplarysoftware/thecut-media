@@ -1,4 +1,4 @@
-define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models'], function(Marionette, collections, models) {
+define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'attachedmediaitems/models'], function(Marionette, collections, models, attachedmediaitemsModels) {
 
 
     var MediaItemView = Marionette.ItemView.extend({
@@ -7,6 +7,14 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models'], f
 
         modelEvents: {
             'change': 'render',
+        },
+
+        onRender: function() {
+            if (this.model.get('attachment')) {
+                this.$el.addClass('attached');
+            } else {
+                this.$el.removeClass('attached');
+            }
         },
 
         // TODO: We should find the template within the inline admin container
@@ -47,6 +55,7 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models'], f
 
         childViewContainer: '@ui.itemList',
 
+        // TODO: We should find the template within the inline admin container
         template: 'script[type="text/template"][data-name="mediaitem_list"]',
 
         ui: {
@@ -58,27 +67,31 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models'], f
 
     var PaginatedMediaItemCollectionView = MediaItemCollectionView.extend({
 
+        associateAttachment: function(mediaitem) {
+            var attachment = this.options.attachmentsCollection.findWhere({
+                'content_type': mediaitem.get('contenttype').get('id'),
+                'object_id': mediaitem.get('id')
+            });
+            mediaitem.set({'attachment': attachment ? attachment : null});
+            this.render();  // Needed to render pagination controls
+        },
+
         collectionEvents: {
-            'add': 'render'
+            'add': 'associateAttachment',
+            'remove': 'associateAttachment'
         },
 
         childEvents: {
-            'render': 'childViewRendered',
             'select': 'childViewSelected'
         },
 
-        childViewRendered: function(childView) {
-            var attachments = this.options.attachmentsCollection.findWhere({
-                'content_type': this.options.contenttype.get('id'),
-                'object_id': childView.model.get('id')
-            });
-            if (attachments) {
-                childView.$el.addClass('selected');
-            }
-        },
-
         childViewSelected: function(childView) {
-            this.options.attachmentsCollection.addFromMediaItem(childView.model);
+            var attachment = new attachedmediaitemsModels.AttachedMediaItem({
+                'object_id': childView.model.get('id'),
+                'content_type': childView.model.get('contenttype').get('id')
+            });
+            childView.model.set('attachment', attachment);
+            this.options.attachmentsCollection.add(attachment);
         },
 
         displayClose: function() {
@@ -98,9 +111,10 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models'], f
 
         initialize: function(options) {
             this.displayClose();
-            this.collection = new collections.PageableMediaItemCollection([], {
-                // TODO
-                model: models.MediaItem.extend({defaults: _.extend(models.MediaItem.prototype.defaults, {contenttype: options.contenttype})}),
+
+            var modelDefaults = _.extend(models.MediaItem.prototype.defaults, {contenttype: options.contenttype})
+            this.collection = new collections.MediaItemPickerCollection([], {
+                model: models.MediaItem.extend({'defaults': modelDefaults}),
                 url: options.contenttype.get('objects')
             });
             this.collection.fetch();
@@ -122,6 +136,7 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models'], f
             return data;
         },
 
+        // TODO: We should find the template within the inline admin container
         template: 'script[type="text/template"][data-name="paginated_mediaitem_list"]',
 
         ui: _.extend({
@@ -136,14 +151,21 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models'], f
 
         addMediaItemFromAttachment: function(attachment) {
             // Only add attachment if it matches the selected contenttype, is not flagged for deletion
-            if (attachment.get('content_type') == this.collection.contenttype && !(attachment.has('delete') && attachment.get('delete'))) {
-                var mediaitem = attachment.getMediaItem();
+            if (attachment.get('content_type') == this.options.contenttype.get('id') && !(attachment.has('delete') && attachment.get('delete'))) {
+
+                var mediaitem = new models.MediaItem({
+                    'id': attachment.get('object_id'),
+                    'contenttype': this.options.contenttype,
+                    'attachment': attachment
+                });
+
                 var collection = this.collection;
                 mediaitem.fetch({
                     success: function() {
                         collection.add(mediaitem);
                     }
                 });
+
             }
         },
 
@@ -151,7 +173,6 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models'], f
 
         initialize: function(options) {
             this.collection = new collections.MediaItemAttachmentsCollection();
-            this.collection.contenttype = options.contenttype.get('id');
             options.attachmentsCollection.each(function(attachment) {
                 this.addMediaItemFromAttachment(attachment)
             }, this);
@@ -165,15 +186,8 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models'], f
         },
 
         deleteAttachment: function(model) {
-            // When deleting an attachment, either flag it for deletion (if
-            // existing), or just remove it from the collection.
             var attachment = model.get('attachment');
-            if (attachment.has('delete')) {
-                attachment.set('delete', true);
-            }
-            else {
-                attachment.collection.remove(attachment);
-            }
+            attachment.delete();
         }
 
     });

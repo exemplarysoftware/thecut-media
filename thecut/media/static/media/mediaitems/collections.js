@@ -12,7 +12,7 @@ define(['djangorestframework', 'mediaitems/models'], function(djangorestframewor
     });
 
 
-    var PageableMediaItemCollection = djangorestframework.PageableCollection.extend({
+    var MediaItemPickerCollection = djangorestframework.PageableCollection.extend({
 
         model: models.MediaItem,
 
@@ -29,7 +29,7 @@ define(['djangorestframework', 'mediaitems/models'], function(djangorestframewor
 
     return {
         'MediaItemAttachmentsCollection': MediaItemAttachmentsCollection,
-        'PageableMediaItemCollection': PageableMediaItemCollection
+        'MediaItemPickerCollection': MediaItemPickerCollection
     };
 
 

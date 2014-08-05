@@ -9,8 +9,8 @@ define(['backbone'], function(Backbone) {
         },
 
         initialize: function(attributes, options) {
-            if (attributes['url']) {
-                this.url = attributes['url'];
+            if (attributes['id'] && attributes['contenttype']) {
+                this.url = attributes['contenttype'].get('objects') + attributes['id'] + '/';
             }
         }
 
