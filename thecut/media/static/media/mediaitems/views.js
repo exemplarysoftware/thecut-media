@@ -86,12 +86,14 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
         },
 
         childViewSelected: function(childView) {
-            var attachment = new attachedmediaitemsModels.AttachedMediaItem({
-                'object_id': childView.model.get('id'),
-                'content_type': childView.model.get('contenttype').get('id')
-            });
-            childView.model.set('attachment', attachment);
-            this.options.attachmentsCollection.add(attachment);
+            if (!childView.model.get('attachment')) {
+                var attachment = new attachedmediaitemsModels.AttachedMediaItem({
+                    'object_id': childView.model.get('id'),
+                    'content_type': childView.model.get('contenttype').get('id')
+                });
+                childView.model.set('attachment', attachment);
+            }
+            this.options.attachmentsCollection.add(childView.model.get('attachment'));
         },
 
         displayClose: function() {
