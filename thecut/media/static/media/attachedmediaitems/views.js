@@ -17,6 +17,18 @@ define(['jquery', 'jquery-ui', 'backbone.marionette', 'attachedmediaitems/collec
             'change': 'updateFields'
         },
 
+        onRender: function() {
+            // Set inline id and class
+            var prefix = this.$emptyInlineForm.closest('[data-form-prefix]').attr('data-form-prefix');  // TODO
+            this.$el.attr('id', prefix + '-' + this.options.index);
+            this.$el.addClass('inline-related ' + 'dynamic-' + prefix);
+
+            // Replace other references and __prefix__ with index
+            var pattern = new RegExp('(' + prefix + '-(\\d+|__prefix__))', 'g');
+            var newHtml = this.$el.html().replace(pattern, prefix + '-' + this.options.index);
+            this.$el.html(newHtml);
+        },
+
         serializeFields: function() {
             var data = new Object();
             data['order'] = parseInt(this.ui.order.val(), 10);
@@ -26,6 +38,11 @@ define(['jquery', 'jquery-ui', 'backbone.marionette', 'attachedmediaitems/collec
                 data['delete'] = this.ui.delete.prop('checked');
             }
             return data;
+        },
+
+        updateIndex: function(index) {
+            this.options.index = index;
+            this.render();
         },
 
         template: false,
@@ -64,15 +81,7 @@ define(['jquery', 'jquery-ui', 'backbone.marionette', 'attachedmediaitems/collec
         },
 
         onRender: function() {
-            // Set inline id and class
-            var prefix = this.$emptyInlineForm.closest('[data-form-prefix]').attr('data-form-prefix');  // TODO
-            this.$el.attr('id', prefix + '-' + this.options.index);
-            this.$el.addClass('inline-related ' + 'dynamic-' + prefix);
-
-            // Replace __prefix__ with index
-            var newHtml = this.$el.html().replace(new RegExp('__prefix__', 'g'), this.options.index);
-            this.$el.html(newHtml);
-
+            NewAttachedMediaItemInlineView.__super__.onRender.call(this);
             // Insert and rebind UI / update fields with model data
             this.$emptyInlineForm.before(this.$el);
             this.bindUIElements();
@@ -119,8 +128,8 @@ define(['jquery', 'jquery-ui', 'backbone.marionette', 'attachedmediaitems/collec
             this.bindUIElements();  // Bind UI elements to existing HTML
 
             // Create views for *existing* inline forms and attach as children
-            _.each(this.getInlineForms(), function(el) {
-                var view = new ExistingAttachedMediaItemInlineView({'el': el});
+            _.each(this.getInlineForms(), function(el, index) {
+                var view = new ExistingAttachedMediaItemInlineView({'el': el, 'index': index});
                 this.children.add(view);
             }, this);
 
@@ -154,6 +163,13 @@ define(['jquery', 'jquery-ui', 'backbone.marionette', 'attachedmediaitems/collec
 
         updateTotalForms: function() {
             this.ui.totalForms.val(this.getInlineForms().length);
+            this.updateChildIndexes();
+        },
+
+        updateChildIndexes: function() {
+            this.children.each(function(childView, index) {
+                childView.updateIndex(index);
+            });
         }
 
     });
