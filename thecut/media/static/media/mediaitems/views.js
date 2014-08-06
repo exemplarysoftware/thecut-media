@@ -1,6 +1,58 @@
 define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'attachedmediaitems/filters', 'attachedmediaitems/models'], function(Marionette, collections, models, filters, attachedmediaitemsModels) {
 
 
+    var PaginationControlsView = Marionette.ItemView.extend({
+
+        collectionEvents: {
+            'add': 'render',
+            'remove': 'render'
+        },
+
+        events: {
+            'click @ui.previous': 'paginateNext',
+            'click @ui.next': 'paginatePrevious',
+        },
+
+        paginatePrevious: function() {
+            this.collection.getNextPage();
+        },
+
+        paginateNext: function() {
+            this.collection.getPreviousPage();
+        },
+
+        serializeData: function() {
+            var data = PaginationControlsView.__super__.serializeData.call(this);
+            return _.extend(data, {
+                'hasPreviousPage': this.collection.hasPreviousPage(),
+                'hasNextPage': this.collection.hasNextPage(),
+                'state': this.collection.state,
+                'firstResultIndex': this.firstResultIndex(),
+                'lastResultIndex': this.lastResultIndex()
+            });
+        },
+
+        firstResultIndex: function() {
+            // 1-based index for the first result in the current page.
+            return (this.collection.state.pageSize * (this.collection.state.currentPage - 1)) + 1;
+        },
+
+        lastResultIndex: function() {
+            // 1-based index for the last result in the current page.
+            return this.firstResultIndex() + this.collection.length - 1;
+        },
+
+        // TODO: We should find the template within the inline admin container
+        template: 'script[type="text/template"][data-name="pagination_controls"]',
+
+        ui: {
+            'previous': '.action.previous',
+            'next': '.action.next'
+        }
+
+    });
+
+
     var MediaItemView = Marionette.ItemView.extend({
 
         deleteAttachment: function() {
@@ -91,10 +143,8 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
         },
 
         events: {
-            'click @ui.display .close': 'displayClose',
-            'click @ui.display .open': 'displayOpen',
-            'click @ui.pagination .previous': 'paginateNext',
-            'click @ui.pagination .next': 'paginatePrevious'
+            'click @ui.display .action.close': 'displayClose',
+            'click @ui.display .action.open': 'displayOpen'
         },
 
         findAttachment: function(mediaitem) {
@@ -108,13 +158,10 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
             if (attachment) {
                 this.associateAttachment(mediaitem, attachment);
             }
-
-            this.render();  // TODO: Needed to render pagination controls
         },
 
         initialize: function(options) {
             this.displayClose();
-
             var modelDefaults = _.extend(models.MediaItem.prototype.defaults, {contenttype: options.contenttype})
             this.collection = new collections.MediaItemPickerCollection([], {
                 model: models.MediaItem.extend({'defaults': modelDefaults}),
@@ -123,20 +170,11 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
             this.collection.fetch();
         },
 
-        paginatePrevious: function() {
-            this.collection.getNextPage();
-        },
-
-        paginateNext: function() {
-            this.collection.getPreviousPage();
-        },
-
-        serializeData: function() {
-            data = PaginatedMediaItemCollectionView.__super__.serializeData.call(this);
-            data['hasPreviousPage'] = this.collection.hasPreviousPage();
-            data['hasNextPage'] = this.collection.hasNextPage();
-            data['state'] = this.collection.state;
-            return data;
+        onShow: function() {
+            this.paginationControlsView = new PaginationControlsView({
+                'collection': this.collection,
+                'el': this.ui.pagination
+            });
         },
 
         // TODO: We should find the template within the inline admin container

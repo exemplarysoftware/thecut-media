@@ -21,16 +21,22 @@
   </script>
 
 
-  <script data-name="paginated_mediaitem_list" type="text/template">
-    <ul class="nav display controls"><li class="button open">open</li><li class="button close">close</li></ul>
-    <ol></ol>
-    <ul class="nav pagination controls">
+  <script data-name="pagination_controls" type="text/template">
+    <ul class="nav">
       <% if (state.totalRecords) { %>
-        <li class="status"><%= state.totalRecords %> items. Page <%= state.currentPage %> of <%= state.totalPages %>.</li>
-        <% if (hasPreviousPage) { %><li><span class="button previous">Previous</span></li><% } %>
-        <% if (hasNextPage) { %><li><span class="button next">Next</span></li><% } %>
+        <li class="status">Page <%= state.currentPage %> of <%= state.totalPages %>.</li>
+        <li class="status">Results <%= firstResultIndex %> to <%= lastResultIndex %> of <%= state.totalRecords %>.</li>
+        <% if (hasPreviousPage) { %><li><span class="button action previous">Previous</span></li><% } %>
+        <% if (hasNextPage) { %><li><span class="button action next">Next</span></li><% } %>
       <% } %>
     </ul>
+  </script>
+
+
+  <script data-name="paginated_mediaitem_list" type="text/template">
+    <ul class="nav display controls"><li class="button action open">open</li><li class="button action close">close</li></ul>
+    <ol></ol>
+    <div class="pagination controls"></div>
   </script>
 
 
