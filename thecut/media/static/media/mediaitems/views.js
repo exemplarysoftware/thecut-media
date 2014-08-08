@@ -53,6 +53,49 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
     });
 
 
+    var FilterControlsView = Marionette.ItemView.extend({
+
+        initialize: function(options) {
+            FilterControlsView.__super__.initialize.call(this);
+            this.bindUIElements();  // Bind UI elements to existing HTML
+        },
+
+        change: function(event) {
+            this.collection.queryParams.q = this.ui.q.val();
+            this.collection.getFirstPage({fetch: true});
+        },
+
+        events: {
+          'keydown @ui.q': 'keydown',
+          'keyup @ui.q': 'keypress',
+          'click @ui.reset': 'reset'
+        },
+
+        keydown: function(event) {
+            // Prevent enter from submitting the admin form
+            if (event.keyCode == 10 || event.keyCode == 13) {
+                event.preventDefault();
+                this.change(event);
+            }
+        },
+
+        keypress: _.debounce(function(event) {
+            this.change(event);
+        }, 800),
+
+        reset: function(event) {
+            this.ui.q.val('');
+            this.change(event);
+        },
+
+        ui: {
+            'q': '[type="search"]',
+            'reset': '.action.reset'
+        }
+
+    });
+
+
     var MediaItemView = Marionette.ItemView.extend({
 
         deleteAttachment: function() {
@@ -175,6 +218,10 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
                 'collection': this.collection,
                 'el': this.ui.pagination
             });
+            this.filterControlsView = new FilterControlsView({
+                'collection': this.collection,
+                'el': this.ui.filter
+            });
         },
 
         // TODO: We should find the template within the inline admin container
@@ -182,6 +229,7 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
 
         ui: _.extend({
             'display': '.display.controls',
+            'filter': '.filter.controls',
             'pagination': '.pagination.controls'
         }, MediaItemCollectionView.prototype.ui)
 

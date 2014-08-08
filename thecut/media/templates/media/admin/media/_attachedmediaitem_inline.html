@@ -21,6 +21,25 @@
   </script>
 
 
+  <script data-name="paginated_mediaitem_list" type="text/template">
+
+    <ul class="nav display controls ">
+        <li class="button action open">open</li>
+        <li class="button action close">close</li>
+    </ul>
+
+    <ul class="filter controls">
+      <li><input type="search" value="" placeholder="Filter" /></li>
+      <li><span class="button action reset">Clear</span></li>
+    </ul>
+
+    <ol></ol>
+
+    <div class="pagination controls"></div>
+
+  </script>
+
+
   <script data-name="pagination_controls" type="text/template">
     <ul class="nav">
       <% if (state.totalRecords) { %>
@@ -30,13 +49,6 @@
         <% if (hasNextPage) { %><li><span class="button action next">Next</span></li><% } %>
       <% } %>
     </ul>
-  </script>
-
-
-  <script data-name="paginated_mediaitem_list" type="text/template">
-    <ul class="nav display controls"><li class="button action open">open</li><li class="button action close">close</li></ul>
-    <ol></ol>
-    <div class="pagination controls"></div>
   </script>
 
 

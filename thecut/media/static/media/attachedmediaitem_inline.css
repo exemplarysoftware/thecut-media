@@ -93,7 +93,8 @@
     content: "Picker";
   }
 
-  .attachedmediaitem.manager .picker .display.controls li {
+  .attachedmediaitem.manager .picker .display.controls li,
+  .attachedmediaitem.manager .picker .filter.controls li {
     display: inline-block;
   }
 
