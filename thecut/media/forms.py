@@ -13,7 +13,7 @@ class AttachedMediaItemInlineForm(forms.ModelForm):
         js = ['media/lib/require.js', 'media/attachedmediaitem_inline.js']
 
     class Meta(object):
-        # TODO: fields = []
+        fields = ['order', 'content_type', 'object_id']
         model = AttachedMediaItem
 
 
