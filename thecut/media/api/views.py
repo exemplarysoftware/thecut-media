@@ -90,6 +90,7 @@ class ContentTypeObjectListAPIView(BaseContentTypeObjectAPIMixin,
                                    generics.ListAPIView):
 
     form_class = forms.FilterForm
+    pagination_serializer_class = serializers.PaginationSerializerWithTags
 
     def list(self, request, *args, **kwargs):
         self.form = self.form_class(data=self.request.QUERY_PARAMS)

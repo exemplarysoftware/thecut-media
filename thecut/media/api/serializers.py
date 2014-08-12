@@ -2,8 +2,9 @@
 from __future__ import absolute_import, unicode_literals
 from .. import utils
 from ..models import MediaContentType
-from rest_framework import serializers
+from rest_framework import pagination, serializers
 from rest_framework.reverse import reverse
+from taggit.models import Tag
 
 
 class ContentTypeSerializer(serializers.HyperlinkedModelSerializer):
@@ -68,3 +69,15 @@ class MediaSerializer(serializers.ModelSerializer):
                                'contenttype_pk': self.get_content_type().pk},
                        request=self.context['request'],
                        format=self.context['format'])
+
+
+class PaginationSerializerWithTags(pagination.PaginationSerializer):
+
+    tags = serializers.SerializerMethodField('get_tags')
+
+    def get_tags(self, page):
+        queryset = page.paginator.object_list
+        model_name = queryset.model._meta.model_name
+        filters = {'{0}__pk__in'.format(model_name): queryset}
+        return Tag.objects.filter(**filters).distinct().values_list(
+            'name', flat=True)
