@@ -93,7 +93,12 @@ class ContentTypeObjectListAPIView(BaseContentTypeObjectAPIMixin,
     pagination_serializer_class = serializers.PaginationSerializerWithTags
 
     def list(self, request, *args, **kwargs):
-        self.form = self.form_class(data=self.request.QUERY_PARAMS)
+        data = {
+            'q': self.request.QUERY_PARAMS.get('q'),
+            # TODO: Can we just make the form accept a list of values?
+            'tags': ','.join(self.request.QUERY_PARAMS.getlist('tag', ''))
+        }
+        self.form = self.form_class(data=data)
 
         if not self.form.is_valid():
             return Response(self.form.errors,
