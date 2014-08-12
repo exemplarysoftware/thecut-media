@@ -1,4 +1,4 @@
-define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'attachedmediaitems/filters', 'attachedmediaitems/models'], function(Marionette, collections, models, filters, attachedmediaitemsModels) {
+define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'attachedmediaitems/filters', 'attachedmediaitems/models', 'tags/views'], function(Marionette, collections, models, filters, attachedmediaitemsModels, tagsViews) {
 
 
     var PaginationControlsView = Marionette.ItemView.extend({
@@ -58,9 +58,19 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
         initialize: function(options) {
             FilterControlsView.__super__.initialize.call(this);
             this.bindUIElements();  // Bind UI elements to existing HTML
+
+            this.tagCollectionView = new tagsViews.TagCollectionView({
+                'collection': this.collection.tagsCollection,
+                'el': this.ui.tags
+            });
+
+            this.collection.tagsCollection.on('change', this.change, this);
+
         },
 
         change: function(event) {
+            var tags = _(this.collection.tagsCollection.where({'is_selected': true})).chain().pluck('attributes').pluck('name').value();
+            this.collection.queryParams.tag = tags;
             this.collection.queryParams.q = this.ui.q.val();
             this.collection.getFirstPage({fetch: true});
         },
@@ -84,13 +94,15 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
         }, 800),
 
         reset: function(event) {
+            this.collection.tagsCollection.reset();
             this.ui.q.val('');
             this.change(event);
         },
 
         ui: {
             'q': '[type="search"]',
-            'reset': '.action.reset'
+            'reset': '.action.reset',
+            'tags': '.tags'
         }
 
     });
@@ -121,7 +133,7 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
         tagName: 'li',
 
         // TODO: We should find the template within the inline admin container
-       template: 'script[type="text/template"][data-name="mediaitem_detail"]',
+        template: 'script[type="text/template"][data-name="mediaitem_detail"]',
 
         triggers: {
             'click @ui.select': 'select'
@@ -293,7 +305,6 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
 
 
     return {
-        'MediaItemCollectionView': MediaItemCollectionView,
         'PaginatedMediaItemCollectionView': PaginatedMediaItemCollectionView,
         'MediaItemAttachmentsCollectionView': MediaItemAttachmentsCollectionView
     };

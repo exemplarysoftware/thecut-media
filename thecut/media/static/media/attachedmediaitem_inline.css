@@ -108,6 +108,10 @@
       display: none;
     }
 
+  .attachedmediaitem.manager .picker .filter.controls .tags .selected {
+    font-weight: bold;
+  }
+
   .attachedmediaitem.manager .picker .attached {
     opacity: 0.5;
   }
