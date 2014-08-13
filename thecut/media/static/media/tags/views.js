@@ -1,4 +1,8 @@
-define(['backbone.marionette', 'tags/collections', 'tags/models'], function(Marionette, collections, models) {
+define(['backbone.marionette'], function (Marionette) {
+
+
+    'use strict';
+
 
 
     var TagItemView = Marionette.ItemView.extend({
@@ -11,7 +15,7 @@ define(['backbone.marionette', 'tags/collections', 'tags/models'], function(Mari
             'change': 'render'
         },
 
-        onRender: function() {
+        onRender: function () {
             if (this.model.get('is_selected')) {
                 this.$el.addClass('selected');
             } else {
@@ -24,7 +28,7 @@ define(['backbone.marionette', 'tags/collections', 'tags/models'], function(Mari
         // TODO: We should find the template within the inline admin container
         template: 'script[type="text/template"][data-name="tag_detail"]',
 
-        toggleSelected: function() {
+        toggleSelected: function () {
             this.model.toggleSelected();
         }
 
@@ -35,7 +39,7 @@ define(['backbone.marionette', 'tags/collections', 'tags/models'], function(Mari
 
         childView: TagItemView,
 
-        initialize: function(options) {
+        initialize: function () {
             TagCollectionView.__super__.initialize.call(this);
             this.bindUIElements();  // Bind UI elements to existing HTML
         }

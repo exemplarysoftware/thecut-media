@@ -1,4 +1,7 @@
-define(['tags/models'], function(models) {
+define(['backbone', 'tags/models'], function (Backbone, models) {
+
+
+    'use strict';
 
 
     var TagCollection = Backbone.Collection.extend({

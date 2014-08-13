@@ -1,4 +1,7 @@
-define(['backbone'], function(Backbone) {
+define(['backbone'], function (Backbone) {
+
+
+    'use strict';
 
 
     var MediaItem = Backbone.Model.extend({
@@ -8,9 +11,9 @@ define(['backbone'], function(Backbone) {
             'contenttype': null
         },
 
-        initialize: function(attributes, options) {
-            if (attributes['id'] && attributes['contenttype']) {
-                this.url = attributes['contenttype'].get('objects') + attributes['id'] + '/';
+        initialize: function (attributes) {
+            if (attributes.id && attributes.contenttype) {
+                this.url = attributes.contenttype.get('objects') + attributes.id + '/';
             }
         }
 

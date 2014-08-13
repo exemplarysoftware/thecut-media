@@ -1,4 +1,7 @@
-define(['jquery', 'jquery-ui', 'backbone.marionette', 'attachedmediaitems/collections', 'attachedmediaitems/models'], function(jQuery, jQueryUi, Marionette, collections, models) {
+define(['jquery', 'jquery-ui', 'underscore', 'backbone.marionette', 'attachedmediaitems/models'], function (jQuery, jQueryUi, _, Marionette, models) {
+
+
+    'use strict';
 
 
     var BaseAttachedMediaItemInlineView = Marionette.ItemView.extend({
@@ -9,15 +12,15 @@ define(['jquery', 'jquery-ui', 'backbone.marionette', 'attachedmediaitems/collec
             'change': 'updateModel'
         },
 
-        initialize: function(options) {
-            this.$emptyInlineForm = $(this.emptyInlineRelatedSelector);
+        initialize: function () {
+            this.$emptyInlineForm = jQuery(this.emptyInlineRelatedSelector);
         },
 
         modelEvents: {
             'change': 'updateFields'
         },
 
-        onRender: function() {
+        onRender: function () {
             // Set inline id and class
             var prefix = this.$emptyInlineForm.closest('[data-form-prefix]').attr('data-form-prefix');  // TODO
             this.$el.attr('id', prefix + '-' + this.options.index);
@@ -29,30 +32,30 @@ define(['jquery', 'jquery-ui', 'backbone.marionette', 'attachedmediaitems/collec
             this.$el.html(newHtml);
         },
 
-        serializeFields: function() {
-            var data = new Object();
-            data['order'] = parseInt(this.ui.order.val(), 10);
-            data['content_type'] = parseInt(this.ui.contenttype.val(), 10);
-            data['object_id'] = parseInt(this.ui.objectId.val(), 10);
+        serializeFields: function () {
+            var data = {};
+            data.order = parseInt(this.ui.order.val(), 10);
+            data.content_type = parseInt(this.ui.contenttype.val(), 10);
+            data.object_id = parseInt(this.ui.objectId.val(), 10);
             if (this.ui.delete.length) {
                 data['delete'] = this.ui.delete.prop('checked');
             }
             return data;
         },
 
-        updateIndex: function(index) {
+        updateIndex: function (index) {
             this.options.index = index;
             this.render();
         },
 
         template: false,
 
-        updateModel: function() {
+        updateModel: function () {
             // Update the model attributes based on the field values
             this.model.set(this.serializeFields());
         },
 
-        updateFields: function() {
+        updateFields: function () {
             // Update the field values based on the model attributes
             this.ui.order.val(this.model.get('order'));
             this.ui.contenttype.val(this.model.get('content_type'));
@@ -75,12 +78,12 @@ define(['jquery', 'jquery-ui', 'backbone.marionette', 'attachedmediaitems/collec
 
     var NewAttachedMediaItemInlineView = BaseAttachedMediaItemInlineView.extend({
 
-        initialize: function(options) {
+        initialize: function () {
             NewAttachedMediaItemInlineView.__super__.initialize.call(this);
             this.template = this.$emptyInlineForm.prop('outerHTML');
         },
 
-        onRender: function() {
+        onRender: function () {
             NewAttachedMediaItemInlineView.__super__.onRender.call(this);
             // Insert and rebind UI / update fields with model data
             this.$emptyInlineForm.before(this.$el);
@@ -93,7 +96,7 @@ define(['jquery', 'jquery-ui', 'backbone.marionette', 'attachedmediaitems/collec
 
     var ExistingAttachedMediaItemInlineView = BaseAttachedMediaItemInlineView.extend({
 
-        initialize: function(options) {
+        initialize: function () {
             NewAttachedMediaItemInlineView.__super__.initialize.call(this);
             this.model = new models.AttachedMediaItem();
             this.bindUIElements();  // Bind UI elements to existing HTML
@@ -107,28 +110,29 @@ define(['jquery', 'jquery-ui', 'backbone.marionette', 'attachedmediaitems/collec
 
         childView: NewAttachedMediaItemInlineView,  // For *new* inline forms
 
-        childViewOptions: function() {
+        childViewOptions: function () {
             // For *new* inline forms
-            return {index: this.getTotalForms()}  // index is zero-based so no need to add 1
+            // index is zero-based so no need to add 1
+            return {index: this.getTotalForms()};
         },
 
         collectionEvents: {
             'add': 'setInitialOrder'
         },
 
-        getInlineForms: function() {
+        getInlineForms: function () {
             return this.$el.find('.inline-related:not(.empty-form)');
         },
 
-        getTotalForms: function() {
+        getTotalForms: function () {
             return parseInt(this.ui.totalForms.val(), 10);
         },
 
-        initialize: function(options) {
+        initialize: function () {
             this.bindUIElements();  // Bind UI elements to existing HTML
 
             // Create views for *existing* inline forms and attach as children
-            _.each(this.getInlineForms(), function(el, index) {
+            _.each(this.getInlineForms(), function (el, index) {
                 var view = new ExistingAttachedMediaItemInlineView({'el': el, 'index': index});
                 this.children.add(view);
             }, this);
@@ -141,16 +145,16 @@ define(['jquery', 'jquery-ui', 'backbone.marionette', 'attachedmediaitems/collec
             this.on('remove:child', this.updateTotalForms);
         },
 
-        resetCollection: function() {
-            models = new Array();
-            this.children.each(function(view) {
+        resetCollection: function () {
+            models = [];
+            this.children.each(function (view) {
                 models.push(view.model);
             });
             this.collection.reset(models);
         },
 
-        setInitialOrder: function(model) {
-            if (model.get('order') == 0) {
+        setInitialOrder: function (model) {
+            if (model.get('order') === 0) {
                 model.set('order', this.getTotalForms() + 1);
             }
         },
@@ -161,13 +165,13 @@ define(['jquery', 'jquery-ui', 'backbone.marionette', 'attachedmediaitems/collec
             'totalForms': '[name$="-TOTAL_FORMS"]'
         },
 
-        updateTotalForms: function() {
+        updateTotalForms: function () {
             this.ui.totalForms.val(this.getInlineForms().length);
             this.updateChildIndexes();
         },
 
-        updateChildIndexes: function() {
-            this.children.each(function(childView, index) {
+        updateChildIndexes: function () {
+            this.children.each(function (childView, index) {
                 childView.updateIndex(index);
             });
         }

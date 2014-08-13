@@ -27,7 +27,7 @@ var attachedMediaItemRequire = requirejs.config({
         },
         'backbone.marionette': {
             deps: ['json2', 'jquery', 'underscore', 'backbone',
-                   'backbone.wreqr' ,'backbone.babysitter'],
+                   'backbone.wreqr', 'backbone.babysitter'],
             exports: 'Backbone.Marionette'
         },
         'backbone.paginator': {
@@ -40,9 +40,13 @@ var attachedMediaItemRequire = requirejs.config({
         },
         'jquery': {
             exports: 'jQuery',
-            init: function () {return this.jQuery.noConflict();}
+            init: function () {
+                'use strict';
+                return this.jQuery.noConflict();
+            }
         },
         'jquery-ui': {
+            deps: ['jquery'],
             exports: 'jQueryUi'
         },
         'json2': {
@@ -59,91 +63,90 @@ var attachedMediaItemRequire = requirejs.config({
 attachedMediaItemRequire(
 
     ['jquery', 'backbone.marionette', 'attachedmediaitems/collections',
-     'attachedmediaitems/views', 'contenttypes/collections',
-     'contenttypes/views', 'mediaitems/views', 'domReady!'],
+        'attachedmediaitems/views', 'contenttypes/collections',
+        'contenttypes/views', 'mediaitems/views', 'domReady!'],
 
-    function(jQuery, Marionette, attachedmediaitemsCollections,
-             attachedmediaitemsViews, contenttypesCollections,
-             contenttypesViews, mediaitemsViews, document) {
+    function (jQuery, Marionette, attachedmediaitemsCollections,
+                  attachedmediaitemsViews, contenttypesCollections,
+                  contenttypesViews, mediaitemsViews) {
 
+        'use strict';
 
-    var $manager = $('.attachedmediaitem.manager');  // We just say manager
-    var application = new Marionette.Application();
-
-
-    // Define regions
-    application.addRegions({
-        'manager': $manager,
-        'inlineGroup': $manager.find('.inline-group'),
-        'contenttypes': $manager.find('.contenttypes'),
-        'picker': $manager.find('.picker'),
-        'attachments': $manager.find('.attachments')
-    });
+        var $manager = jQuery('.attachedmediaitem.manager'),  // We just say manager
+            application = new Marionette.Application();
 
 
-    // Initialise attachments collection
-    application.addInitializer(function() {
-        this.attachmentsCollection = new attachedmediaitemsCollections.AttachedMediaItemCollection();
-    });
-
-
-    // Initialise contentypes collection
-    application.addInitializer(function() {
-
-        this.contenttypesCollection = new contenttypesCollections.ContentTypeCollection([], {
-            'url': this.getRegion('contenttypes').$el.attr('data-api-href')
+        // Define regions
+        application.addRegions({
+            'manager': $manager,
+            'inlineGroup': $manager.find('.inline-group'),
+            'contenttypes': $manager.find('.contenttypes'),
+            'picker': $manager.find('.picker'),
+            'attachments': $manager.find('.attachments')
         });
 
-        // Show picker on contenttype selection
-        this.contenttypesCollection.on('selected', function(contenttype) {
-            var region = this.getRegion('picker');
-            var view = new mediaitemsViews.PaginatedMediaItemCollectionView({
-                'contenttype': contenttype,
-                'attachmentsCollection': this.attachmentsCollection
-            });
-            region.show(view);
-        }, this);
 
-        // Show attachments on contenttype selection
-        this.contenttypesCollection.on('selected', function(contenttype) {
-            var region = this.getRegion('attachments');
-            var view = new mediaitemsViews.MediaItemAttachmentsCollectionView({
-                'contenttype': contenttype,
-                'attachmentsCollection': this.attachmentsCollection
-            });
-            region.show(view);
-        }, this);
-
-    });
-
-
-    // Initialise inlineGroup region
-    application.addInitializer(function() {
-        var region = this.getRegion('inlineGroup');
-        var view = new attachedmediaitemsViews.AttachedMediaItemManagementView({
-            'el': region.el,
-            'collection': this.attachmentsCollection
-        })
-        region.attachView(view);
-    });
-
-
-    // Initialise contenttypes region
-    application.addInitializer(function() {
-        var region = this.getRegion('contenttypes');
-        var view = new contenttypesViews.ContentTypeCollectionView({
-            'collection': this.contenttypesCollection
+        // Initialise attachments collection
+        application.addInitializer(function () {
+            this.attachmentsCollection = new attachedmediaitemsCollections.AttachedMediaItemCollection();
         });
-        region.show(view);
-    });
 
 
-    // Debug
-    application.addInitializer(function() {
-        this.getRegion('manager').$el.data('application', this);
-    });
+        // Initialise contentypes collection
+        application.addInitializer(function () {
 
-    // Start
-    application.start();
+            this.contenttypesCollection = new contenttypesCollections.ContentTypeCollection([], {
+                'url': this.getRegion('contenttypes').$el.attr('data-api-href')
+            });
 
-});
+            // Show picker on contenttype selection
+            this.contenttypesCollection.on('selected', function (contenttype) {
+                var view = new mediaitemsViews.PaginatedMediaItemCollectionView({
+                    'contenttype': contenttype,
+                    'attachmentsCollection': this.attachmentsCollection
+                });
+                this.getRegion('picker').show(view);
+            }, this);
+
+            // Show attachments on contenttype selection
+            this.contenttypesCollection.on('selected', function (contenttype) {
+                var view = new mediaitemsViews.MediaItemAttachmentsCollectionView({
+                    'contenttype': contenttype,
+                    'attachmentsCollection': this.attachmentsCollection
+                });
+                this.getRegion('attachments').show(view);
+            }, this);
+
+        });
+
+
+        // Initialise inlineGroup region
+        application.addInitializer(function () {
+            var region = this.getRegion('inlineGroup');
+            var view = new attachedmediaitemsViews.AttachedMediaItemManagementView({
+                    'el': region.el,
+                    'collection': this.attachmentsCollection
+                });
+            region.attachView(view);
+        });
+
+
+        // Initialise contenttypes region
+        application.addInitializer(function () {
+            var view = new contenttypesViews.ContentTypeCollectionView({
+                'collection': this.contenttypesCollection
+            });
+            this.getRegion('contenttypes').show(view);
+        });
+
+
+        // Debug
+        application.addInitializer(function () {
+            this.getRegion('manager').$el.data('application', this);
+        });
+
+        // Start
+        application.start();
+
+    }
+);

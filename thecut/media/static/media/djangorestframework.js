@@ -1,4 +1,7 @@
-define(['backbone.paginator'], function(BasePageableCollection) {
+define(['backbone.paginator'], function (BasePageableCollection) {
+
+
+    'use strict';
 
 
     var PageableCollection = BasePageableCollection.extend({
@@ -17,7 +20,7 @@ define(['backbone.paginator'], function(BasePageableCollection) {
         },
 
         parseLinks: function (data) {
-            return {next: data.next, prev: data.previous}
+            return {next: data.next, prev: data.previous};
         },
 
         parseRecords: function (data) {
@@ -25,7 +28,7 @@ define(['backbone.paginator'], function(BasePageableCollection) {
         },
 
         parseState: function (data) {
-            return {totalRecords: data.count}
+            return {totalRecords: data.count};
         }
 
     });

@@ -1,4 +1,7 @@
-define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'attachedmediaitems/filters', 'attachedmediaitems/models', 'tags/views'], function(Marionette, collections, models, filters, attachedmediaitemsModels, tagsViews) {
+define(['underscore', 'backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'attachedmediaitems/filters', 'attachedmediaitems/models', 'tags/views'], function (_, Marionette, collections, models, filters, attachedmediaitemsModels, tagsViews) {
+
+
+    'use strict';
 
 
     var PaginationControlsView = Marionette.ItemView.extend({
@@ -10,18 +13,18 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
 
         events: {
             'click @ui.previous': 'paginateNext',
-            'click @ui.next': 'paginatePrevious',
+            'click @ui.next': 'paginatePrevious'
         },
 
-        paginatePrevious: function() {
+        paginatePrevious: function () {
             this.collection.getNextPage();
         },
 
-        paginateNext: function() {
+        paginateNext: function () {
             this.collection.getPreviousPage();
         },
 
-        serializeData: function() {
+        serializeData: function () {
             var data = PaginationControlsView.__super__.serializeData.call(this);
             return _.extend(data, {
                 'hasPreviousPage': this.collection.hasPreviousPage(),
@@ -32,12 +35,12 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
             });
         },
 
-        firstResultIndex: function() {
+        firstResultIndex: function () {
             // 1-based index for the first result in the current page.
             return (this.collection.state.pageSize * (this.collection.state.currentPage - 1)) + 1;
         },
 
-        lastResultIndex: function() {
+        lastResultIndex: function () {
             // 1-based index for the last result in the current page.
             return this.firstResultIndex() + this.collection.length - 1;
         },
@@ -55,7 +58,7 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
 
     var FilterControlsView = Marionette.ItemView.extend({
 
-        initialize: function(options) {
+        initialize: function () {
             FilterControlsView.__super__.initialize.call(this);
             this.bindUIElements();  // Bind UI elements to existing HTML
 
@@ -68,7 +71,7 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
 
         },
 
-        change: function(event) {
+        change: function () {
             var tags = _(this.collection.tagsCollection.where({'is_selected': true})).chain().pluck('attributes').pluck('name').value();
             this.collection.queryParams.tag = tags;
             this.collection.queryParams.q = this.ui.q.val();
@@ -76,24 +79,24 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
         },
 
         events: {
-          'keydown @ui.q': 'keydown',
-          'keyup @ui.q': 'keypress',
-          'click @ui.reset': 'reset'
+            'keydown @ui.q': 'keydown',
+            'keyup @ui.q': 'keypress',
+            'click @ui.reset': 'reset'
         },
 
-        keydown: function(event) {
+        keydown: function (event) {
             // Prevent enter from submitting the admin form
-            if (event.keyCode == 10 || event.keyCode == 13) {
+            if (event.keyCode === 10 || event.keyCode === 13) {
                 event.preventDefault();
                 this.change(event);
             }
         },
 
-        keypress: _.debounce(function(event) {
+        keypress: _.debounce(function (event) {
             this.change(event);
         }, 800),
 
-        reset: function(event) {
+        reset: function (event) {
             this.collection.tagsCollection.reset();
             this.ui.q.val('');
             this.change(event);
@@ -110,7 +113,7 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
 
     var MediaItemView = Marionette.ItemView.extend({
 
-        deleteAttachment: function() {
+        deleteAttachment: function () {
             this.model.get('attachment').delete();
         },
 
@@ -119,10 +122,10 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
         },
 
         modelEvents: {
-            'change': 'render',
+            'change': 'render'
         },
 
-        onRender: function() {
+        onRender: function () {
             if (this.model.get('attachment')) {
                 this.$el.addClass('attached');
             } else {
@@ -165,8 +168,10 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
 
     var PaginatedMediaItemCollectionView = MediaItemCollectionView.extend({
 
-        associateAttachment: function(mediaitem, attachment) {
-            attachment.on('delete', function() {mediaitem.set({'attachment': null});});
+        associateAttachment: function (mediaitem, attachment) {
+            attachment.on('delete', function () {
+                mediaitem.set({'attachment': null});
+            });
             mediaitem.set({'attachment': attachment});
         },
 
@@ -178,7 +183,7 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
             'select': 'childViewSelected'
         },
 
-        childViewSelected: function(childView) {
+        childViewSelected: function (childView) {
             if (!childView.model.get('attachment')) {
                 var attachment = new attachedmediaitemsModels.AttachedMediaItem({
                     'object_id': childView.model.get('id'),
@@ -189,11 +194,11 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
             this.options.attachmentsCollection.add(childView.model.get('attachment'));
         },
 
-        displayClose: function() {
+        displayClose: function () {
             this.$el.removeClass('opened').addClass('closed');
         },
 
-        displayOpen: function() {
+        displayOpen: function () {
             this.$el.removeClass('closed').addClass('opened');
         },
 
@@ -202,7 +207,7 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
             'click @ui.display .action.open': 'displayOpen'
         },
 
-        findAttachment: function(mediaitem) {
+        findAttachment: function (mediaitem) {
             // Find an active
             var activeAttachments = _.filter(this.options.attachmentsCollection.where({
                 'content_type': mediaitem.get('contenttype').get('id'),
@@ -215,9 +220,9 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
             }
         },
 
-        initialize: function(options) {
+        initialize: function (options) {
             this.displayClose();
-            var modelDefaults = _.extend(models.MediaItem.prototype.defaults, {contenttype: options.contenttype})
+            var modelDefaults = _.extend(models.MediaItem.prototype.defaults, {contenttype: options.contenttype});
             this.collection = new collections.MediaItemPickerCollection([], {
                 model: models.MediaItem.extend({'defaults': modelDefaults}),
                 url: options.contenttype.get('objects')
@@ -225,7 +230,7 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
             this.collection.fetch();
         },
 
-        onShow: function() {
+        onShow: function () {
             this.paginationControlsView = new PaginationControlsView({
                 'collection': this.collection,
                 'el': this.ui.pagination
@@ -250,9 +255,9 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
 
     var MediaItemAttachmentsCollectionView = MediaItemCollectionView.extend({
 
-        addMediaItemFromAttachment: function(attachment) {
+        addMediaItemFromAttachment: function (attachment) {
             // Only add attachment if it matches the selected contenttype, is not flagged for deletion
-            if (attachment.get('content_type') == this.options.contenttype.get('id') && filters.activeAttachmentsFilter(attachment)) {
+            if (attachment.get('content_type') === this.options.contenttype.get('id') && filters.activeAttachmentsFilter(attachment)) {
 
                 var mediaitem = new models.MediaItem({
                     'id': attachment.get('object_id'),
@@ -260,11 +265,13 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
                     'attachment': attachment
                 });
 
-                attachment.on('delete', function() {mediaitem.collection.remove(mediaitem);});
+                attachment.on('delete', function () {
+                    mediaitem.collection.remove(mediaitem);
+                });
 
                 var collection = this.collection;
                 mediaitem.fetch({
-                    success: function() {
+                    success: function () {
                         collection.add(mediaitem);
                     }
                 });
@@ -278,10 +285,10 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
             'sortupdate': 'onSortUpdate'
         },
 
-        initialize: function(options) {
+        initialize: function (options) {
             this.collection = new collections.MediaItemAttachmentsCollection();
-            options.attachmentsCollection.each(function(attachment) {
-                this.addMediaItemFromAttachment(attachment)
+            options.attachmentsCollection.each(function (attachment) {
+                this.addMediaItemFromAttachment(attachment);
             }, this);
 
             options.attachmentsCollection.on('add', this.addMediaItemFromAttachment, this);
@@ -291,12 +298,12 @@ define(['backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'a
             'change': 'render'
         },
 
-        onRender: function() {
+        onRender: function () {
             this.ui.itemList.sortable();
         },
 
-        onSortUpdate: function(event, ui) {
-            this.children.each(function(childView) {
+        onSortUpdate: function () {
+            this.children.each(function (childView) {
                 childView.model.get('attachment').set('order', childView.$el.index());
             });
         }

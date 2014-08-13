@@ -1,4 +1,7 @@
-define(['backbone.marionette', 'contenttypes/collections'], function(Marionette, collections) {
+define(['underscore', 'backbone.marionette'], function (_, Marionette) {
+
+
+    'use strict';
 
 
     var ContentTypeItemView = Marionette.ItemView.extend({
@@ -10,14 +13,14 @@ define(['backbone.marionette', 'contenttypes/collections'], function(Marionette,
         },
 
         modelEvents: {
-            'change': 'render',
+            'change': 'render'
         },
 
-        onClick: function(event) {
+        onClick: function () {
             this.model.set('is_selected', true);
         },
 
-        onRender: function() {
+        onRender: function () {
             if (this.model.get('is_selected')) {
                 this.$el.addClass('selected');
             } else {
@@ -33,10 +36,10 @@ define(['backbone.marionette', 'contenttypes/collections'], function(Marionette,
 
     var ContentTypeCollectionView = Marionette.CompositeView.extend({
 
-        contenttypeSelected: function(selectedModel) {
+        contenttypeSelected: function (selectedModel) {
             // Ensure other models in the collection are 'unselected'.
-            _.each(this.collection.where({'is_selected': true}), function(model) {
-                if (selectedModel != model) {
+            _.each(this.collection.where({'is_selected': true}), function (model) {
+                if (selectedModel !== model) {
                     model.set('is_selected', false);
                 }
             });
@@ -50,10 +53,12 @@ define(['backbone.marionette', 'contenttypes/collections'], function(Marionette,
             'selected': 'contenttypeSelected'
         },
 
-        initialize: function(options) {
+        initialize: function () {
             var collection = this.collection;
             collection.fetch({
-                'success': function() {collection.first().set('is_selected', true);}
+                'success': function () {
+                    collection.first().set('is_selected', true);
+                }
             });
         },
 

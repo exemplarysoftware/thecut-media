@@ -1,21 +1,24 @@
-define(['backbone'], function(Backbone) {
+define(['backbone'], function (Backbone) {
+
+
+    'use strict';
 
 
     var ContentType = Backbone.Model.extend({
 
         defaults: {
-            'is_selected': false,
+            'is_selected': false
         },
 
-        onSelectedChange: function() {
+        onSelectedChange: function () {
             if (this.get('is_selected')) {
                 this.trigger('selected', this);
             }
         },
 
-        initialize: function(options) {
+        initialize: function () {
             this.on('change:is_selected', this.onSelectedChange);
-        },
+        }
 
     });
 

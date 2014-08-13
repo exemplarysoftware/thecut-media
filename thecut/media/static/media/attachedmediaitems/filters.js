@@ -1,9 +1,12 @@
-define([], function() {
+define([], function () {
 
 
-    var activeAttachmentsFilter = function(attachment) {
-        return !(attachment.has('delete') && attachment.get('delete'))
-    }
+    'use strict';
+
+
+    var activeAttachmentsFilter = function (attachment) {
+        return !(attachment.has('delete') && attachment.get('delete'));
+    };
 
 
     return {

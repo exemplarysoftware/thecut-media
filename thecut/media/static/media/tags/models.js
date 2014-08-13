@@ -1,13 +1,16 @@
-define(['backbone'], function(Backbone) {
+define(['backbone'], function (Backbone) {
+
+
+    'use strict';
 
 
     var Tag = Backbone.Model.extend({
 
         defaults: {
-            'is_selected': false,
+            'is_selected': false
         },
 
-        toggleSelected: function() {
+        toggleSelected: function () {
             this.set('is_selected', !this.get('is_selected'));
         }
 
