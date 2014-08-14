@@ -19,8 +19,8 @@ define(['log', 'jquery', 'jquery-ui', 'underscore', 'backbone.marionette', 'atta
             data.order = parseInt(this.ui.order.val(), 10);
             data.content_type = parseInt(this.ui.contenttype.val(), 10);
             data.object_id = parseInt(this.ui.objectId.val(), 10);
-            if (this.ui.delete.length) {
-                data['delete'] = this.ui.delete.prop('checked');
+            if (this.ui.delete_.length) {
+                data['delete'] = this.ui.delete_.prop('checked');
             }
             return data;
         },
@@ -40,7 +40,7 @@ define(['log', 'jquery', 'jquery-ui', 'underscore', 'backbone.marionette', 'atta
             this.ui.objectId.val(this.model.get('object_id'));
             if (this.model.has('delete')) {
                 // An existing model
-                this.ui.delete.prop('checked', this.model.get('delete'));
+                this.ui.delete_.prop('checked', this.model.get('delete'));
             }
         },
 
@@ -48,7 +48,7 @@ define(['log', 'jquery', 'jquery-ui', 'underscore', 'backbone.marionette', 'atta
             'order': '[name$="-order"]',
             'contenttype': '[name$="-content_type"]',
             'objectId': '[name$="-object_id"]',
-            'delete': '[name$="-DELETE"]'
+            'delete_': '[name$="-DELETE"]'
         }
 
     });

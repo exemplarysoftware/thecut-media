@@ -122,7 +122,7 @@ define(['underscore', 'backbone.marionette', 'mediaitems/collections', 'mediaite
         },
 
         deleteAttachment: function () {
-            this.model.get('attachment').delete();
+            this.model.get('attachment').delete_();
         },
 
         events: {

@@ -10,7 +10,7 @@ define(['log', 'backbone'], function (log, Backbone) {
             'order': 0
         },
 
-        delete: function () {
+        delete_: function () {
             log(['Deleting attachment', this.toJSON()])
             // When deleting an attachment, either flag it for deletion (if
             // pre-existing), or just remove it from it's collection.
