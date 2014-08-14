@@ -36,6 +36,14 @@ define(['underscore', 'backbone.marionette'], function (_, Marionette) {
 
     var ContentTypeCollectionView = Marionette.CompositeView.extend({
 
+        ajaxStart: function() {
+            this.$el.addClass('loading');
+        },
+
+        ajaxStop: function() {
+            this.$el.removeClass('loading');
+        },
+
         contenttypeSelected: function (selectedModel) {
             // Ensure other models in the collection are 'unselected'.
             _.each(this.collection.where({'is_selected': true}), function (model) {
@@ -50,7 +58,9 @@ define(['underscore', 'backbone.marionette'], function (_, Marionette) {
         childViewContainer: 'ol',
 
         collectionEvents: {
-            'selected': 'contenttypeSelected'
+            'request': 'ajaxStart',
+            'selected': 'contenttypeSelected',
+            'sync': 'ajaxStop'
         },
 
         initialize: function () {

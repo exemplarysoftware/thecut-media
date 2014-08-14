@@ -113,6 +113,14 @@ define(['underscore', 'backbone.marionette', 'mediaitems/collections', 'mediaite
 
     var MediaItemView = Marionette.ItemView.extend({
 
+        ajaxStart: function() {
+            this.$el.addClass('loading');
+        },
+
+        ajaxStop: function() {
+            this.$el.removeClass('loading');
+        },
+
         deleteAttachment: function () {
             this.model.get('attachment').delete();
         },
@@ -122,7 +130,9 @@ define(['underscore', 'backbone.marionette', 'mediaitems/collections', 'mediaite
         },
 
         modelEvents: {
-            'change': 'render'
+            'change': 'render',
+            'request': 'ajaxStart',
+            'sync': 'ajaxStop'
         },
 
         onRender: function () {
@@ -168,6 +178,14 @@ define(['underscore', 'backbone.marionette', 'mediaitems/collections', 'mediaite
 
     var PaginatedMediaItemCollectionView = MediaItemCollectionView.extend({
 
+        ajaxStart: function() {
+            this.$el.addClass('loading');
+        },
+
+        ajaxStop: function() {
+            this.$el.removeClass('loading');
+        },
+
         associateAttachment: function (mediaitem, attachment) {
             attachment.on('delete', function () {
                 mediaitem.set({'attachment': null});
@@ -176,7 +194,9 @@ define(['underscore', 'backbone.marionette', 'mediaitems/collections', 'mediaite
         },
 
         collectionEvents: {
-            'add': 'findAttachment'
+            'add': 'findAttachment',
+            'request': 'ajaxStart',
+            'sync': 'ajaxStop'
         },
 
         childEvents: {
