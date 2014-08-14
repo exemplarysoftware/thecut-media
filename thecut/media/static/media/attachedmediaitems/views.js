@@ -1,4 +1,4 @@
-define(['jquery', 'jquery-ui', 'underscore', 'backbone.marionette', 'attachedmediaitems/models'], function (jQuery, jQueryUi, _, Marionette, models) {
+define(['log', 'jquery', 'jquery-ui', 'underscore', 'backbone.marionette', 'attachedmediaitems/models'], function (log, jQuery, jQueryUi, _, Marionette, models) {
 
 
     'use strict';
@@ -6,30 +6,12 @@ define(['jquery', 'jquery-ui', 'underscore', 'backbone.marionette', 'attachedmed
 
     var BaseAttachedMediaItemInlineView = Marionette.ItemView.extend({
 
-        emptyInlineRelatedSelector: '#media-attachedmediaitem-parent_content_type-parent_object_id-empty',  // TODO
-
         events: {
             'change': 'updateModel'
         },
 
-        initialize: function () {
-            this.$emptyInlineForm = jQuery(this.emptyInlineRelatedSelector);
-        },
-
         modelEvents: {
             'change': 'updateFields'
-        },
-
-        onRender: function () {
-            // Set inline id and class
-            var prefix = this.$emptyInlineForm.closest('[data-form-prefix]').attr('data-form-prefix');  // TODO
-            this.$el.attr('id', prefix + '-' + this.options.index);
-            this.$el.addClass('inline-related ' + 'dynamic-' + prefix);
-
-            // Replace other references and __prefix__ with index
-            var pattern = new RegExp('(' + prefix + '-(\\d+|__prefix__))', 'g');
-            var newHtml = this.$el.html().replace(pattern, prefix + '-' + this.options.index);
-            this.$el.html(newHtml);
         },
 
         serializeFields: function () {
@@ -43,11 +25,6 @@ define(['jquery', 'jquery-ui', 'underscore', 'backbone.marionette', 'attachedmed
             return data;
         },
 
-        updateIndex: function (index) {
-            this.options.index = index;
-            this.render();
-        },
-
         template: false,
 
         updateModel: function () {
@@ -56,6 +33,7 @@ define(['jquery', 'jquery-ui', 'underscore', 'backbone.marionette', 'attachedmed
         },
 
         updateFields: function () {
+            log(['Updating fields from model', this.model.toJSON()]);
             // Update the field values based on the model attributes
             this.ui.order.val(this.model.get('order'));
             this.ui.contenttype.val(this.model.get('content_type'));
@@ -78,17 +56,33 @@ define(['jquery', 'jquery-ui', 'underscore', 'backbone.marionette', 'attachedmed
 
     var NewAttachedMediaItemInlineView = BaseAttachedMediaItemInlineView.extend({
 
+        emptyInlineRelatedSelector: '#media-attachedmediaitem-parent_content_type-parent_object_id-empty',  // TODO
+
         initialize: function () {
-            NewAttachedMediaItemInlineView.__super__.initialize.call(this);
+            this.$emptyInlineForm = jQuery(this.emptyInlineRelatedSelector);
             this.template = this.$emptyInlineForm.prop('outerHTML');
         },
 
         onRender: function () {
-            NewAttachedMediaItemInlineView.__super__.onRender.call(this);
+            // Set inline id and class
+            var prefix = this.$emptyInlineForm.closest('[data-form-prefix]').attr('data-form-prefix');  // TODO
+            this.$el.attr('id', prefix + '-' + this.options.index);
+            this.$el.addClass('inline-related ' + 'dynamic-' + prefix);
+
+            // Replace other references and __prefix__ with index
+            var pattern = new RegExp('(' + prefix + '-(\\d+|__prefix__))', 'g');
+            var newHtml = this.$el.html().replace(pattern, prefix + '-' + this.options.index);
+            this.$el.html(newHtml);
+
             // Insert and rebind UI / update fields with model data
             this.$emptyInlineForm.before(this.$el);
             this.bindUIElements();
             this.updateFields();
+        },
+
+        updateIndex: function (index) {
+            this.options.index = index;
+            this.render();
         }
 
     });
@@ -98,9 +92,12 @@ define(['jquery', 'jquery-ui', 'underscore', 'backbone.marionette', 'attachedmed
 
         initialize: function () {
             NewAttachedMediaItemInlineView.__super__.initialize.call(this);
-            this.model = new models.AttachedMediaItem();
             this.bindUIElements();  // Bind UI elements to existing HTML
-            this.updateModel();
+            this.model = new models.AttachedMediaItem(this.serializeFields());
+        },
+
+        updateIndex: function () {
+            // noop - existing forms don't require their index updating.
         }
 
     });
@@ -155,7 +152,7 @@ define(['jquery', 'jquery-ui', 'underscore', 'backbone.marionette', 'attachedmed
 
         setInitialOrder: function (model) {
             if (model.get('order') === 0) {
-                model.set('order', this.getTotalForms() + 1);
+                model.set('order', this.getTotalForms());
             }
         },
 

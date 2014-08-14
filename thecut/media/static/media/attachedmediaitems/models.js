@@ -1,4 +1,4 @@
-define(['backbone'], function (Backbone) {
+define(['log', 'backbone'], function (log, Backbone) {
 
 
     'use strict';
@@ -11,6 +11,7 @@ define(['backbone'], function (Backbone) {
         },
 
         delete: function () {
+            log(['Deleting attachment', this.toJSON()])
             // When deleting an attachment, either flag it for deletion (if
             // pre-existing), or just remove it from it's collection.
             if (this.has('delete')) {
