@@ -10,6 +10,7 @@ var attachedMediaItemRequire = requirejs.config({
         'backbone.paginator': 'lib/backbone.paginator',
         'backbone.wreqr': 'lib/backbone.wreqr',
         'domReady': 'lib/domReady',
+        'dropzone': 'lib/dropzone',
         'jquery': 'lib/jquery',
         'jquery-ui': 'lib/jquery-ui',
         'json2': 'lib/json2',

@@ -1,7 +1,10 @@
-define(['underscore', 'backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'attachedmediaitems/filters', 'attachedmediaitems/models', 'tags/views'], function (_, Marionette, collections, models, filters, attachedmediaitemsModels, tagsViews) {
+define(['jquery', 'dropzone', 'underscore', 'backbone.marionette', 'mediaitems/collections', 'mediaitems/models', 'attachedmediaitems/filters', 'attachedmediaitems/models', 'tags/views'], function (jQuery, Dropzone, _, Marionette, collections, models, filters, attachedmediaitemsModels, tagsViews) {
 
 
     'use strict';
+
+
+    Dropzone.autoDiscover = false;
 
 
     var PaginationControlsView = Marionette.ItemView.extend({
@@ -113,11 +116,11 @@ define(['underscore', 'backbone.marionette', 'mediaitems/collections', 'mediaite
 
     var MediaItemView = Marionette.ItemView.extend({
 
-        ajaxStart: function() {
+        ajaxStart: function () {
             this.$el.addClass('loading');
         },
 
-        ajaxStop: function() {
+        ajaxStop: function () {
             this.$el.removeClass('loading');
         },
 
@@ -178,11 +181,11 @@ define(['underscore', 'backbone.marionette', 'mediaitems/collections', 'mediaite
 
     var PaginatedMediaItemCollectionView = MediaItemCollectionView.extend({
 
-        ajaxStart: function() {
+        ajaxStart: function () {
             this.$el.addClass('loading');
         },
 
-        ajaxStop: function() {
+        ajaxStop: function () {
             this.$el.removeClass('loading');
         },
 
@@ -250,6 +253,47 @@ define(['underscore', 'backbone.marionette', 'mediaitems/collections', 'mediaite
             this.collection.fetch();
         },
 
+        initializeDropzone: function () {
+            var pickerCollection = this.collection,
+                fileUpload = this.options.contenttype.get('file_upload');
+
+            this.$el.dropzone({
+                'url': fileUpload.url,
+                'params': fileUpload.data,
+                'paramName': fileUpload.file_parameter,
+                'success': function (file) {
+                    // See if we need to 'ping' the server notification of an upload
+                    if (fileUpload.notify_url) {
+                        var response = file.xhr.responseXML;
+                        jQuery.ajax({
+                            url: fileUpload.notify_url,
+                            data: _.extend(fileUpload.notify_data, {
+                                'bucket': response.getElementsByTagName('Bucket')[0].textContent,
+                                'key': response.getElementsByTagName('Key')[0].textContent,
+                                'etag': response.getElementsByTagName('ETag')[0].textContent
+                            }),
+                            success: function () {
+                                pickerCollection.getFirstPage({fetch: true});
+                            }
+                        });
+                    } else {
+                        pickerCollection.getFirstPage({fetch: true});
+                    }
+                },
+                'complete': function (file) {
+                    this.removeFile(file);
+                }
+            });
+
+        },
+
+        onDestroy: function () {
+            // Disable (destory) the dropzone instance
+            if (this.options.contenttype.get('file_upload')) {
+                Dropzone.forElement(this.el).disable();
+            }
+        },
+
         onShow: function () {
             this.paginationControlsView = new PaginationControlsView({
                 'collection': this.collection,
@@ -259,6 +303,10 @@ define(['underscore', 'backbone.marionette', 'mediaitems/collections', 'mediaite
                 'collection': this.collection,
                 'el': this.ui.filter
             });
+
+            if (this.options.contenttype.get('file_upload')) {
+                this.initializeDropzone();
+            }
         },
 
         // TODO: We should find the template within the inline admin container
