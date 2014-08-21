@@ -46,7 +46,7 @@ class MediaUploadMixin(object):
         field = self.model._meta.get_field_by_name('file')[0]
 
         view = UploadView.as_view()
-        if settings.USE_DROPZONE:
+        if settings.USE_S3UPLOAD:
             from .views.dropzone import DropzoneUploadView
             from storages.backends.s3boto import S3BotoStorage
             storage = field.storage
