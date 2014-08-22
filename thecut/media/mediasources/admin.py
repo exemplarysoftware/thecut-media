@@ -9,14 +9,6 @@ from .views import UploadView
 from django.contrib import admin
 from django.utils.functional import LazyObject
 from thecut.authorship.admin import AuthorshipMixin
-from thecut.media.settings import MEDIA_SOURCES
-
-
-def conditionally_register(model, adminclass):
-    """Register model with admin site if it is in MEDIA_SOURCES."""
-    if 'thecut.media.mediasources.models.{0}'.format(model.__name__) \
-            in MEDIA_SOURCES:
-        admin.site.register(model, adminclass)
 
 
 def preview_image(obj):
@@ -80,7 +72,7 @@ class AudioAdmin(MediaUploadMixin, AuthorshipMixin, AdminMediaMixin,
     readonly_fields = ('created_at', 'created_by', 'updated_at', 'updated_by')
     search_fields = ('title',)
 
-conditionally_register(Audio, AudioAdmin)
+admin.site.register(Audio, AudioAdmin)
 
 
 class DocumentAdmin(MediaUploadMixin, AuthorshipMixin, AdminMediaMixin,
@@ -101,7 +93,7 @@ class DocumentAdmin(MediaUploadMixin, AuthorshipMixin, AdminMediaMixin,
     readonly_fields = ('created_at', 'created_by', 'updated_at', 'updated_by')
     search_fields = ('title',)
 
-conditionally_register(Document, DocumentAdmin)
+admin.site.register(Document, DocumentAdmin)
 
 
 class ImageAdmin(MediaUploadMixin, AuthorshipMixin, AdminMediaMixin,
@@ -122,7 +114,7 @@ class ImageAdmin(MediaUploadMixin, AuthorshipMixin, AdminMediaMixin,
     readonly_fields = ('created_at', 'created_by', 'updated_at', 'updated_by')
     search_fields = ('title',)
 
-conditionally_register(Image, ImageAdmin)
+admin.site.register(Image, ImageAdmin)
 
 
 class VideoAdmin(MediaUploadMixin, AuthorshipMixin, AdminMediaMixin,
@@ -143,7 +135,7 @@ class VideoAdmin(MediaUploadMixin, AuthorshipMixin, AdminMediaMixin,
     readonly_fields = ('created_at', 'created_by', 'updated_at', 'updated_by')
     search_fields = ('title',)
 
-conditionally_register(Video, VideoAdmin)
+admin.site.register(Video, VideoAdmin)
 
 
 class YoutubeVideoAdmin(AuthorshipMixin, AdminMediaMixin, admin.ModelAdmin):
@@ -163,7 +155,7 @@ class YoutubeVideoAdmin(AuthorshipMixin, AdminMediaMixin, admin.ModelAdmin):
     readonly_fields = ('created_at', 'created_by', 'updated_at', 'updated_by')
     search_fields = ('title',)
 
-conditionally_register(YoutubeVideo, YoutubeVideoAdmin)
+admin.site.register(YoutubeVideo, YoutubeVideoAdmin)
 
 
 class VimeoVideoAdmin(AuthorshipMixin, AdminMediaMixin, admin.ModelAdmin):
@@ -183,4 +175,4 @@ class VimeoVideoAdmin(AuthorshipMixin, AdminMediaMixin, admin.ModelAdmin):
     readonly_fields = ('created_at', 'created_by', 'updated_at', 'updated_by')
     search_fields = ('title',)
 
-conditionally_register(VimeoVideo, VimeoVideoAdmin)
+admin.site.register(VimeoVideo, VimeoVideoAdmin)
