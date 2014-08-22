@@ -23,10 +23,11 @@ class APIMixin(object):
 
 class MediaRootAPIView(APIMixin, APIView):
 
-    def get(self, request, format=None):
+    def get(self, request, url_namespace, format=None):
+        contenttype_list_url = reverse(
+            '{0}:contenttype_list'.format(url_namespace), request=request)
         return Response(
-            {'contentttypes': reverse('admin:media_api:contenttype_list',
-                                      request=request)})
+            {'contentttypes': contenttype_list_url})
 
 
 class BaseContentTypeAPIMixin(APIMixin):

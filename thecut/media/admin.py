@@ -32,10 +32,15 @@ class AttachedMediaItemMixin(admin.ModelAdmin):
     attached_media_models = None
 
     def get_urls(self):
-        api_urls = generate_api_urls(self.attached_media_models)
+        media_api_namespace = 'media_api-{0}-{1}'.format(
+            self.model._meta.app_label, self.model._meta.model_name)
+        media_api_urls = generate_api_urls(
+            admin_site_name=self.admin_site.name,
+            namespace=media_api_namespace,
+            media_models=self.attached_media_models)
         urlpatterns = patterns(
             'thecut.media.views',
-            (r'^media/api/', include(api_urls)),
+            (r'^media/api/', include(media_api_urls)),
         )
         urlpatterns += super(AttachedMediaItemMixin, self).get_urls()
         return urlpatterns

@@ -115,9 +115,7 @@ class ContentTypeSerializer(serializers.HyperlinkedModelSerializer):
 
     id = serializers.Field(source='pk')
 
-    url = serializers.HyperlinkedIdentityField(
-        view_name='admin:media_api:contenttype_detail',
-        lookup_field='pk')
+    url = serializers.SerializerMethodField('get_url')
 
     objects = serializers.SerializerMethodField('get_objects_url')
 
@@ -144,8 +142,16 @@ class ContentTypeSerializer(serializers.HyperlinkedModelSerializer):
         return file_upload.properties()
 
     def get_objects_url(self, content_type):
-        return reverse('admin:media_api:contenttype_object_list',
+        namespace = self.context['view'].kwargs['url_namespace']
+        return reverse('{0}:contenttype_object_list'.format(namespace),
                        kwargs={'contenttype_pk': content_type.pk},
+                       request=self.context['request'],
+                       format=self.context['format'])
+
+    def get_url(self, content_type):
+        namespace = self.context['view'].kwargs['url_namespace']
+        return reverse('{0}:contenttype_detail'.format(namespace),
+                       kwargs={'pk': content_type.pk},
                        request=self.context['request'],
                        format=self.context['format'])
 
@@ -180,7 +186,8 @@ class MediaSerializer(serializers.ModelSerializer):
                 pass
 
     def get_url(self, obj):
-        return reverse('admin:media_api:contenttype_object_detail',
+        namespace = self.context['view'].kwargs['url_namespace']
+        return reverse('{0}:contenttype_object_detail'.format(namespace),
                        kwargs={'pk': obj.pk,
                                'contenttype_pk': self.get_content_type().pk},
                        request=self.context['request'],
