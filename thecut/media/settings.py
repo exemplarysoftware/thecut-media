@@ -6,7 +6,9 @@ from sorl.thumbnail.conf import settings as sorl_settings
 
 DEBUG = getattr(settings, 'MEDIA_DEBUG', settings.DEBUG)
 
-MEDIA_PAGINATE_BY = getattr(settings, 'MEDIA_PAGINATE_BY', 7)
+
+DEFAULT_ATTACHED_MEDIA_MODELS = getattr(
+    settings, 'MEDIA_DEFAULT_ATTACHED_MEDIA_MODELS', None)
 
 
 # Thumbnail / placeholder settings
@@ -30,10 +32,7 @@ QUEUE_THUMBNAILS = CELERY and getattr(
 ADMIN_THUMBNAIL_SIZES = getattr(
     settings, 'MEDIA_ADMIN_THUMBNAIL_SIZES', [
         # List of tuples containing geometry_size and options dict
-        ('60x45', {'crop': 'center'}),  # TODO OLD
-        ('100x75', {}),  # TODO OLD
-        ('140x106', {'crop': 'center'}),  # TODO OLD
-        ('360x360', {'quality': 50}),  # NEW
+        ('360x360', {'quality': 50}),
     ])
 
 PREGENERATE_THUMBNAIL_SIZES = ADMIN_THUMBNAIL_SIZES + getattr(

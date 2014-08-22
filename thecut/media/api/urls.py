@@ -40,6 +40,6 @@ def generate_urls(admin_site_name, namespace, media_models):
     urlpatterns = patterns(
         '', (r'^', include(urls, namespace=namespace)))
 
-    urlpatterns = format_suffix_patterns(urlpatterns, allowed=['json', 'api'])
+    urlpatterns = format_suffix_patterns(urlpatterns, allowed=['json'])  # api
 
     return urlpatterns

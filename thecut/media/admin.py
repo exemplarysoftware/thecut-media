@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+from . import settings
 from .api.urls import generate_urls as generate_api_urls
 from .forms import AttachedMediaItemInlineForm
 from .models import AttachedMediaItem
@@ -29,7 +30,7 @@ class AttachedMediaItemMixin(admin.ModelAdmin):
 
     inlines = [AttachedMediaItemInline]
 
-    attached_media_models = None
+    attached_media_models = settings.DEFAULT_ATTACHED_MEDIA_MODELS
 
     def get_urls(self):
         media_api_namespace = 'media_api-{0}-{1}'.format(
