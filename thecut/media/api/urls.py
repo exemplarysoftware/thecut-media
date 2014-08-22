@@ -10,8 +10,7 @@ def generate_urls(media_models):
     urls = patterns(
         'thecut.media.api.views',
 
-        url(r'^$', views.MediaRootAPIView.as_view(),
-            {'media_models': media_models}, name='root'),
+        url(r'^$', views.MediaRootAPIView.as_view(), name='root'),
 
         url(r'^contenttypes/$',
             views.ContentTypeListAPIView.as_view(),

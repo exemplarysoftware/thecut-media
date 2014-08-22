@@ -100,6 +100,12 @@ attachedMediaItemRequire(
                 'url': this.getRegion('contenttypes').$el.attr('data-api-href')
             });
 
+            // Set data attribute on manager
+            this.contenttypesCollection.on('selected', function (contenttype) {
+                var slug = contenttype.get('verbose_name_plural').toLowerCase().trim().replace(/[^a-z0-9]/g, '-');
+                this.getRegion('manager').$el.attr('data-contenttype', slug);
+            }, this);
+
             // Show picker on contenttype selection
             this.contenttypesCollection.on('selected', function (contenttype) {
                 var view = new mediaitemsViews.PaginatedMediaItemCollectionView({
