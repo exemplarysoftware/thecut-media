@@ -38,6 +38,14 @@ class BaseContentTypeAPIMixin(APIMixin):
 
     serializer_class = serializers.ContentTypeSerializer
 
+    def get_queryset(self, *args, **kwargs):
+        queryset = super(BaseContentTypeAPIMixin, self).get_queryset(*args,
+                                                                     **kwargs)
+        media_models = self.kwargs['media_models']
+        if media_models:
+            queryset = MediaContentType.objects.get_for_models(media_models)
+        return queryset
+
 
 class ContentTypeListAPIView(BaseContentTypeAPIMixin, generics.ListAPIView):
 
@@ -58,7 +66,12 @@ class BaseContentTypeObjectAPIMixin(APIMixin):
     serializer_class = serializers.MediaSerializer
 
     def get_content_type(self):
-        return generics.get_object_or_404(MediaContentType,
+        media_models = self.kwargs['media_models']
+        if media_models:
+            queryset = MediaContentType.objects.get_for_models(media_models)
+        else:
+            queryset = MediaContentType
+        return generics.get_object_or_404(queryset,
                                           pk=self.kwargs.get('contenttype_pk'))
 
     def initial(self, *args, **kwargs):

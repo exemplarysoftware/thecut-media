@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+from .api.urls import generate_urls as generate_api_urls
 from .forms import AttachedMediaItemInlineForm
 from .models import AttachedMediaItem
 from django.conf.urls import include, patterns
@@ -28,10 +29,13 @@ class AttachedMediaItemMixin(admin.ModelAdmin):
 
     inlines = [AttachedMediaItemInline]
 
+    attached_media_models = None
+
     def get_urls(self):
+        api_urls = generate_api_urls(self.attached_media_models)
         urlpatterns = patterns(
             'thecut.media.views',
-            (r'^media/api/', include('thecut.media.api.urls')),
+            (r'^media/api/', include(api_urls)),
         )
         urlpatterns += super(AttachedMediaItemMixin, self).get_urls()
         return urlpatterns
