@@ -13,7 +13,11 @@ MEDIA_SOURCES = getattr(settings, 'MEDIA_SOURCES', [])
 
 # Thumbnail / placeholder settings
 
-CELERY = 'djcelery' in settings.INSTALLED_APPS
+try:
+    from celery import Celery
+    CELERY = True
+except ImportError:
+    CELERY = False
 
 PLACEHOLDER_IMAGE_PATH = getattr(
     settings, 'MEDIA_PLACEHOLDER_IMAGE_PATH',
