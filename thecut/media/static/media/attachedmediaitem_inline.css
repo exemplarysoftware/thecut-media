@@ -84,6 +84,64 @@
       vertical-align: bottom;
     }
 
+      .attachedmediaitem.manager .attachments ol li > .actions,
+      .attachedmediaitem.manager .picker ol li > .actions {
+        display: none;
+        position: relative;
+      }
+
+        .attachedmediaitem.manager .attachments ol li > .actions .button,
+        .attachedmediaitem.manager .picker ol li > .actions .button {
+            display: inline-block;
+            box-sizing: border-box;
+            height: 24px;
+            width: 76px;
+            margin: 15px 0;
+            padding: 0;
+            background-color: #585c66;
+            background-image: none;
+            border-style: none;
+            border-radius: 12px;
+            line-height: 24px;
+            color: #ffffff;
+            text-align: center;
+            text-shadow: none;
+            text-transform: lowercase;
+          }
+
+        .attachedmediaitem.manager .picker ol li.attached > .actions:after {
+            content: "added";
+            display: inline-block;
+            position: absolute;
+            top: 0;
+            right: 0;
+            box-sizing: border-box;
+            height: 24px;
+            width: 76px;
+            margin: 15px 0;
+            padding: 0;
+            background-color: #585c66;
+            border-radius: 12px;
+            color: #ffffff;
+            line-height: 24px;
+            text-align: center;
+            text-shadow: none;
+            text-transform: lowercase;
+          }
+
+          .attachedmediaitem.manager .picker ol li.attached:hover > .actions:after {
+            display: none;
+          }
+
+          .attachedmediaitem.manager .picker ol li > .actions .button.action.select {
+            background-color: #70d715;
+          }
+
+          .attachedmediaitem.manager .attachments ol li > .actions .button.action.remove,
+          .attachedmediaitem.manager .picker ol li > .actions .button.action.remove {
+            background-color: #ca0114;
+          }
+
       .attachedmediaitem.manager .attachments ol li .thumbnail,
       .attachedmediaitem.manager .picker ol li .thumbnail {
         display: inline-block;
@@ -146,8 +204,9 @@
           padding: 0;
           background-color: #585c66;
           border-radius: 12px;
-          content: "button";
+          content: "";
           line-height: 24px;
+          text-shadow: none;
           text-transform: lowercase;
         }
 
@@ -158,7 +217,7 @@
 
           .attachedmediaitem.manager .attachments ol li .thumbnail .button.action.select:after,
           .attachedmediaitem.manager .picker ol li .thumbnail .button.action.select:after {
-            background-color: #4f980f;
+            background-color: #70d715;
             content: "add";
           }
 
@@ -181,7 +240,6 @@
         height: 50px;
         font-size: 12px;
         line-height: 16px;
-        text-align: center;
         text-overflow: clip ellipsis;
       }
 
@@ -195,7 +253,7 @@
   padding: 30px;
 }
 
-.attachedmediaitem.manager .attachments ol li {
+.attachedmediaitem.manager .attachments ol li .name {
   cursor: grab;
 }
 
@@ -558,3 +616,69 @@
     transform: scale(1);
   }
 }
+
+
+
+
+
+
+
+
+
+
+/* File (no thumbnail) style layout */
+
+.attachedmediaitem.manager[data-contenttype="documents"] .picker ol {
+  margin: 30px 0;
+  height: 551px;
+}
+
+.attachedmediaitem.manager[data-contenttype="documents"] .attachments ol li,
+.attachedmediaitem.manager[data-contenttype="documents"] .picker ol li {
+  display: block;
+  width: auto;
+  margin: 0;
+  padding: 0;
+  border-bottom: 1px solid #d9d9d9;
+  text-align: left;
+}
+
+  .attachedmediaitem.manager[data-contenttype="documents"] .attachments ol li:first-child,
+  .attachedmediaitem.manager[data-contenttype="documents"] .picker ol li:first-child {
+    border-top: 1px solid #d9d9d9;
+  }
+
+  .attachedmediaitem.manager[data-contenttype="documents"] .attachments ol li > .actions,
+  .attachedmediaitem.manager[data-contenttype="documents"] .picker ol li > .actions {
+    display: block;
+    float: right;
+  }
+
+    .attachedmediaitem.manager[data-contenttype="documents"] .attachments ol li > .actions .remove,
+    .attachedmediaitem.manager[data-contenttype="documents"] .picker ol li > .actions .remove {
+      display: none;
+    }
+
+    .attachedmediaitem.manager[data-contenttype="documents"] .attachments ol li:hover > .actions .remove,
+    .attachedmediaitem.manager[data-contenttype="documents"] .picker ol li:hover > .actions .remove {
+      display: block;
+    }
+
+  .attachedmediaitem.manager[data-contenttype="documents"] .attachments ol li .thumbnail,
+  .attachedmediaitem.manager[data-contenttype="documents"] .picker ol li .thumbnail {
+    display: none;
+  }
+
+  .attachedmediaitem.manager[data-contenttype="documents"] .attachments ol li .name,
+  .attachedmediaitem.manager[data-contenttype="documents"] .picker ol li .name {
+        display: block;
+        overflow: hidden;
+        margin: 0;
+        padding: 15px 0;
+        height: auto;
+        line-height: 24px;
+  }
+
+    .attachedmediaitem.manager[data-contenttype="documents"] .picker ol li.attached .name {
+      opacity: 0.5;
+    }

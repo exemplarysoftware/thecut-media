@@ -70,12 +70,11 @@
     <% if (thumbnail) { %>
       <div class="thumbnail">
         <img src="<%= thumbnail %>" alt="<%= name %>" />
-        <% if (attachment) { %><span class="button action remove">Remove</span><% } else { %><span class="button action select">select</span><% } %>
+        <% if (attachment) { %><span class="button action remove">Remove</span><% } else { %><span class="button action select">Add</span><% } %>
       </div>
     <% } %>
-
+    <div class="actions"><% if (attachment) { %><span class="button action remove">Remove</span><% } else { %><span class="button action select">Add</span><% } %></div>
     <div class="name"><%= name %></div>
-    <!-- <% if (attachment) { %><span class="button action remove">remove</span><% } else { %><span class="button action select">select</span><% } %> -->
   </script>
 
 
