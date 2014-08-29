@@ -222,7 +222,6 @@
 
 /* Open / close controls */
 
-
   .attachedmediaitem.manager .picker .display.controls {
     display: block;
     margin: 0;
@@ -283,11 +282,20 @@
   .attachedmediaitem.manager .filter > li {
     display: block;
     float: left;
+    margin: 0 20px 0 0;
   }
 
   .attachedmediaitem.manager .filter > li:last-child {
     float: right;
     width: 410px;
+  }
+
+  .attachedmediaitem.manager .filter .action.reset {
+    display: none;
+  }
+
+  .attachedmediaitem.manager .filtered .filter .action.reset {
+    display: inline-block;
   }
 
 
@@ -418,6 +426,8 @@
   position: relative;
 }
 
+.attachedmediaitem.manager .dz-drag-hover:before,
+.attachedmediaitem.manager .dz-started:before,
 .attachedmediaitem.manager .dz-drag-hover:after,
 .attachedmediaitem.manager .dz-started:after {
   display: block;
@@ -429,23 +439,31 @@
   height: 300px;
   width: 300px;
   margin: -150px 0 0 -150px;
-  background-color: #585c66;
-  border-radius: 150px;
   color: #ffffff;
   line-height: 300px;
   font-size: 26px;
   text-align: center;
+}
+
+.attachedmediaitem.manager .dz-drag-hover:after,
+.attachedmediaitem.manager .dz-started:after {
+  z-index: 9998;
+  background-color: #585c66;
+  border-radius: 150px;
   -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.125);
   -moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.125);
   box-shadow: 0px 0px 5px 0px rgba(0, 0, 50, 0.125);
 }
 
-.attachedmediaitem.manager .dz-started:after {
+.attachedmediaitem.manager .dz-started:before {
   content: "Uploading...";
 }
 
+.attachedmediaitem.manager .dz-drag-hover:before {
+  content: "Drop to upload";
+}
+
 .attachedmediaitem.manager .dz-drag-hover:after {
-  content: "Upload";
   background-color: #4f980f;
 }
 
@@ -463,87 +481,80 @@
   display: none;
 }
 
-
-
-
 .attachedmediaitem.manager .dz-drag-hover:after,
 .attachedmediaitem.manager .dz-started:after {
-  -webkit-animation: pulse2 2s ease infinite;
-  -moz-animation: pulse2 2s ease infinite;
-  -ms-animation: pulse2 2s ease infinite;
-  animation: pulse2 2s ease infinite;
+  -webkit-animation: pulse2 1s ease infinite;
+  -moz-animation: pulse2 1s ease infinite;
+  -ms-animation: pulse2 1s ease infinite;
+  animation: pulse2 1s ease infinite;
 }
 
 
 @keyframes "pulse2" {
- 0% {
+  0% {
     -webkit-transform: scale(1);
     -moz-transform: scale(1);
     -o-transform: scale(1);
     -ms-transform: scale(1);
     transform: scale(1);
- }
- 50% {
-    -webkit-transform: scale(1.1);
-    -moz-transform: scale(1.1);
-    -o-transform: scale(1.1);
-    -ms-transform: scale(1.1);
-    transform: scale(1.1);
- }
- 100% {
+  }
+  50% {
+    -webkit-transform: scale(1.05);
+    -moz-transform: scale(1.05);
+    -o-transform: scale(1.05);
+    -ms-transform: scale(1.05);
+    transform: scale(1.05);
+  }
+  100% {
     -webkit-transform: scale(1);
     -moz-transform: scale(1);
     -o-transform: scale(1);
     -ms-transform: scale(1);
     transform: scale(1);
- }
-
+  }
 }
 
 @-moz-keyframes pulse2 {
- 0% {
-   -moz-transform: scale(1);
-   transform: scale(1);
- }
- 50% {
-   -moz-transform: scale(1.1);
-   transform: scale(1.1);
- }
- 100% {
-   -moz-transform: scale(1);
-   transform: scale(1);
- }
-
+  0% {
+    -moz-transform: scale(1);
+    transform: scale(1);
+  }
+  50% {
+    -moz-transform: scale(1.05);
+    transform: scale(1.05);
+  }
+  100% {
+    -moz-transform: scale(1);
+    transform: scale(1);
+  }
 }
 
 @-webkit-keyframes "pulse2" {
- 0% {
-   -webkit-transform: scale(1);
-   transform: scale(1);
- }
- 50% {
-   -webkit-transform: scale(1.1);
-   transform: scale(1.1);
- }
- 100% {
-   -webkit-transform: scale(1);
-   transform: scale(1);
- }
-
+  0% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+  50% {
+    -webkit-transform: scale(1.05);
+    transform: scale(1.05);
+  }
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
 }
 
 @-ms-keyframes "pulse2" {
- 0% {
-   -ms-transform: scale(1);
-   transform: scale(1);
- }
- 50% {
-   -ms-transform: scale(1.1);
-   transform: scale(1.1);
- }
- 100% {
-   -ms-transform: scale(1);
-   transform: scale(1);
- }
-
+  0% {
+    -ms-transform: scale(1);
+    transform: scale(1);
+  }
+  50% {
+    -ms-transform: scale(1.05);
+    transform: scale(1.05);
+  }
+  100% {
+    -ms-transform: scale(1);
+    transform: scale(1);
+  }
 }

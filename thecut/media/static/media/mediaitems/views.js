@@ -187,6 +187,7 @@ define(['jquery', 'dropzone', 'underscore', 'backbone.marionette', 'mediaitems/c
 
         ajaxStop: function () {
             this.$el.removeClass('loading');
+            this.renderFiltered();
         },
 
         associateAttachment: function (mediaitem, attachment) {
@@ -285,6 +286,15 @@ define(['jquery', 'dropzone', 'underscore', 'backbone.marionette', 'mediaitems/c
                 }
             });
 
+        },
+
+        renderFiltered: function() {
+            // Apply 'filtered' class if the collection has been filtered.
+            if (this.collection.queryParams.tag.length || this.collection.queryParams.q) {
+              this.$el.addClass('filtered');
+            } else {
+              this.$el.removeClass('filtered');
+            }
         },
 
         onDestroy: function () {
