@@ -44,7 +44,7 @@ define(['underscore', 'backbone', 'djangorestframework', 'mediaitems/models', 't
         },
 
         state: {
-            pageSize: 5
+            pageSize: 10
         }
 
     });
