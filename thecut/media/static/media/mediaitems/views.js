@@ -256,13 +256,15 @@ define(['jquery', 'dropzone', 'underscore', 'backbone.marionette', 'mediaitems/c
 
         initializeDropzone: function () {
             var pickerCollection = this.collection,
-                fileUpload = this.options.contenttype.get('file_upload');
+                fileUpload = this.options.contenttype.get('file_upload'),
+                pickerView = this;
 
             this.$el.dropzone({
                 'url': fileUpload.url,
                 'params': fileUpload.data,
                 'paramName': fileUpload.file_parameter,
                 'success': function (file) {
+                    pickerView.displayOpen();
                     // See if we need to 'ping' the server notification of an upload
                     if (fileUpload.notify_url) {
                         var response = file.xhr.responseXML;
