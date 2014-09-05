@@ -2,6 +2,8 @@
 from __future__ import absolute_import, unicode_literals
 from . import forms, permissions, serializers
 from ..models import MediaContentType
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
 from rest_framework import authentication, generics, status
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
@@ -19,6 +21,10 @@ class APIMixin(object):
     max_paginate_by = 100
 
     permission_classes = [permissions.IsAdminUser]
+
+    @method_decorator(never_cache)
+    def dispatch(self, *args, **kwargs):
+        return super(APIMixin, self).dispatch(*args, **kwargs)
 
 
 class MediaRootAPIView(APIMixin, APIView):
