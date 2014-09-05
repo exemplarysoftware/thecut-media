@@ -65,9 +65,8 @@ class MediaUploadForm(forms.Form):
                     'put quotes around multiple-word tags.')
 
     class Media(object):
-        css = {'all': ('media/mediasources-mediauploadform.css',)}
-        js = ('media/jquery.js', 'media/jquery.init.js',
-              'media/mediasources-mediauploadform.js')
+        css = {'all': ['media/mediasources-mediauploadform.css']}
+        js = ['media/mediasources-mediauploadform.js']
 
     def __init__(self, *args, **kwargs):
         self.content_types = kwargs.pop('content_types', None)
