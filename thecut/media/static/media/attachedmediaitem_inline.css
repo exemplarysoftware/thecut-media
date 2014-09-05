@@ -6,6 +6,8 @@
   margin: 0 0 30px 0;
   background-color: #f3f3f3;
   border-bottom: 1px solid #d8d8d8;
+  font-size: 14px;
+  line-height: 1.5;
 }
 
   .attachedmediaitem.manager .button {
@@ -337,6 +339,16 @@
   list-style-type: none;
 }
 
+  .attachedmediaitem.manager .filter:before {
+    display: block;
+    margin: 5px;
+    content: "Search library";
+    color: #636773;
+    font-size: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
   .attachedmediaitem.manager .filter > li {
     display: block;
     float: left;
@@ -364,6 +376,7 @@
 .attachedmediaitem.manager .tags {
   display: block;
   overflow: hidden;
+  margin: -21px -20px 0 0;
   list-style-type: none;
 }
 
