@@ -53,6 +53,12 @@ class BaseContentTypeAPIMixin(APIMixin):
             queryset = MediaContentType.objects.get_for_models(media_models)
         return queryset
 
+    def get_serializer_context(self, *args, **kwargs):
+        context = super(BaseContentTypeAPIMixin, self).get_serializer_context(
+            *args, **kwargs)
+        context.update({'media_models': self.kwargs['media_models']})
+        return context
+
 
 class ContentTypeListAPIView(BaseContentTypeAPIMixin, generics.ListAPIView):
 

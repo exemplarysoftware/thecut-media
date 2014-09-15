@@ -127,9 +127,11 @@ class ContentTypeSerializer(serializers.HyperlinkedModelSerializer):
     file_upload = serializers.SerializerMethodField(
         'get_file_upload')
 
+    order = serializers.SerializerMethodField('get_order')
+
     class Meta(object):
         fields = ['id',  'url', 'verbose_name', 'verbose_name_plural',
-                  'objects', 'file_upload']
+                  'objects', 'file_upload', 'order']
         model = MediaContentType
 
     def get_file_upload(self, content_type):
@@ -160,6 +162,20 @@ class ContentTypeSerializer(serializers.HyperlinkedModelSerializer):
 
     def get_verbose_name_plural(self, content_type):
         return content_type.model_class()._meta.verbose_name_plural.title()
+
+    def get_order(self, content_type):
+        # Content Types should retain the order in which they are
+        # defined in the settings.
+        models = [self._get_app_model(model)
+                  for model in self.context['media_models']]
+        content_type_model = (content_type.app_label, content_type.model)
+        return models.index(content_type_model)
+
+    def _get_app_model(self, content_type):
+        # Given a string like 'app_label.ModelName', return a 2-tuple
+        # consisting of ('app_label', 'modelname')
+        app_label, model_name = content_type.lower().split('.')
+        return (app_label, model_name)
 
 
 class MediaSerializer(serializers.ModelSerializer):
