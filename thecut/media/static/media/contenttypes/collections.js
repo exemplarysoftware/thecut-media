@@ -8,6 +8,8 @@ define(['djangorestframework', 'contenttypes/models'], function (djangorestframe
 
         model: models.ContentType,
 
+	comparator: 'order',
+
         initialize: function (models, options) {
             this.url = options.url;
         }
