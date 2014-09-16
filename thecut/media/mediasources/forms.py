@@ -54,8 +54,7 @@ class VimeoVideoAdminForm(OrderMixin, forms.ModelForm):
 
 class MediaUploadForm(forms.Form):
 
-    files = forms.FileField(
-        widget=MultipleFileInput(attrs={'required': 'required'}))
+    files = forms.FileField()
 
     title = forms.CharField(
         required=False, max_length=200,
@@ -70,7 +69,16 @@ class MediaUploadForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         self.content_types = kwargs.pop('content_types', None)
-        return super(MediaUploadForm, self).__init__(*args, **kwargs)
+        super(MediaUploadForm, self).__init__(*args, **kwargs)
+
+        # Set the attributes on the 'files' widget so that the
+        # filepicker only shows files which are one of the defined
+        # content types.
+        attrs = {'required': 'required'}
+        if self.content_types:
+            attrs.update({'accept': ','.join(content_type for content_type
+                                             in self.content_types)})
+        self.fields['files'].widget = MultipleFileInput(attrs=attrs)
 
     def clean_files(self, *args, **kwargs):
         files = self.cleaned_data['files']
