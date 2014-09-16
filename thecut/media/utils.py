@@ -30,8 +30,8 @@ def get_placeholder_image():
 
 
 def get_preview_thumbnail(image):
-    geometry_size = '360x360'  # TODO: Fetch this from settings
-    options = {'quality': 50}  # TODO: Fetch this from settings
+    geometry_size = settings.DEFAULT_ADMIN_THUMBNAIL_SIZE[0]
+    options = settings.DEFAULT_ADMIN_THUMBNAIL_SIZE[1]
     return get_thumbnail(image, geometry_size, **options)
 
 
