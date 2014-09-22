@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 from . import AdminAddMixin
+from ..forms.s3upload import ContentTypeValidateS3UploadForm
 from s3upload.views import DropzoneS3UploadFormView
 import os
 
@@ -9,6 +10,8 @@ class DropzoneUploadView(AdminAddMixin, DropzoneS3UploadFormView):
     # Assumes FileField with name of 'file' on model.
 
     template_name = 'dropzone_form.html'
+
+    validate_upload_form_class = ContentTypeValidateS3UploadForm
 
     def _get_field(self):
         return self._get_model()._meta.get_field_by_name('file')[0]
@@ -37,3 +40,10 @@ class DropzoneUploadView(AdminAddMixin, DropzoneS3UploadFormView):
             return self.get_storage().get_available_name(path)
 
         return generate_key
+
+    def get_validate_upload_form_kwargs(self, *args, **kwargs):
+        kwargs = super(DropzoneUploadView,
+                       self).get_validate_upload_form_kwargs(*args, **kwargs)
+        valid_content_types = self._get_model().content_types
+        kwargs.update({'valid_content_types': valid_content_types})
+        return kwargs

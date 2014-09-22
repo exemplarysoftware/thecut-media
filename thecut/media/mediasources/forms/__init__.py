@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
-from .utils import get_content_type
-from .widgets import AdminImageWidget
+from ..utils import get_content_type
+from ..widgets import AdminImageWidget
 from django import forms
 from taggit.forms import TagField
 from thecut.media.widgets import MultipleFileInput
