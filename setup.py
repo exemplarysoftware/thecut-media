@@ -8,7 +8,7 @@ setup(name='thecut-media',
     version=get_git_version(),
     packages=find_packages(),
     include_package_data=True,
-    install_requires=['distribute', 'PIL==1.1.7',
+    install_requires=['distribute', 'pillow>=2.0.0',
         'sorl-thumbnail==11.12'],
     )
 
