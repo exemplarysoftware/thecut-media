@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
-from . import managers, querysets, receivers
+from . import fields, managers, querysets, receivers
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.utils.encoding import python_2_unicode_compatible
@@ -52,7 +52,7 @@ class AttachedMediaItem(OrderMixin, models.Model):
     # Generic relation to media object.
     content_type = models.ForeignKey('media.MediaContentType')
     object_id = models.IntegerField(db_index=True)
-    content_object = generic.GenericForeignKey('content_type', 'object_id')
+    content_object = fields.MediaForeignKey('content_type', 'object_id')
 
     # Generic relation to another object.
     parent_content_type = models.ForeignKey(
