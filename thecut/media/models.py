@@ -3,12 +3,12 @@ from __future__ import absolute_import, unicode_literals
 from . import managers, querysets, receivers
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
+from django.utils.encoding import python_2_unicode_compatible
 from django.db import models
 from model_utils.managers import PassThroughManager
 from taggit.managers import TaggableManager
 from thecut.ordering.models import OrderMixin
 from thecut.publishing.models import PublishableResource
-from thecut.publishing.utils import python_2_unicode_compatible
 
 
 @python_2_unicode_compatible
