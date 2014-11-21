@@ -12,5 +12,5 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=['djangorestframework>=2.3.13', 'python-magic>=0.4.6',
-                      'pillow>=2.0.0', 'sorl-thumbnail>=11.12,<12'],
+                      'pillow>=2.0.0', 'sorl-thumbnail>=11.12.1b,<12'],
 )
