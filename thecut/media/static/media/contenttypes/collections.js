@@ -6,9 +6,9 @@ define(['djangorestframework', 'contenttypes/models'], function (djangorestframe
 
     var ContentTypeCollection = djangorestframework.PageableCollection.extend({
 
-        model: models.ContentType,
+        comparator: 'order',
 
-	comparator: 'order',
+        model: models.ContentType,
 
         initialize: function (models, options) {
             this.url = options.url;
