@@ -3,10 +3,10 @@ from __future__ import absolute_import, unicode_literals
 from . import content_types, utils
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.utils import simplejson
 from sorl.thumbnail import get_thumbnail
 from thecut.media.models import AbstractMediaItem
 from urllib import urlencode, urlopen
+import json
 import re
 import warnings
 
@@ -244,7 +244,7 @@ class AbstractVimeoVideo(IsProcessedMixin, AbstractMediaItem):
     def api_data(self):
         if not self._api_data:
             self._api_data = self._get_api_data()
-        return simplejson.loads(self._api_data)[0]
+        return json.loads(self._api_data)[0]
 
     def _get_api_data(self):
         base_uri = 'http://vimeo.com/api/v2/'
@@ -256,7 +256,7 @@ class AbstractVimeoVideo(IsProcessedMixin, AbstractMediaItem):
     def oembed_data(self):
         if not self._oembed_data:
             self._oembed_data = self._get_oembed_data()
-        return simplejson.loads(self._oembed_data)
+        return json.loads(self._oembed_data)
 
     def _get_oembed_data(self):
         params = urlencode({'url': self.url})

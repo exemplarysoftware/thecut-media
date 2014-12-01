@@ -1,0 +1,81 @@
+{% load admin_urls %}
+<div class="attachedmediaitem manager" data-form-prefix="{{ inline_admin_formset.formset.prefix }}">
+
+  {% include "admin/edit_inline/stacked.html" %}
+
+  <div class="contenttypes" data-api-href="../media/api/contenttypes/"></div>
+
+
+  <div class="picker"></div>
+
+
+  <div class="attachments"></div>
+
+
+  <script data-name="contenttype_list" type="text/template">
+    <ol></ol>
+  </script>
+
+
+  <script data-name="contenttype_detail" type="text/template">
+    <%= verbose_name_plural %>
+  </script>
+
+
+  <script data-name="tag_detail" type="text/template">
+    <span class="button"><%= name %></span>
+  </script>
+
+
+  <script data-name="paginated_mediaitem_list" type="text/template">
+
+    <ul class="nav display controls">
+        <li class="button action open">Add from library</li>
+        <li class="button action close">Done</li>
+    </ul>
+
+    <ul class="filter controls">
+      <li><input type="search" value="" placeholder="" /></li>
+      <li><span class="button action reset">Clear</span></li>
+      <li>
+        <ul class="tags"></ul>
+      </li>
+    </ul>
+
+    <ol></ol>
+
+    <div class="pagination controls"></div>
+
+  </script>
+
+
+  <script data-name="pagination_controls" type="text/template">
+    <ul class="nav">
+      <% if (state.totalRecords) { %>
+        <li><% if (hasPreviousPage) { %><span class="button action previous">&lt;</span><% } else { %><span class="button disabled">&lt;</span><% } %></li>
+        <li><% if (hasNextPage) { %><span class="button action next">&gt;</span><% } else { %><span class="button disabled">&gt;</span><% } %></li>
+        <li class="status pages">Page <%= state.currentPage %> of <%= state.totalPages %>.</li>
+        <li class="status results">Showing <%= firstResultIndex %>-<%= lastResultIndex %> of <%= state.totalRecords %> items</li>
+      <% } %>
+    </ul>
+  </script>
+
+
+  <script data-name="mediaitem_list" type="text/template">
+    <ol></ol>
+  </script>
+
+
+  <script data-name="mediaitem_detail" type="text/template">
+    <% if (thumbnail) { %>
+      <div class="thumbnail">
+        <img src="<%= thumbnail %>" alt="<%= name %>" />
+        <% if (attachment) { %><span class="button action remove">Remove</span><% } else { %><span class="button action select">Add</span><% } %>
+      </div>
+    <% } %>
+    <div class="actions"><% if (attachment) { %><span class="button action remove">Remove</span><% } else { %><span class="button action select">Add</span><% } %></div>
+    <div class="name"><%= name %></div>
+  </script>
+
+
+</div>

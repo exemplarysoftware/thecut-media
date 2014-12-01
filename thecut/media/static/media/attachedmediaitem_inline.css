@@ -1,0 +1,697 @@
+
+/* General styles */
+
+.attachedmediaitem.manager {
+  position: relative;
+  margin: 0 0 30px 0;
+  background-color: #f3f3f3;
+  border-bottom: 1px solid #d8d8d8;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+  .attachedmediaitem.manager .button {
+    cursor: pointer;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+.attachedmediaitem.manager .inline-group,
+.attachedmediaitem.manager .inline-related,
+.attachedmediaitem.manager .add-row {
+  display: none;
+}
+
+
+/* Content type selection */
+
+.attachedmediaitem.manager .contenttypes {
+  margin: 0;
+  padding: 0 20px;
+  background-color: #ffffff;
+  border-bottom: solid 1px #d8d8d6;
+  font-size: 20px;
+  line-height: 1;
+}
+
+  .attachedmediaitem.manager .contenttypes ol {
+    display: block;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+  }
+
+  .attachedmediaitem.manager .contenttypes li {
+    display: inline-block;
+    height: 20px;
+    margin: 0 12px;
+    padding: 20px 4px;
+    border-bottom: 4px solid transparent;
+    cursor: pointer;
+  }
+
+  .attachedmediaitem.manager .contenttypes li.selected,
+  .attachedmediaitem.manager .contenttypes li:hover {
+    border-bottom-color: #41cbef;
+  }
+
+
+/* Media items */
+
+.attachedmediaitem.manager .attachments,
+.attachedmediaitem.manager .picker {
+  margin: 0;
+  padding: 0;
+}
+
+  .attachedmediaitem.manager .attachments ol,
+  .attachedmediaitem.manager .picker ol {
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    display: block;
+    list-style-type: none;
+  }
+
+    .attachedmediaitem.manager .attachments ol li,
+    .attachedmediaitem.manager .picker ol li {
+      display: inline-block;
+      width: 120px;
+      margin: 20px;
+      text-align: center;
+      vertical-align: bottom;
+    }
+
+      .attachedmediaitem.manager .attachments ol li > .actions,
+      .attachedmediaitem.manager .picker ol li > .actions {
+        display: none;
+        position: relative;
+      }
+
+        .attachedmediaitem.manager .attachments ol li > .actions .button,
+        .attachedmediaitem.manager .picker ol li > .actions .button {
+            display: inline-block;
+            box-sizing: border-box;
+            height: 24px;
+            width: 76px;
+            margin: 15px 0;
+            padding: 0;
+            background-color: #585c66;
+            background-image: none;
+            border-style: none;
+            border-radius: 12px;
+            line-height: 24px;
+            color: #ffffff;
+            text-align: center;
+            text-shadow: none;
+            text-transform: lowercase;
+          }
+
+        .attachedmediaitem.manager .picker ol li.attached > .actions:after {
+            content: "added";
+            display: inline-block;
+            position: absolute;
+            top: 0;
+            right: 0;
+            box-sizing: border-box;
+            height: 24px;
+            width: 76px;
+            margin: 15px 0;
+            padding: 0;
+            background-color: #585c66;
+            border-radius: 12px;
+            color: #ffffff;
+            line-height: 24px;
+            text-align: center;
+            text-shadow: none;
+            text-transform: lowercase;
+          }
+
+          .attachedmediaitem.manager .picker ol li.attached:hover > .actions:after {
+            display: none;
+          }
+
+          .attachedmediaitem.manager .picker ol li > .actions .button.action.select {
+            background-color: #70d715;
+          }
+
+          .attachedmediaitem.manager .attachments ol li > .actions .button.action.remove,
+          .attachedmediaitem.manager .picker ol li > .actions .button.action.remove {
+            background-color: #ca0114;
+          }
+
+      .attachedmediaitem.manager .attachments ol li .thumbnail,
+      .attachedmediaitem.manager .picker ol li .thumbnail {
+        display: inline-block;
+        position: relative;
+        overflow: hidden;
+        max-height: 120px;
+        max-width: 120px;
+        -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.125);
+        -moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.125);
+        box-shadow: 0px 0px 5px 0px rgba(0, 0, 50, 0.125);
+      }
+
+        .attachedmediaitem.manager .attachments ol li .thumbnail img,
+        .attachedmediaitem.manager .picker ol li .thumbnail img {
+          display: block;
+          box-sizing: border-box;
+          max-height: 120px;
+          max-width: 120px;
+          margin: 0 auto;
+          padding: 4px;
+          background-color: #ffffff;
+          background-image: none;
+          border: 1px solid #dcdcdc;
+        }
+
+        .attachedmediaitem.manager .attachments ol li .thumbnail .button,
+        .attachedmediaitem.manager .picker ol li .thumbnail .button {
+          position: absolute;
+          box-sizing: content-box;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          height: 100%;
+          width: 0;
+          margin: 0;
+          padding: 0 0 0 100%;
+          background-color: transparent;
+          background-image: none;
+          border-radius: 0;
+          border-style: none;
+          color: #ffffff;
+        }
+
+          .attachedmediaitem.manager .picker ol li.attached .button {
+            background-color: rgba(0,0,0,0.5);
+          }
+
+        .attachedmediaitem.manager .attachments ol li .thumbnail .button:after,
+        .attachedmediaitem.manager .picker ol li .thumbnail .button:after {
+          display: inline-block;
+          position: absolute;
+          box-sizing: border-box;
+          visibility: hidden;
+          top: 50%;
+          left: 50%;
+          height: 24px;
+          width: 76px;
+          margin: -12px 0 0 -38px;
+          padding: 0;
+          background-color: #585c66;
+          border-radius: 12px;
+          content: "";
+          line-height: 24px;
+          text-shadow: none;
+          text-transform: lowercase;
+        }
+
+          .attachedmediaitem.manager .attachments ol li .thumbnail:hover .button:after,
+          .attachedmediaitem.manager .picker ol li .thumbnail:hover .button:after {
+            visibility: visible;
+          }
+
+          .attachedmediaitem.manager .attachments ol li .thumbnail .button.action.select:after,
+          .attachedmediaitem.manager .picker ol li .thumbnail .button.action.select:after {
+            background-color: #70d715;
+            content: "add";
+          }
+
+          .attachedmediaitem.manager .picker ol li .thumbnail .button.action.remove:after {
+            visibility: visible;
+            content: "added";
+          }
+
+          .attachedmediaitem.manager .attachments ol li .thumbnail .button.action.remove:after,
+          .attachedmediaitem.manager .picker ol li .thumbnail:hover .button.action.remove:after {
+            background-color: #ca0114;
+            content: "remove";
+          }
+
+      .attachedmediaitem.manager .attachments ol li .name,
+      .attachedmediaitem.manager .picker ol li .name {
+        display: block;
+        overflow: hidden;
+        margin: 16px 0;
+        height: 50px;
+        font-size: 12px;
+        line-height: 16px;
+        text-overflow: clip ellipsis;
+      }
+
+
+
+
+
+/* Attachments region */
+.attachedmediaitem.manager .attachments {
+  margin: 0;
+  padding: 30px;
+}
+
+.attachedmediaitem.manager .attachments ol li .name {
+  cursor: grab;
+}
+
+
+
+
+
+/* Picker region */
+
+.attachedmediaitem.manager .picker {
+  position: relative;
+  max-width: 800px;
+  margin: 20px;
+  padding: 20px;
+  background-color: #ffffff;
+  border: 1px solid #e1e1e1;
+  border-radius: 4px;
+}
+
+  .attachedmediaitem.manager .picker ol {
+    height: 484px;  /* 2 'rows', prevents jumping of pagination controls */
+  }
+
+
+/* Open / close controls */
+
+  .attachedmediaitem.manager .picker .display.controls {
+    display: block;
+    margin: 0;
+    padding: 18px;
+    border: 1px dashed #d9d9d9;
+    list-style-type: none;
+    text-align: center;
+  }
+
+    .attachedmediaitem.manager .picker .display.controls li {
+      display: inline-block;
+    }
+
+    .attachedmediaitem.manager .picker .display.controls .close {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background-color: #70d715;
+      background-image: linear-gradient(#71d916, #63bf13);
+      border-color: #56a611;
+      color: #ffffff;
+    }
+
+      .attachedmediaitem.manager .picker .display.controls .close:active {
+        background-color: #4f980f;
+        background-image: linear-gradient(#4f980f, #59ac10);
+      }
+
+  /* When closed */
+  .attachedmediaitem.manager .picker .closed .filter.controls,
+  .attachedmediaitem.manager .picker .closed ol,
+  .attachedmediaitem.manager .picker .closed .pagination.controls,
+  .attachedmediaitem.manager .picker .closed .display.controls .close {
+    display: none;
+  }
+
+  /* When open */
+  .attachedmediaitem.manager .picker .opened .display.controls {
+    padding: 0;
+    border-style: none;
+  }
+
+ .attachedmediaitem.manager .picker .opened .display.controls .open {
+    display: none;
+  }
+
+
+/* Filters */
+
+.attachedmediaitem.manager .filter {
+  display: block;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  list-style-type: none;
+}
+
+  .attachedmediaitem.manager .filter:before {
+    display: block;
+    margin: 5px;
+    content: "Search library";
+    color: #636773;
+    font-size: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  .attachedmediaitem.manager .filter > li {
+    display: block;
+    float: left;
+    margin: 0 20px 0 0;
+  }
+
+  .attachedmediaitem.manager .filter > li:last-child {
+    float: right;
+    width: 410px;
+  }
+
+  .attachedmediaitem.manager .filter .action.reset {
+    display: none;
+  }
+
+  .attachedmediaitem.manager .filtered .filter .action.reset {
+    display: inline-block;
+  }
+
+
+
+
+/* Tags */
+
+.attachedmediaitem.manager .tags {
+  display: block;
+  overflow: hidden;
+  margin: -21px -20px 0 0;
+  list-style-type: none;
+}
+
+  .attachedmediaitem.manager .tags:before {
+    display: block;
+    margin: 5px;
+    content: "Filter by tags";
+    color: #636773;
+    font-size: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  .attachedmediaitem.manager .tags > li {
+    display: inline-block;
+    margin: 5px;
+    padding: 0;
+  }
+
+  .attachedmediaitem.manager .tags .button {
+    display: inline-block;
+    position: relative;
+    height: auto;
+    margin: 0 0 0 11px;
+    padding: 4px 12px;
+    background-color: #e5e6e8;
+    background-image: none;
+    border-style: none;
+    border-radius: 0 4px 4px 0;
+    color: #66696e;
+    font-size: 10px;
+    line-height: 14px;
+    text-shadow: none;
+  }
+
+  .attachedmediaitem.manager .tags .button:before {
+    display: block;
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -22px;
+    height: 0;
+    width: 0;
+    border: 11px solid transparent;
+    border-right: 11px solid #e5e6e8;
+  }
+
+  .attachedmediaitem.manager .tags .button:after {
+    display: block;
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    height: 4px;
+    width: 4px;
+    margin: -2px 0 0 0;
+    background-color: #ffffff;
+    border-radius: 2px;
+  }
+
+  .attachedmediaitem.manager .tags .selected {
+    font-weight: bold;
+  }
+
+
+
+/* Pagination */
+
+.attachedmediaitem.manager .pagination {
+  color: #767676;
+}
+
+  .attachedmediaitem.manager .pagination .nav {
+    display: block;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    list-style-type: none;
+  }
+
+    .attachedmediaitem.manager .pagination .nav li {
+      display: inline-block;
+      margin: 0 15px 0 0;
+      font-size: 12px;
+      line-height: 12px;
+    }
+
+  .attachedmediaitem.manager .pagination .status.pages {
+     display: none;
+  }
+
+  .attachedmediaitem.manager .pagination .button {
+    display: inline-block;
+    height: auto;
+    margin: 0;
+    padding: 7px 14px;
+    background-color: transparent;
+    background-image: none;
+    border: 2px solid #636773;
+    border-radius: 4px;
+    color: #636773;
+    font-size: 12px;
+    line-height: 12px;
+    text-shadow: none;
+  }
+
+    .attachedmediaitem.manager .pagination .button.disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+
+
+
+/* Dropzone */
+
+.attachedmediaitem.manager .dz-drag-hover,
+.attachedmediaitem.manager .dz-started {
+  position: relative;
+}
+
+.attachedmediaitem.manager .dz-drag-hover:before,
+.attachedmediaitem.manager .dz-started:before,
+.attachedmediaitem.manager .dz-drag-hover:after,
+.attachedmediaitem.manager .dz-started:after {
+  display: block;
+  content: "";
+  position: absolute;
+  z-index: 9999;
+  top: 50%;
+  left: 50%;
+  height: 300px;
+  width: 300px;
+  margin: -150px 0 0 -150px;
+  color: #ffffff;
+  line-height: 300px;
+  font-size: 26px;
+  text-align: center;
+}
+
+.attachedmediaitem.manager .dz-drag-hover:after,
+.attachedmediaitem.manager .dz-started:after {
+  z-index: 9998;
+  background-color: #585c66;
+  border-radius: 150px;
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.125);
+  -moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.125);
+  box-shadow: 0px 0px 5px 0px rgba(0, 0, 50, 0.125);
+}
+
+.attachedmediaitem.manager .dz-started:before {
+  content: "Uploading...";
+}
+
+.attachedmediaitem.manager .dz-drag-hover:before {
+  content: "Drop to upload";
+}
+
+.attachedmediaitem.manager .dz-drag-hover:after {
+  background-color: #4f980f;
+}
+
+.attachedmediaitem.manager .dz-drag-hover > *,
+.attachedmediaitem.manager .dz-started > * {
+  opacity: 0.5;
+}
+
+.attachedmediaitem.manager .dz-started,
+.attachedmediaitem.manager .dz-started * {
+  cursor: progress;
+}
+
+.attachedmediaitem.manager .dz-preview {
+  display: none;
+}
+
+.attachedmediaitem.manager .dz-drag-hover:after,
+.attachedmediaitem.manager .dz-started:after {
+  -webkit-animation: pulse2 1s ease infinite;
+  -moz-animation: pulse2 1s ease infinite;
+  -ms-animation: pulse2 1s ease infinite;
+  animation: pulse2 1s ease infinite;
+}
+
+
+@keyframes "pulse2" {
+  0% {
+    -webkit-transform: scale(1);
+    -moz-transform: scale(1);
+    -o-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
+  }
+  50% {
+    -webkit-transform: scale(1.05);
+    -moz-transform: scale(1.05);
+    -o-transform: scale(1.05);
+    -ms-transform: scale(1.05);
+    transform: scale(1.05);
+  }
+  100% {
+    -webkit-transform: scale(1);
+    -moz-transform: scale(1);
+    -o-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
+@-moz-keyframes pulse2 {
+  0% {
+    -moz-transform: scale(1);
+    transform: scale(1);
+  }
+  50% {
+    -moz-transform: scale(1.05);
+    transform: scale(1.05);
+  }
+  100% {
+    -moz-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
+@-webkit-keyframes "pulse2" {
+  0% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+  50% {
+    -webkit-transform: scale(1.05);
+    transform: scale(1.05);
+  }
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
+@-ms-keyframes "pulse2" {
+  0% {
+    -ms-transform: scale(1);
+    transform: scale(1);
+  }
+  50% {
+    -ms-transform: scale(1.05);
+    transform: scale(1.05);
+  }
+  100% {
+    -ms-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+/* File (no thumbnail) style layout */
+
+.attachedmediaitem.manager[data-contenttype="documents"] .picker ol {
+  margin: 30px 0;
+  height: 551px;
+}
+
+.attachedmediaitem.manager[data-contenttype="documents"] .attachments ol li,
+.attachedmediaitem.manager[data-contenttype="documents"] .picker ol li {
+  display: block;
+  width: auto;
+  margin: 0;
+  padding: 0;
+  border-bottom: 1px solid #d9d9d9;
+  text-align: left;
+}
+
+  .attachedmediaitem.manager[data-contenttype="documents"] .attachments ol li:first-child,
+  .attachedmediaitem.manager[data-contenttype="documents"] .picker ol li:first-child {
+    border-top: 1px solid #d9d9d9;
+  }
+
+  .attachedmediaitem.manager[data-contenttype="documents"] .attachments ol li > .actions,
+  .attachedmediaitem.manager[data-contenttype="documents"] .picker ol li > .actions {
+    display: block;
+    float: right;
+  }
+
+    .attachedmediaitem.manager[data-contenttype="documents"] .attachments ol li > .actions .remove,
+    .attachedmediaitem.manager[data-contenttype="documents"] .picker ol li > .actions .remove {
+      display: none;
+    }
+
+    .attachedmediaitem.manager[data-contenttype="documents"] .attachments ol li:hover > .actions .remove,
+    .attachedmediaitem.manager[data-contenttype="documents"] .picker ol li:hover > .actions .remove {
+      display: block;
+    }
+
+  .attachedmediaitem.manager[data-contenttype="documents"] .attachments ol li .thumbnail,
+  .attachedmediaitem.manager[data-contenttype="documents"] .picker ol li .thumbnail {
+    display: none;
+  }
+
+  .attachedmediaitem.manager[data-contenttype="documents"] .attachments ol li .name,
+  .attachedmediaitem.manager[data-contenttype="documents"] .picker ol li .name {
+        display: block;
+        overflow: hidden;
+        margin: 0;
+        padding: 15px 0;
+        height: auto;
+        line-height: 24px;
+  }
+
+    .attachedmediaitem.manager[data-contenttype="documents"] .picker ol li.attached .name {
+      opacity: 0.5;
+    }

@@ -9,6 +9,11 @@ try:
 except ImportError:
     ExifTool = False
 
+
+USE_S3UPLOAD = 's3upload' in settings.INSTALLED_APPS and getattr(
+    settings, 'MEDIASOURCES_USE_S3UPLOAD', True)
+
+
 USE_EXIFTOOL = ExifTool and getattr(settings, 'MEDIASOURCES_USE_EXIFTOOL',
                                     True)
 

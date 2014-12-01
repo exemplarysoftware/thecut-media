@@ -1,29 +1,21 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+from . import settings
+from ..utils import get_preview_thumbnail
+from .forms import (AudioAdminForm, DocumentAdminForm, ImageAdminForm,
+                    VideoAdminForm, YoutubeVideoAdminForm, VimeoVideoAdminForm)
+from .models import Audio, Document, Image, Video, YoutubeVideo, VimeoVideo
+from .views import UploadView
 from django.contrib import admin
-from sorl.thumbnail import get_thumbnail
+from django.utils.functional import LazyObject
 from thecut.authorship.admin import AuthorshipMixin
-from thecut.media import settings
-from thecut.media.mediasources.forms import (
-    AudioAdminForm, DocumentAdminForm, ImageAdminForm, VideoAdminForm,
-    YoutubeVideoAdminForm, VimeoVideoAdminForm)
-from thecut.media.mediasources.models import (Audio, Document, Image, Video,
-                                              YoutubeVideo, VimeoVideo)
-from thecut.media.mediasources.views import UploadView
-
-
-def conditionally_register(model, adminclass):
-    """Register model with admin site if it is in MEDIA_SOURCES."""
-    if 'thecut.media.mediasources.models.{0}'.format(model.__name__) in \
-            settings.MEDIA_SOURCES:
-        admin.site.register(model, adminclass)
 
 
 def preview_image(obj):
     html = ''
     if hasattr(obj, 'get_image'):
         try:
-            thumb = get_thumbnail(obj.get_image(), '100x75')
+            thumb = get_preview_thumbnail(obj.get_image())
         except:
             pass
         else:
@@ -34,16 +26,36 @@ preview_image.short_description = 'Preview'
 preview_image.allow_tags = True
 
 
+class AdminMediaMixin(object):
+
+    class Media(object):
+        css = {'all': ['media/mediasources/image-preview.css']}
+
+
 class MediaUploadMixin(object):
 
     def add_view(self, request, form_url='', extra_context=None):
+        field = self.model._meta.get_field_by_name('file')[0]
+
         view = UploadView.as_view()
+        if settings.USE_S3UPLOAD:
+            from .views.dropzone import DropzoneUploadView
+            from storages.backends.s3boto import S3BotoStorage
+            storage = field.storage
+            if isinstance(storage, LazyObject):
+                # Unwrap lazy storage
+                storage._setup()
+                storage = storage._wrapped
+            if isinstance(storage, S3BotoStorage):
+                view = DropzoneUploadView.as_view()
+
         response = view(request, admin=self)
         return hasattr(response, 'render') and callable(response.render) and \
             response.render() or response
 
 
-class AudioAdmin(MediaUploadMixin, AuthorshipMixin, admin.ModelAdmin):
+class AudioAdmin(MediaUploadMixin, AuthorshipMixin, AdminMediaMixin,
+                 admin.ModelAdmin):
 
     fieldsets = (
         (None, {'fields': ('file', 'title', 'caption', 'content', 'tags')}),
@@ -60,10 +72,11 @@ class AudioAdmin(MediaUploadMixin, AuthorshipMixin, admin.ModelAdmin):
     readonly_fields = ('created_at', 'created_by', 'updated_at', 'updated_by')
     search_fields = ('title',)
 
-conditionally_register(Audio, AudioAdmin)
+admin.site.register(Audio, AudioAdmin)
 
 
-class DocumentAdmin(MediaUploadMixin, AuthorshipMixin, admin.ModelAdmin):
+class DocumentAdmin(MediaUploadMixin, AuthorshipMixin, AdminMediaMixin,
+                    admin.ModelAdmin):
 
     fieldsets = (
         (None, {'fields': ('file', 'title', 'caption', 'content', 'tags')}),
@@ -80,10 +93,11 @@ class DocumentAdmin(MediaUploadMixin, AuthorshipMixin, admin.ModelAdmin):
     readonly_fields = ('created_at', 'created_by', 'updated_at', 'updated_by')
     search_fields = ('title',)
 
-conditionally_register(Document, DocumentAdmin)
+admin.site.register(Document, DocumentAdmin)
 
 
-class ImageAdmin(MediaUploadMixin, AuthorshipMixin, admin.ModelAdmin):
+class ImageAdmin(MediaUploadMixin, AuthorshipMixin, AdminMediaMixin,
+                 admin.ModelAdmin):
 
     fieldsets = (
         (None, {'fields': ('file', 'title', 'caption', 'content', 'tags')}),
@@ -100,10 +114,11 @@ class ImageAdmin(MediaUploadMixin, AuthorshipMixin, admin.ModelAdmin):
     readonly_fields = ('created_at', 'created_by', 'updated_at', 'updated_by')
     search_fields = ('title',)
 
-conditionally_register(Image, ImageAdmin)
+admin.site.register(Image, ImageAdmin)
 
 
-class VideoAdmin(MediaUploadMixin, AuthorshipMixin, admin.ModelAdmin):
+class VideoAdmin(MediaUploadMixin, AuthorshipMixin, AdminMediaMixin,
+                 admin.ModelAdmin):
 
     fieldsets = (
         (None, {'fields': ('file', 'title', 'caption', 'content', 'tags')}),
@@ -120,10 +135,10 @@ class VideoAdmin(MediaUploadMixin, AuthorshipMixin, admin.ModelAdmin):
     readonly_fields = ('created_at', 'created_by', 'updated_at', 'updated_by')
     search_fields = ('title',)
 
-conditionally_register(Video, VideoAdmin)
+admin.site.register(Video, VideoAdmin)
 
 
-class YoutubeVideoAdmin(AuthorshipMixin, admin.ModelAdmin):
+class YoutubeVideoAdmin(AuthorshipMixin, AdminMediaMixin, admin.ModelAdmin):
 
     fieldsets = (
         (None, {'fields': ('url', 'title', 'caption', 'content', 'tags')}),
@@ -140,10 +155,10 @@ class YoutubeVideoAdmin(AuthorshipMixin, admin.ModelAdmin):
     readonly_fields = ('created_at', 'created_by', 'updated_at', 'updated_by')
     search_fields = ('title',)
 
-conditionally_register(YoutubeVideo, YoutubeVideoAdmin)
+admin.site.register(YoutubeVideo, YoutubeVideoAdmin)
 
 
-class VimeoVideoAdmin(AuthorshipMixin, admin.ModelAdmin):
+class VimeoVideoAdmin(AuthorshipMixin, AdminMediaMixin, admin.ModelAdmin):
 
     fieldsets = (
         (None, {'fields': ('url', 'title', 'caption', 'content', 'tags')}),
@@ -160,4 +175,4 @@ class VimeoVideoAdmin(AuthorshipMixin, admin.ModelAdmin):
     readonly_fields = ('created_at', 'created_by', 'updated_at', 'updated_by')
     search_fields = ('title',)
 
-conditionally_register(VimeoVideo, VimeoVideoAdmin)
+admin.site.register(VimeoVideo, VimeoVideoAdmin)

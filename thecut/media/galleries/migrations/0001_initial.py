@@ -1,110 +1,118 @@
-# encoding: utf-8
-import datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
-from thecut.authorship.settings import AUTH_USER_MODEL
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 
-class Migration(SchemaMigration):
-
-    def forwards(self, orm):
-
-        # Adding model 'Gallery'
-        db.create_table('galleries_gallery', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('is_enabled', self.gf('django.db.models.fields.BooleanField')(default=True)),
-            ('is_featured', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('publish_at', self.gf('django.db.models.fields.DateTimeField')()),
-            ('expire_at', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
-            ('publish_by', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='gallery_publish_by_user', null=True, to=orm[AUTH_USER_MODEL])),
-            ('created_at', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('created_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='gallery_created_by_user', to=orm[AUTH_USER_MODEL])),
-            ('updated_at', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-            ('updated_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='gallery_updated_by_user', to=orm[AUTH_USER_MODEL])),
-            ('title', self.gf('django.db.models.fields.CharField')(max_length=200)),
-            ('headline', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
-            ('content', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
-            ('featured_content', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
-            ('is_indexable', self.gf('django.db.models.fields.BooleanField')(default=True)),
-            ('meta_description', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
-            ('tags', self.gf('tagging.fields.TagField')(null=True)),
-            ('template', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
-            ('slug', self.gf('django.db.models.fields.SlugField')(unique=True, max_length=50, db_index=True)),
-        ))
-        db.send_create_signal('galleries', ['Gallery'])
-
-        # Adding M2M table for field sites on 'Gallery'
-        db.create_table('galleries_gallery_sites', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('gallery', models.ForeignKey(orm['galleries.gallery'], null=False)),
-            ('site', models.ForeignKey(orm['sites.site'], null=False))
-        ))
-        db.create_unique('galleries_gallery_sites', ['gallery_id', 'site_id'])
+from django.db import models, migrations
+import django.utils.timezone
+from django.conf import settings
+import taggit.managers
+import thecut.publishing.models
 
 
-    def backwards(self, orm):
+class Migration(migrations.Migration):
 
-        # Deleting model 'Gallery'
-        db.delete_table('galleries_gallery')
+    dependencies = [
+        ('taggit', '0001_initial'),
+        ('sites', '0001_initial'),
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+    ]
 
-        # Removing M2M table for field sites on 'Gallery'
-        db.delete_table('galleries_gallery_sites')
-
-
-    models = {
-        'auth.group': {
-            'Meta': {'object_name': 'Group'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80'}),
-            'permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'})
-        },
-        'auth.permission': {
-            'Meta': {'ordering': "('content_type__app_label', 'content_type__model', 'codename')", 'unique_together': "(('content_type', 'codename'),)", 'object_name': 'Permission'},
-            'codename': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        },
-        AUTH_USER_MODEL: {
-            'Meta': {'object_name': AUTH_USER_MODEL.split('.')[-1]},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
-        },
-        'contenttypes.contenttype': {
-            'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
-            'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        'galleries.gallery': {
-            'Meta': {'ordering': "['-publish_at', 'title']", 'object_name': 'Gallery'},
-            'content': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'gallery_created_by_user'", 'to': "orm['{0}']".format(AUTH_USER_MODEL)}),
-            'expire_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'featured_content': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'headline': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_enabled': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'is_featured': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'is_indexable': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'meta_description': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
-            'publish_at': ('django.db.models.fields.DateTimeField', [], {}),
-            'publish_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'gallery_publish_by_user'", 'null': 'True', 'to': "orm['{0}']".format(AUTH_USER_MODEL)}),
-            'sites': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['sites.Site']", 'null': 'True', 'blank': 'True'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '50', 'db_index': 'True'}),
-            'tags': ('tagging.fields.TagField', [], {'null': 'True'}),
-            'template': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
-            'updated_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'updated_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'gallery_updated_by_user'", 'to': "orm['{0}']".format(AUTH_USER_MODEL)})
-        },
-        'sites.site': {
-            'Meta': {'ordering': "('domain',)", 'object_name': 'Site', 'db_table': "'django_site'"},
-            'domain': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        }
-    }
-
-    complete_apps = ['galleries']
+    operations = [
+        migrations.CreateModel(
+            name='Gallery',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('updated_at', models.DateTimeField(auto_now=True)),
+                ('is_enabled', models.BooleanField(default=True, db_index=True, verbose_name='enabled')),
+                ('is_featured', models.BooleanField(default=False, db_index=True, verbose_name='featured')),
+                ('publish_at', models.DateTimeField(default=django.utils.timezone.now, help_text='This item will only be viewable on the website if it is enabled, and this date and time has past.', verbose_name='publish date & time', db_index=True)),
+                ('expire_at', models.DateTimeField(help_text='This item will no longer be viewable on the website if this date and time has past. Leave blank if you do not wish this item to expire.', null=True, verbose_name='expiry date & time', db_index=True, blank=True)),
+                ('title', models.CharField(max_length=200)),
+                ('headline', models.CharField(default='', max_length=200, blank=True)),
+                ('content', models.TextField(default='', blank=True)),
+                ('featured_content', models.TextField(default='', blank=True)),
+                ('is_indexable', models.BooleanField(default=True, help_text='Should this page be indexed by search engines?', db_index=True, verbose_name='indexable')),
+                ('meta_description', models.CharField(default='', help_text='Optional short description for use by search engines.', max_length=200, blank=True)),
+                ('template', models.CharField(default='', help_text='Example: "app/model_detail.html".', max_length=100, blank=True)),
+                ('slug', models.SlugField()),
+            ],
+            options={
+                'ordering': ('-publish_at', 'title'),
+                'abstract': False,
+                'get_latest_by': 'publish_at',
+                'verbose_name_plural': 'galleries',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='GalleryCategory',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('updated_at', models.DateTimeField(auto_now=True)),
+                ('is_enabled', models.BooleanField(default=True, db_index=True, verbose_name='enabled')),
+                ('is_featured', models.BooleanField(default=False, db_index=True, verbose_name='featured')),
+                ('publish_at', models.DateTimeField(default=django.utils.timezone.now, help_text='This item will only be viewable on the website if it is enabled, and this date and time has past.', verbose_name='publish date & time', db_index=True)),
+                ('expire_at', models.DateTimeField(help_text='This item will no longer be viewable on the website if this date and time has past. Leave blank if you do not wish this item to expire.', null=True, verbose_name='expiry date & time', db_index=True, blank=True)),
+                ('title', models.CharField(max_length=200)),
+                ('headline', models.CharField(default='', max_length=200, blank=True)),
+                ('content', models.TextField(default='', blank=True)),
+                ('featured_content', models.TextField(default='', blank=True)),
+                ('is_indexable', models.BooleanField(default=True, help_text='Should this page be indexed by search engines?', db_index=True, verbose_name='indexable')),
+                ('meta_description', models.CharField(default='', help_text='Optional short description for use by search engines.', max_length=200, blank=True)),
+                ('template', models.CharField(default='', help_text='Example: "app/model_detail.html".', max_length=100, blank=True)),
+                ('slug', models.SlugField(unique=True)),
+                ('created_by', models.ForeignKey(related_name='+', editable=False, to=settings.AUTH_USER_MODEL)),
+                ('publish_by', models.ForeignKey(related_name='+', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+                ('tags', taggit.managers.TaggableManager(to='taggit.Tag', through='taggit.TaggedItem', blank=True, help_text='A comma-separated list of tags.', verbose_name='Tags')),
+                ('updated_by', models.ForeignKey(related_name='+', editable=False, to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+                'ordering': ('title',),
+                'abstract': False,
+                'get_latest_by': 'publish_at',
+                'verbose_name_plural': 'gallery categories',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.AddField(
+            model_name='gallery',
+            name='categories',
+            field=models.ManyToManyField(related_name='galleries', null=True, to='galleries.GalleryCategory', blank=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='gallery',
+            name='created_by',
+            field=models.ForeignKey(related_name='+', editable=False, to=settings.AUTH_USER_MODEL),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='gallery',
+            name='publish_by',
+            field=models.ForeignKey(related_name='+', blank=True, to=settings.AUTH_USER_MODEL, null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='gallery',
+            name='site',
+            field=models.ForeignKey(default=thecut.publishing.models.get_current_site, to='sites.Site'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='gallery',
+            name='tags',
+            field=taggit.managers.TaggableManager(to='taggit.Tag', through='taggit.TaggedItem', blank=True, help_text='A comma-separated list of tags.', verbose_name='Tags'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='gallery',
+            name='updated_by',
+            field=models.ForeignKey(related_name='+', editable=False, to=settings.AUTH_USER_MODEL),
+            preserve_default=True,
+        ),
+        migrations.AlterUniqueTogether(
+            name='gallery',
+            unique_together=set([('site', 'slug')]),
+        ),
+    ]

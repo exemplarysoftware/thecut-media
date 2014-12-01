@@ -1,48 +1,44 @@
-# encoding: utf-8
-import datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 
-class Migration(SchemaMigration):
-
-    def forwards(self, orm):
-        
-        # Adding model 'AttachedMediaItem'
-        db.create_table('media_attachedmediaitem', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('order', self.gf('django.db.models.fields.PositiveIntegerField')(default=0)),
-            ('content_type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['contenttypes.ContentType'])),
-            ('object_id', self.gf('django.db.models.fields.IntegerField')()),
-            ('parent_content_type', self.gf('django.db.models.fields.related.ForeignKey')(related_name='attachedmediaitem_parent_set', to=orm['contenttypes.ContentType'])),
-            ('parent_object_id', self.gf('django.db.models.fields.IntegerField')()),
-        ))
-        db.send_create_signal('media', ['AttachedMediaItem'])
+from django.db import models, migrations
 
 
-    def backwards(self, orm):
-        
-        # Deleting model 'AttachedMediaItem'
-        db.delete_table('media_attachedmediaitem')
+class Migration(migrations.Migration):
 
+    dependencies = [
+        ('contenttypes', '0001_initial'),
+    ]
 
-    models = {
-        'contenttypes.contenttype': {
-            'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
-            'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        'media.attachedmediaitem': {
-            'Meta': {'ordering': "['order']", 'object_name': 'AttachedMediaItem'},
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'object_id': ('django.db.models.fields.IntegerField', [], {}),
-            'order': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'}),
-            'parent_content_type': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'attachedmediaitem_parent_set'", 'to': "orm['contenttypes.ContentType']"}),
-            'parent_object_id': ('django.db.models.fields.IntegerField', [], {})
-        }
-    }
-
-    complete_apps = ['media']
+    operations = [
+        migrations.CreateModel(
+            name='AttachedMediaItem',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('order', models.PositiveIntegerField(default=0)),
+                ('object_id', models.IntegerField(db_index=True)),
+                ('parent_object_id', models.IntegerField(db_index=True)),
+                ('parent_content_type', models.ForeignKey(related_name='attachedmediaitem_parent_set', to='contenttypes.ContentType')),
+            ],
+            options={
+                'ordering': ('order',),
+                'abstract': False,
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='MediaContentType',
+            fields=[
+            ],
+            options={
+                'proxy': True,
+            },
+            bases=('contenttypes.contenttype',),
+        ),
+        migrations.AddField(
+            model_name='attachedmediaitem',
+            name='content_type',
+            field=models.ForeignKey(to='media.MediaContentType'),
+            preserve_default=True,
+        ),
+    ]
