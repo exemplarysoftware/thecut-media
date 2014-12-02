@@ -35,7 +35,6 @@ class MediaContentTypeManager(ContentTypeManager):
                                             model=model._meta.model_name)
                                           for model in models))
             queryset = queryset.filter(query)
-            bool(queryset)  # Force evaluation
             MediaContentTypeManager._queryset = queryset
 
         return MediaContentTypeManager._queryset
