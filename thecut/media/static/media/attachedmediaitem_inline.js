@@ -1,6 +1,7 @@
 var attachedMediaItemRequire = requirejs.config({
 
-    baseUrl: '/static/media',
+    baseUrl: window.__admin_media_prefix__ + '/../media',
+
     context: 'attachedmediaitem',
 
     paths: {
