@@ -1,6 +1,6 @@
 var attachedMediaItemRequire = requirejs.config({
 
-    baseUrl: window.__admin_media_prefix__ + '/../media',
+    baseUrl: document.querySelector('script[src$="/media/lib/require.js"][data-baseUrl]').getAttribute('data-baseUrl'),
 
     context: 'attachedmediaitem',
 

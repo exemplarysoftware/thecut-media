@@ -8,7 +8,6 @@ class AttachedMediaItemInlineForm(forms.ModelForm):
 
     class Media(object):
         css = {'all': ['media/attachedmediaitem_inline.css']}
-        js = ['media/lib/require.js', 'media/attachedmediaitem_inline.js']
 
     class Meta(object):
         fields = ['order', 'content_type', 'object_id']

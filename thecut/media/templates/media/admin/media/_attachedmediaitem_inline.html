@@ -1,5 +1,5 @@
 {% load admin_urls admin_static %}
-<div class="attachedmediaitem manager" data-form-prefix="{{ inline_admin_formset.formset.prefix }}" data-baseUrl="{% static "media/" %}">
+<div class="attachedmediaitem manager" data-form-prefix="{{ inline_admin_formset.formset.prefix }}">
 
   {% include "admin/edit_inline/stacked.html" %}
 
@@ -79,3 +79,6 @@
 
 
 </div>
+
+<script src="{% static "media/lib/require.js" %}" type="text/javascript" data-baseUrl="{% static "media/" %}"></script>
+<script src="{% static "media/attachedmediaitem_inline.js" %}" type="text/javascript"></script>
