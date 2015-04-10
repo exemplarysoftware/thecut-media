@@ -13,18 +13,24 @@ from thecut.ordering.forms import OrderMixin
 class AudioAdminForm(OrderMixin, forms.ModelForm):
 
     class Meta(object):
+        fields = ['caption', 'content', 'expire_at', 'file', 'is_enabled',
+                  'is_featured', 'tags', 'title', 'publish_at', 'publish_by']
         model = Audio
 
 
 class DocumentAdminForm(OrderMixin, forms.ModelForm):
 
     class Meta(object):
+        fields = ['caption', 'content', 'expire_at', 'file', 'is_enabled',
+                  'is_featured', 'tags', 'title', 'publish_at', 'publish_by']
         model = Document
 
 
 class ImageAdminForm(OrderMixin, forms.ModelForm):
 
     class Meta(object):
+        fields = ['caption', 'content', 'expire_at', 'file', 'is_enabled',
+                  'is_featured', 'tags', 'title', 'publish_at', 'publish_by']
         model = Image
         widgets = {'file': AdminImageWidget}
 
@@ -32,6 +38,8 @@ class ImageAdminForm(OrderMixin, forms.ModelForm):
 class VideoAdminForm(OrderMixin, forms.ModelForm):
 
     class Meta(object):
+        fields = ['caption', 'content', 'expire_at', 'file', 'is_enabled',
+                  'is_featured', 'tags', 'title', 'publish_at', 'publish_by']
         model = Video
         widgets = {'file': AdminImageWidget}
 
@@ -39,12 +47,18 @@ class VideoAdminForm(OrderMixin, forms.ModelForm):
 class YoutubeVideoAdminForm(OrderMixin, forms.ModelForm):
 
     class Meta(object):
+        fields = ['caption', 'content', 'expire_at', 'is_enabled',
+                  'is_featured', 'tags', 'title', 'publish_at', 'publish_by',
+                  'url']
         model = YoutubeVideo
 
 
 class VimeoVideoAdminForm(OrderMixin, forms.ModelForm):
 
     class Meta(object):
+        fields = ['caption', 'content', 'expire_at', 'is_enabled',
+                  'is_featured', 'tags', 'title', 'publish_at', 'publish_by',
+                  'url']
         model = VimeoVideo
 
     def __init__(self, *args, **kwargs):
