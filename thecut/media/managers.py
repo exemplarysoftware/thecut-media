@@ -25,8 +25,8 @@ class MediaContentTypeManager(ContentTypeManager):
         return self.filter(query)
 
     def get_queryset(self, *args, **kwargs):
-        queryset = super(MediaContentTypeManager, self).get_query_set(*args,
-                                                                      **kwargs)
+        queryset = super(MediaContentTypeManager, self).get_queryset(*args,
+                                                                     **kwargs)
 
         # Evaluate the queryset and store it on the class
         if MediaContentTypeManager._queryset is None:
