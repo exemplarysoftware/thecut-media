@@ -1,0 +1,11 @@
+.image-preview {
+  display: inline-block;
+  width: 240px;
+}
+
+.image-preview img {
+  display: block;
+  margin: 0 auto;
+  max-width: 240px;
+  max-height: 240px;
+}

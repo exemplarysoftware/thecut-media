@@ -1,29 +1,46 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+from . import fields, managers, querysets, receivers
 from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.models import ContentType
+from django.utils.encoding import python_2_unicode_compatible
 from django.db import models
 from model_utils.managers import PassThroughManager
 from taggit.managers import TaggableManager
-from thecut.media import querysets, receivers
 from thecut.ordering.models import OrderMixin
 from thecut.publishing.models import PublishableResource
-from thecut.publishing.utils import python_2_unicode_compatible
+
+
+@python_2_unicode_compatible
+class MediaContentType(ContentType):
+
+    objects = managers.MediaContentTypeManager()
+
+    class Meta(object):
+        proxy = True
+
+    def __str__(self):
+        return self.name.title()
 
 
 @python_2_unicode_compatible
 class AbstractMediaItem(PublishableResource):
 
     title = models.CharField(max_length=200, db_index=True)
+
     caption = models.TextField(blank=True, default='')
+
     content = models.TextField(blank=True, default='')
+
     tags = TaggableManager(blank=True)
+
     attachments = generic.GenericRelation('media.AttachedMediaItem',
                                           content_type_field='content_type',
                                           object_id_field='object_id')
 
     class Meta(PublishableResource.Meta):
         abstract = True
-        ordering = ('-created_at',)
+        ordering = ['-created_at']
 
     def __str__(self):
         return self.title
@@ -33,9 +50,9 @@ class AbstractMediaItem(PublishableResource):
 class AttachedMediaItem(OrderMixin, models.Model):
 
     # Generic relation to media object.
-    content_type = models.ForeignKey('contenttypes.ContentType')
+    content_type = models.ForeignKey('media.MediaContentType')
     object_id = models.IntegerField(db_index=True)
-    content_object = generic.GenericForeignKey('content_type', 'object_id')
+    content_object = fields.MediaForeignKey('content_type', 'object_id')
 
     # Generic relation to another object.
     parent_content_type = models.ForeignKey(
