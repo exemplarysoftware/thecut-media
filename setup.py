@@ -11,6 +11,6 @@ setup(
     version=get_git_version(),
     packages=find_packages(),
     include_package_data=True,
-    install_requires=['djangorestframework>=2.3.13,<3', 'python-magic>=0.4.6',
+    install_requires=['djangorestframework>=3.1.1,<4', 'python-magic>=0.4.6',
                       'pillow>=2.8.1,<3', 'sorl-thumbnail>=12.2,<12.3'],
 )

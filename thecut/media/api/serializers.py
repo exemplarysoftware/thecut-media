@@ -6,9 +6,8 @@ from ..mediasources.settings import USE_S3UPLOAD
 from ..models import MediaContentType
 from django.core.urlresolvers import NoReverseMatch
 from django.utils.datastructures import SortedDict
-from rest_framework import pagination, serializers
+from rest_framework import serializers
 from rest_framework.reverse import reverse
-from taggit.models import Tag
 
 
 class BaseFileUpload(object):
@@ -113,24 +112,22 @@ class DropzoneFileUpload(BaseFileUpload):
 
 class ContentTypeSerializer(serializers.HyperlinkedModelSerializer):
 
-    id = serializers.Field(source='pk')
+    id = serializers.ReadOnlyField(source='pk')
 
-    url = serializers.SerializerMethodField('get_url')
+    url = serializers.SerializerMethodField()
 
     objects = serializers.SerializerMethodField('get_objects_url')
 
-    verbose_name = serializers.SerializerMethodField('get_verbose_name')
+    verbose_name = serializers.SerializerMethodField()
 
-    verbose_name_plural = serializers.SerializerMethodField(
-        'get_verbose_name_plural')
+    verbose_name_plural = serializers.SerializerMethodField()
 
-    file_upload = serializers.SerializerMethodField(
-        'get_file_upload')
+    file_upload = serializers.SerializerMethodField()
 
-    order = serializers.SerializerMethodField('get_order')
+    order = serializers.SerializerMethodField()
 
     class Meta(object):
-        fields = ['id',  'url', 'verbose_name', 'verbose_name_plural',
+        fields = ['url', 'id', 'verbose_name', 'verbose_name_plural',
                   'objects', 'file_upload', 'order']
         model = MediaContentType
 
@@ -180,16 +177,16 @@ class ContentTypeSerializer(serializers.HyperlinkedModelSerializer):
 
 class MediaSerializer(serializers.ModelSerializer):
 
-    id = serializers.Field(source='pk')
+    id = serializers.ReadOnlyField(source='pk')
 
-    name = serializers.Field(source='__str__')
+    name = serializers.ReadOnlyField(source='__str__')
 
-    url = serializers.SerializerMethodField('get_url')
+    url = serializers.SerializerMethodField()
 
-    thumbnail = serializers.SerializerMethodField('get_thumbnail')
+    thumbnail = serializers.SerializerMethodField()
 
-    class Meta(serializers.ModelSerializer.Meta):
-        fields = ['id', 'url', 'name', 'thumbnail', 'created_at', 'updated_at']
+    class Meta(object):
+        fields = ['url', 'id', 'name', 'thumbnail', 'created_at', 'updated_at']
 
     def get_content_type(self):
         return MediaContentType.objects.get_for_model(self.Meta.model)
@@ -208,15 +205,3 @@ class MediaSerializer(serializers.ModelSerializer):
                                'contenttype_pk': self.get_content_type().pk},
                        request=self.context['request'],
                        format=self.context['format'])
-
-
-class PaginationSerializerWithTags(pagination.PaginationSerializer):
-
-    tags = serializers.SerializerMethodField('get_tags')
-
-    def get_tags(self, page):
-        queryset = page.paginator.object_list
-        model_name = queryset.model._meta.model_name
-        filters = {'{0}__pk__in'.format(model_name): queryset}
-        return Tag.objects.filter(**filters).distinct().values_list(
-            'name', flat=True)

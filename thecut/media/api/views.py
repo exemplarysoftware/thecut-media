@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
-from . import forms, permissions, serializers
+from . import forms, pagination, permissions, serializers
 from ..models import MediaContentType
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
-from rest_framework import authentication, generics, status
+from rest_framework import authentication, generics, renderers, status
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.views import APIView
@@ -14,13 +14,11 @@ class APIMixin(object):
 
     authentication_classes = [authentication.SessionAuthentication]
 
-    paginate_by = 10
-
-    paginate_by_param = 'limit'
-
-    max_paginate_by = 100
+    pagination_class = pagination.DefaultPagination
 
     permission_classes = [permissions.IsAdminUser]
+
+    renderer_classes = [renderers.JSONRenderer]
 
     @method_decorator(never_cache)
     def dispatch(self, *args, **kwargs):
@@ -38,10 +36,10 @@ class MediaRootAPIView(APIMixin, APIView):
 
 class BaseContentTypeAPIMixin(APIMixin):
 
-    model = MediaContentType
-
     permission_classes = APIMixin.permission_classes + [
         permissions.MediaPermissions]
+
+    queryset = MediaContentType.objects.all()
 
     serializer_class = serializers.ContentTypeSerializer
 
@@ -88,8 +86,8 @@ class BaseContentTypeObjectAPIMixin(APIMixin):
                                           pk=self.kwargs.get('contenttype_pk'))
 
     def initial(self, *args, **kwargs):
-        # Model needs to be set on the class for permission checks
-        self.model = self.get_model()
+        # Queryset needs to be set on the class for permission checks
+        self.queryset = self.get_model().objects.all()
         return super(BaseContentTypeObjectAPIMixin, self).initial(*args,
                                                                   **kwargs)
 
@@ -101,7 +99,7 @@ class BaseContentTypeObjectAPIMixin(APIMixin):
 
         class Serializer(self.serializer_class):
             class Meta(self.serializer_class.Meta):
-                model = self.model
+                model = self.queryset.model
 
         return Serializer
 
@@ -116,20 +114,19 @@ class ContentTypeObjectListAPIView(BaseContentTypeObjectAPIMixin,
                                    generics.ListAPIView):
 
     form_class = forms.FilterForm
-    pagination_serializer_class = serializers.PaginationSerializerWithTags
+
+    pagination_class = pagination.TaggedPagination
 
     def list(self, request, *args, **kwargs):
         data = {
-            'q': self.request.QUERY_PARAMS.get('q'),
+            'q': self.request.query_params.get('q'),
             # TODO: Can we just make the form accept a list of values?
-            'tags': ','.join(self.request.QUERY_PARAMS.getlist('tag', ''))
+            'tags': ','.join(self.request.query_params.getlist('tag', ''))
         }
         self.form = self.form_class(data=data)
-
         if not self.form.is_valid():
             return Response(self.form.errors,
                             status=status.HTTP_400_BAD_REQUEST)
-
         return super(ContentTypeObjectListAPIView, self).list(request, *args,
                                                               **kwargs)
 
