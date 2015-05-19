@@ -136,17 +136,21 @@
             text-transform: lowercase;
           }
 
+          .attachedmediaitem.manager .picker ol li.attached > .actions:after {
+            background-color: #70BF1B;
+          }
+
           .attachedmediaitem.manager .picker ol li.attached:hover > .actions:after {
             display: none;
           }
 
           .attachedmediaitem.manager .picker ol li > .actions .button.action.select {
-            background-color: #70d715;
+            background-color: #00AEEE;
           }
 
           .attachedmediaitem.manager .attachments ol li > .actions .button.action.remove,
           .attachedmediaitem.manager .picker ol li > .actions .button.action.remove {
-            background-color: #ca0114;
+            background-color: #FE6565;
           }
 
       .attachedmediaitem.manager .attachments ol li .thumbnail,
