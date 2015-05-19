@@ -643,7 +643,6 @@
 
 .attachedmediaitem.manager[data-contenttype="documents"] .picker ol {
   margin: 30px 0;
-  height: 551px;
 }
 
 .attachedmediaitem.manager[data-contenttype="documents"] .attachments ol li,
