@@ -157,31 +157,51 @@
       .attachedmediaitem.manager .picker ol li .thumbnail {
         display: inline-block;
         position: relative;
-        overflow: hidden;
-        max-height: 120px;
-        max-width: 120px;
-        -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.125);
-        -moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.125);
-        box-shadow: 0px 0px 5px 0px rgba(0, 0, 50, 0.125);
+        height: 120px;
+        width: 100%;
+        line-height: 120px;
       }
 
         .attachedmediaitem.manager .attachments ol li .thumbnail img,
         .attachedmediaitem.manager .picker ol li .thumbnail img {
-          display: block;
-          box-sizing: border-box;
+          -webkit-box-sizing: border-box;
+             -moz-box-sizing: border-box;
+                  box-sizing: border-box;
+          position: relative;
+          top: 0;
+          display: inline-block;
+          vertical-align: middle;
           max-height: 120px;
           max-width: 120px;
           margin: 0 auto;
           padding: 4px;
           background-color: #ffffff;
           background-image: none;
-          border: 1px solid #dcdcdc;
+          opacity: 1;
+          /*border: 1px solid #dcdcdc;*/
+          -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+             -moz-box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+                  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+          -webkit-transition: top 0.1s ease-out, box-shadow 0.1s ease-out, opacity 0.1s ease-out;
+             -moz-transition: top 0.1s ease-out, box-shadow 0.1s ease-out, opacity 0.1s ease-out;
+               -o-transition: top 0.1s ease-out, box-shadow 0.1s ease-out, opacity 0.1s ease-out;
+                  transition: top 0.1s ease-out, box-shadow 0.1s ease-out, opacity 0.1s ease-out;
+        }
+
+        .attachedmediaitem.manager .attachments ol li .thumbnail:hover img,
+        .attachedmediaitem.manager .picker ol li .thumbnail:hover img {
+          top: -2px;
+          opacity: 0.5;
+          -webkit-box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+             -moz-box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+                  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
         }
 
         .attachedmediaitem.manager .attachments ol li .thumbnail .button,
         .attachedmediaitem.manager .picker ol li .thumbnail .button {
           position: absolute;
           box-sizing: content-box;
+          overflow: hidden;
           top: 0;
           bottom: 0;
           left: 0;
@@ -194,53 +214,70 @@
           background-image: none;
           border-radius: 0;
           border-style: none;
-          color: #ffffff;
+          /*color: red;*/
         }
 
-          .attachedmediaitem.manager .picker ol li.attached .button {
-            background-color: rgba(0,0,0,0.5);
+          .attachedmediaitem.manager .picker ol li.attached img {
+            /*background-color: rgba(0,0,0,0.5);*/
+            opacity: 0.75;
+            transition: opacity 0.2s ease-out;
           }
 
         .attachedmediaitem.manager .attachments ol li .thumbnail .button:after,
         .attachedmediaitem.manager .picker ol li .thumbnail .button:after {
+          content: "";
           display: inline-block;
           position: absolute;
-          box-sizing: border-box;
-          visibility: hidden;
           top: 50%;
           left: 50%;
-          height: 24px;
-          width: 76px;
-          margin: -12px 0 0 -38px;
+          height: 32px;
+          width: 32px;
+          margin: -16px 0 0 -16px;
           padding: 0;
-          background-color: #585c66;
-          border-radius: 12px;
-          content: "";
-          line-height: 24px;
-          text-shadow: none;
-          text-transform: lowercase;
+          background-repeat: no-repeat;
+          background-position: 0;
+          opacity: 0;
+          -webkit-transition: opacity 0.1s ease-out;
+             -moz-transition: opacity 0.1s ease-out;
+               -o-transition: opacity 0.1s ease-out;
+                  transition: opacity 0.1s ease-out;
         }
 
           .attachedmediaitem.manager .attachments ol li .thumbnail:hover .button:after,
           .attachedmediaitem.manager .picker ol li .thumbnail:hover .button:after {
-            visibility: visible;
+            opacity: 1;
           }
 
           .attachedmediaitem.manager .attachments ol li .thumbnail .button.action.select:after,
           .attachedmediaitem.manager .picker ol li .thumbnail .button.action.select:after {
-            background-color: #70d715;
-            content: "add";
+            background-image: url(add-icon.png);
           }
 
           .attachedmediaitem.manager .picker ol li .thumbnail .button.action.remove:after {
-            visibility: visible;
-            content: "added";
+            opacity: 1;
+            background-image: url(added-icon.png);
           }
 
           .attachedmediaitem.manager .attachments ol li .thumbnail .button.action.remove:after,
           .attachedmediaitem.manager .picker ol li .thumbnail:hover .button.action.remove:after {
-            background-color: #ca0114;
-            content: "remove";
+            background-image: url(remove-icon.png);
+          }
+
+          @media screen and (min-width: 0) {
+            .attachedmediaitem.manager .attachments ol li .thumbnail .button.action.select:after,
+            .attachedmediaitem.manager .picker ol li .thumbnail .button.action.select:after {
+              background-image: url(add-icon.svg);
+            }
+
+            .attachedmediaitem.manager .picker ol li .thumbnail .button.action.remove:after {
+              opacity: 1;
+              background-image: url(added-icon.svg);
+            }
+
+            .attachedmediaitem.manager .attachments ol li .thumbnail .button.action.remove:after,
+            .attachedmediaitem.manager .picker ol li .thumbnail:hover .button.action.remove:after {
+              background-image: url(remove-icon.svg);
+            }
           }
 
       .attachedmediaitem.manager .attachments ol li .name,
@@ -248,10 +285,11 @@
         display: block;
         overflow: hidden;
         margin: 16px 0;
-        height: 50px;
+        padding: 0 5px;
         font-size: 12px;
-        line-height: 16px;
-        text-overflow: clip ellipsis;
+        line-height: 1;
+        white-space: nowrap;
+        text-overflow: ellipsis;
       }
 
 
