@@ -344,18 +344,8 @@
       position: absolute;
       bottom: 20px;
       right: 20px;
-      background-color: #70BF1B;
       color: #ffffff;
     }
-
-      .attachedmediaitem.manager .picker .display.controls .close:hover,
-      .attachedmediaitem.manager .picker .display.controls .close:focus {
-        background-color: #61A617;
-      }
-
-      .attachedmediaitem.manager .picker .display.controls .close:active {
-        background-color: #528C14;
-      }
 
   /* When closed */
   .attachedmediaitem.manager .picker .closed .filter.controls,
