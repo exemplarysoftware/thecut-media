@@ -80,10 +80,15 @@
     .attachedmediaitem.manager .attachments ol li,
     .attachedmediaitem.manager .picker ol li {
       display: inline-block;
-      width: 120px;
-      margin: 20px;
+      width: 20%;
+      margin-top: 20px;
       text-align: center;
       vertical-align: bottom;
+    }
+
+    .attachedmediaitem.manager .attachments ol li:nth-child(-n+5),
+    .attachedmediaitem.manager .picker ol li:nth-child(-n+5) {
+      margin-top: 0;
     }
 
       .attachedmediaitem.manager .attachments ol li > .actions,
