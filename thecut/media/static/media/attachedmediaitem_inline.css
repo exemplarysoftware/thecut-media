@@ -267,8 +267,7 @@
 
 .attachedmediaitem.manager .picker {
   position: relative;
-  max-width: 800px;
-  margin: 20px;
+  margin: 20px 0;
   padding: 20px;
   background-color: #ffffff;
   border: 1px solid #e1e1e1;
@@ -276,17 +275,54 @@
 }
 
   .attachedmediaitem.manager .picker ol {
-    height: 484px;  /* 2 'rows', prevents jumping of pagination controls */
+    margin-bottom: 40px;
   }
+
+  .attachedmediaitem.manager .picker .dz-clickable {
+    padding: 20px;
+    border: 2px dashed #d9d9d9;
+  }
+
+  .attachedmediaitem.manager .picker .dz-clickable.dz-drag-hover,
+  .attachedmediaitem.manager .picker .dz-clickable.dz-started {
+    border-color: #fff;
+  }
+
+  .attachedmediaitem.manager .picker .closed {
+    text-align: center;
+  }
+
+  .attachedmediaitem.manager .picker .dz-clickable.closed {
+    cursor: pointer;
+  }
+
+    .attachedmediaitem.manager .picker .instructions {
+      display: none;
+    }
+
+    .attachedmediaitem.manager .picker .dz-clickable .instructions {
+      display: inline-block;
+      margin-bottom: 0;
+      margin-right: 10px;
+      font-size: 1.286em; /* 18/14 */
+      color: #797F8C;
+    }
+
+  .attachedmediaitem.manager .picker .dz-clickable.opened {
+    border: none;
+    padding: 0;
+  }
+
+    .attachedmediaitem.manager .picker .dz-clickable.opened .instructions {
+      display: none;
+    }
 
 
 /* Open / close controls */
 
   .attachedmediaitem.manager .picker .display.controls {
-    display: block;
+    display: inline-block;
     margin: 0;
-    padding: 18px;
-    border: 1px dashed #d9d9d9;
     list-style-type: none;
     text-align: center;
   }
@@ -299,15 +335,17 @@
       position: absolute;
       bottom: 20px;
       right: 20px;
-      background-color: #70d715;
-      background-image: linear-gradient(#71d916, #63bf13);
-      border-color: #56a611;
+      background-color: #70BF1B;
       color: #ffffff;
     }
 
+      .attachedmediaitem.manager .picker .display.controls .close:hover,
+      .attachedmediaitem.manager .picker .display.controls .close:focus {
+        background-color: #61A617;
+      }
+
       .attachedmediaitem.manager .picker .display.controls .close:active {
-        background-color: #4f980f;
-        background-image: linear-gradient(#4f980f, #59ac10);
+        background-color: #528C14;
       }
 
   /* When closed */
@@ -320,8 +358,7 @@
 
   /* When open */
   .attachedmediaitem.manager .picker .opened .display.controls {
-    padding: 0;
-    border-style: none;
+    display: block;
   }
 
  .attachedmediaitem.manager .picker .opened .display.controls .open {
@@ -333,7 +370,7 @@
 
 .attachedmediaitem.manager .filter {
   display: block;
-  margin: 0;
+  margin-bottom: 30px;
   padding: 0;
   overflow: hidden;
   list-style-type: none;
