@@ -669,11 +669,6 @@
 
     .attachedmediaitem.manager[data-contenttype="documents"] .attachments ol li > .actions .remove,
     .attachedmediaitem.manager[data-contenttype="documents"] .picker ol li > .actions .remove {
-      display: none;
-    }
-
-    .attachedmediaitem.manager[data-contenttype="documents"] .attachments ol li:hover > .actions .remove,
-    .attachedmediaitem.manager[data-contenttype="documents"] .picker ol li:hover > .actions .remove {
       display: block;
     }
 
