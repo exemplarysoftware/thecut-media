@@ -504,38 +504,72 @@
   display: block;
   content: "";
   position: absolute;
-  z-index: 9999;
-  top: 50%;
-  left: 50%;
-  height: 300px;
-  width: 300px;
-  margin: -150px 0 0 -150px;
-  color: #ffffff;
-  line-height: 300px;
-  font-size: 26px;
-  text-align: center;
+  left: 0;
+  height: 100%;
+  width: 100%;
 }
 
-.attachedmediaitem.manager .dz-drag-hover:after,
-.attachedmediaitem.manager .dz-started:after {
-  z-index: 9998;
-  background-color: #585c66;
-  border-radius: 150px;
-  -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.125);
-  -moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.125);
-  box-shadow: 0px 0px 5px 0px rgba(0, 0, 50, 0.125);
-}
-
+.attachedmediaitem.manager .dz-drag-hover:before,
 .attachedmediaitem.manager .dz-started:before {
-  content: "Uploading...";
+  z-index: 9999;
+  font-size: 26px;
+  top: 50%;
+  margin-top: -13px;
+  line-height: 1;
+  text-align: center;
 }
 
 .attachedmediaitem.manager .dz-drag-hover:before {
   content: "Drop to upload";
 }
 
+.attachedmediaitem.manager .dz-started:before {
+  content: "Uploading...";
+  color: #fff;
+  text-shadow: 0 2px 0 #00AEEE;
+}
+
+.attachedmediaitem.manager .dz-drag-hover:after,
+.attachedmediaitem.manager .dz-started:after {
+  z-index: 9998;
+  top: 0;
+  -webkit-border-radius: 2px;
+          border-radius: 2px;
+  -webkit-animation: stream 2s linear infinite;
+     -moz-animation: stream 2s linear infinite;
+      -ms-animation: stream 2s linear infinite;
+          animation: stream 2s linear infinite;
+}
+
 .attachedmediaitem.manager .dz-drag-hover:after {
-  background-color: #4f980f;
+  background-color: #f5f5f5;
+  background-image: url(upload-bg.png);
+}
+
+.attachedmediaitem.manager .dz-started:after {
+  background-color: #00AEEE;
+  background-image: url(uploading-bg.png);
+}
+
+@media screen and (min-width: 0) {
+  .attachedmediaitem.manager .dz-drag-hover:after {
+    background-image: url(upload-bg.svg);
+  }
+
+  .attachedmediaitem.manager .dz-started:after {
+    background-image: url(uploading-bg.svg);
+  }
+}
+
+.attachedmediaitem.manager .opened.dz-started:before {
+  height: 60px;
+  line-height: 60px;
+  margin-top: 0;
+  top: 0;
+}
+
+.attachedmediaitem.manager .opened.dz-started:after {
+  height: 60px;
 }
 
 .attachedmediaitem.manager .dz-drag-hover > *,
@@ -552,90 +586,41 @@
   display: none;
 }
 
-.attachedmediaitem.manager .dz-drag-hover:after,
-.attachedmediaitem.manager .dz-started:after {
-  -webkit-animation: pulse2 1s ease infinite;
-  -moz-animation: pulse2 1s ease infinite;
-  -ms-animation: pulse2 1s ease infinite;
-  animation: pulse2 1s ease infinite;
-}
-
-
-@keyframes "pulse2" {
+@keyframes stream {
   0% {
-    -webkit-transform: scale(1);
-    -moz-transform: scale(1);
-    -o-transform: scale(1);
-    -ms-transform: scale(1);
-    transform: scale(1);
-  }
-  50% {
-    -webkit-transform: scale(1.05);
-    -moz-transform: scale(1.05);
-    -o-transform: scale(1.05);
-    -ms-transform: scale(1.05);
-    transform: scale(1.05);
+    background-position: 0 0;
   }
   100% {
-    -webkit-transform: scale(1);
-    -moz-transform: scale(1);
-    -o-transform: scale(1);
-    -ms-transform: scale(1);
-    transform: scale(1);
+    background-position: 32px 0;
   }
 }
 
-@-moz-keyframes pulse2 {
+@-moz-keyframes stream {
   0% {
-    -moz-transform: scale(1);
-    transform: scale(1);
-  }
-  50% {
-    -moz-transform: scale(1.05);
-    transform: scale(1.05);
+    background-position: 0 0;
   }
   100% {
-    -moz-transform: scale(1);
-    transform: scale(1);
+    background-position: 32px 0;
   }
 }
 
-@-webkit-keyframes "pulse2" {
+@-webkit-keyframes stream {
   0% {
-    -webkit-transform: scale(1);
-    transform: scale(1);
-  }
-  50% {
-    -webkit-transform: scale(1.05);
-    transform: scale(1.05);
+    background-position: 0 0;
   }
   100% {
-    -webkit-transform: scale(1);
-    transform: scale(1);
+    background-position: 32px 0;
   }
 }
 
-@-ms-keyframes "pulse2" {
+@-ms-keyframes stream {
   0% {
-    -ms-transform: scale(1);
-    transform: scale(1);
-  }
-  50% {
-    -ms-transform: scale(1.05);
-    transform: scale(1.05);
+    background-position: 0 0;
   }
   100% {
-    -ms-transform: scale(1);
-    transform: scale(1);
+    background-position: 32px 0;
   }
 }
-
-
-
-
-
-
-
 
 
 
