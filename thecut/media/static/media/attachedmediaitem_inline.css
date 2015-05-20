@@ -178,7 +178,6 @@
           background-color: #ffffff;
           background-image: none;
           opacity: 1;
-          /*border: 1px solid #dcdcdc;*/
           -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
              -moz-box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
                   box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
@@ -214,11 +213,9 @@
           background-image: none;
           border-radius: 0;
           border-style: none;
-          /*color: red;*/
         }
 
           .attachedmediaitem.manager .picker ol li.attached img {
-            /*background-color: rgba(0,0,0,0.5);*/
             opacity: 0.75;
             transition: opacity 0.2s ease-out;
           }
