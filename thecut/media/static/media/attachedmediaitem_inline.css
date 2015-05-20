@@ -229,20 +229,21 @@
           left: 50%;
           height: 32px;
           width: 32px;
-          margin: -16px 0 0 -16px;
+          margin: -22px 0 0 -16px;
           padding: 0;
           background-repeat: no-repeat;
           background-position: 0;
           opacity: 0;
-          -webkit-transition: opacity 0.1s ease-out;
-             -moz-transition: opacity 0.1s ease-out;
-               -o-transition: opacity 0.1s ease-out;
-                  transition: opacity 0.1s ease-out;
+          -webkit-transition: opacity 0.1s ease-out, margin-top 0.1s ease-out;
+             -moz-transition: opacity 0.1s ease-out, margin-top 0.1s ease-out;
+               -o-transition: opacity 0.1s ease-out, margin-top 0.1s ease-out;
+                  transition: opacity 0.1s ease-out, margin-top 0.1s ease-out;
         }
 
           .attachedmediaitem.manager .attachments ol li .thumbnail:hover .button:after,
           .attachedmediaitem.manager .picker ol li .thumbnail:hover .button:after {
             opacity: 1;
+            margin-top: -18px;
           }
 
           .attachedmediaitem.manager .attachments ol li .thumbnail .button.action.select:after,
