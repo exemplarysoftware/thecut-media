@@ -34,8 +34,7 @@ class TaggedPagination(DefaultPagination):
         ]))
 
     def get_tags(self, data):
-        pks = [item['id'] for item in data]
-        model_name = self.view.queryset.model._meta.model_name
-        filters = {'{0}__pk__in'.format(model_name): pks}
-        queryset = Tag.objects.filter(**filters).distinct()
-        return queryset.values_list('name', flat=True)
+        tag_pks = self.view.get_queryset().values_list(
+            'tags', flat=True).distinct()
+        tag_queryset = Tag.objects.filter(pk__in=tag_pks)
+        return tag_queryset.values_list('name', flat=True)

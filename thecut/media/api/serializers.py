@@ -179,7 +179,7 @@ class MediaSerializer(serializers.ModelSerializer):
 
     id = serializers.ReadOnlyField(source='pk')
 
-    name = serializers.ReadOnlyField(source='__str__')
+    name = serializers.ReadOnlyField(source='get_name')
 
     url = serializers.SerializerMethodField()
 
