@@ -540,22 +540,33 @@
 
   .attachedmediaitem.manager .pagination .button {
     display: inline-block;
-    height: auto;
     margin: 0;
-    padding: 7px 14px;
+    padding: 8px 15px 6px;
     background-color: transparent;
-    background-image: none;
-    border: 2px solid #636773;
-    border-radius: 4px;
+    border: 2px solid #CED1D9;
     color: #636773;
-    font-size: 12px;
-    line-height: 12px;
-    text-shadow: none;
+    font-size: 14px;
+    line-height: 1.286;
+    text-align: center;
+    -webkit-border-radius: 4px;
+            border-radius: 4px;
+  }
+
+  .attachedmediaitem.manager .pagination .button:hover,
+  .attachedmediaitem.manager .pagination .button:focus {
+    border-color: #636773;
+  }
+
+  .attachedmediaitem.manager .pagination .button:active {
+    background-color: #E3E5E8;
+    background-color: rgba(121, 127, 140, 0.2);
   }
 
     .attachedmediaitem.manager .pagination .button.disabled {
-      opacity: 0.5;
-      cursor: default;
+      background-color: #E6E6E6;
+      color: #636773;
+      border-color: #E6E6E6;
+      cursor: not-allowed;
     }
 
 
