@@ -43,6 +43,9 @@ class AbstractMediaItem(PublishableResource):
         ordering = ['-created_at']
 
     def __str__(self):
+        return self.get_name()
+
+    def get_name(self):
         return self.title
 
 
