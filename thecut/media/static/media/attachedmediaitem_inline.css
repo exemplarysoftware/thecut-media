@@ -377,7 +377,7 @@
 
     .attachedmediaitem.manager .picker .display.controls .close {
       position: absolute;
-      bottom: 20px;
+      bottom: 15px;
       right: 20px;
       color: #ffffff;
     }
