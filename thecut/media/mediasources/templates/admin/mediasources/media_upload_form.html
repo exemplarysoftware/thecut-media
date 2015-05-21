@@ -3,12 +3,9 @@
 
 
 {% block breadcrumbs %}
-  <div class="breadcrumbs">
-    <a href="{% url "admin:index" %}">{% trans "Home" %}</a>
-    {% if not current_app == "backslash" %}&rsaquo; <a href="{% url "admin:app_list" app_label=opts.app_label %}">{{ app_label|capfirst|escape }}</a>{% endif %}
-    &rsaquo; {% if has_change_permission %}<a href="{% url opts|admin_urlname:"changelist" %}">{{ opts.verbose_name_plural|capfirst }}</a>{% else %}{{ opts.verbose_name_plural|capfirst }}{% endif %}
-    &rsaquo; <span class="active">{% if add %}{% trans "Add" %} {{ opts.verbose_name_plural }}{% else %}{{ original|truncatewords:"18" }}{% endif %}</span>
-  </div>
+  <ul class="breadcrumbs">
+    <li>{% if has_change_permission %}<a href="{% url opts|admin_urlname:"changelist" %}">{{ opts.verbose_name_plural|capfirst }}</a>{% else %}{{ opts.verbose_name_plural|capfirst }}{% endif %} &#92;</li>
+  </ul>
 {% endblock %}
 
 
