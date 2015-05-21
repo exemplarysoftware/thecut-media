@@ -54,8 +54,8 @@
   <script data-name="pagination_controls" type="text/template">
     <ul class="nav">
       <% if (state.totalRecords) { %>
-        <li><% if (hasPreviousPage) { %><span class="button action previous">&lt;</span><% } else { %><span class="button disabled">&lt;</span><% } %></li>
-        <li><% if (hasNextPage) { %><span class="button action next">&gt;</span><% } else { %><span class="button disabled">&gt;</span><% } %></li>
+        <li><% if (hasPreviousPage) { %><span class="button action previous">Prev</span><% } else { %><span class="button disabled">Prev</span><% } %></li>
+        <li><% if (hasNextPage) { %><span class="button action next">Next</span><% } else { %><span class="button disabled">Next</span><% } %></li>
         <li class="status pages">Page <%= state.currentPage %> of <%= state.totalPages %>.</li>
         <li class="status results">Showing <%= firstResultIndex %>-<%= lastResultIndex %> of <%= state.totalRecords %> items</li>
       <% } %>
