@@ -5,15 +5,15 @@ from ..forms import MediaUploadForm
 from ..utils import get_metadata
 from django.contrib.admin.options import csrf_protect_m
 from django.contrib.contenttypes.models import ContentType
+from django.contrib import messages
+from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text, force_unicode
 from django.utils.safestring import mark_safe
 from django.views import generic
 
 
 class AdminAddMixin(object):
-
-    success_url = '../'
 
     template_name = 'change_form.html'
 
@@ -30,7 +30,7 @@ class AdminAddMixin(object):
                     'app_label': opts.app_label, 'add': True,
                     'content_type': content_type, 'form_url': '',
                     'title': 'Add {0}'.format(
-                        force_unicode(opts.verbose_name_plural)),
+                        force_unicode(opts.verbose_name)),
                     'root_path': getattr(admin.admin_site, 'root_path', None),
                     'media': mark_safe(admin.media + form.media),
                     'errors': form.errors,
@@ -50,6 +50,33 @@ class AdminAddMixin(object):
             context_data.setdefault(key, value)
 
         return context_data
+
+    def get_success_url(self, *args, **kwargs):
+        admin_site = self.kwargs['admin'].admin_site.name
+        app_label = self.kwargs['admin'].model._meta.app_label
+        model_name = self.kwargs['admin'].model._meta.object_name.lower()
+        msg_dict = {
+            'name': force_text(self.kwargs['admin'].model._meta.verbose_name),
+            'object': force_text(self.object)}
+        reverse_args = []
+
+        if '_addanother' in self.request.POST:
+            message = ('The {name} "{object}" was added successfully. You '
+                       'may add another {name} below.'.format(**msg_dict))
+            url = '{admin_site}:{app_label}_{model_name}_add'
+        elif '_continue' in self.request.POST:
+            message = ('The {name} "{object}" was added successfully. You '
+                       'may edit it again below.'.format(**msg_dict))
+            reverse_args += [self.object.pk]
+            url = '{admin_site}:{app_label}_{model_name}_change'
+        else:
+            message = 'The {name} "{object}" was added successfully.'.format(
+                **msg_dict)
+            url = '{admin_site}:{app_label}_{model_name}_changelist'
+
+        messages.add_message(self.request, messages.SUCCESS, message)
+        return reverse(url.format(admin_site=admin_site, app_label=app_label,
+                                  model_name=model_name), args=reverse_args)
 
     def get_template_names(self):
         admin = self.kwargs['admin']
@@ -120,7 +147,17 @@ class UploadView(AdminAddMixin, generic.FormView):
             tags = self.get_tags(form, upload)
             obj.tags.add(*tags)
 
+            self.object = obj  # Set last object procesed on view
+
         return super(UploadView, self).form_valid(form)
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(UploadView, self).get_context_data(*args,
+                                                                **kwargs)
+        plural_name = force_unicode(
+            self.kwargs['admin'].model._meta.verbose_name_plural)
+        context_data.update({'title': 'Add {0}'.format(plural_name)})
+        return context_data
 
     def get_tags(self, form, upload):
         tags = []

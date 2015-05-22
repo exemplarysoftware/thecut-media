@@ -14,7 +14,7 @@ DEFAULT_ATTACHED_MEDIA_MODELS = getattr(
 # Thumbnail / placeholder settings
 
 try:
-    from celery import Celery
+    from celery import Celery  # NOQA
     CELERY = True
 except ImportError:
     CELERY = False
