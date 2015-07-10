@@ -1,12 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+from django.conf.urls import include, patterns, url
 from thecut.media.galleries import feeds, views
-
-try:
-    from django.conf.urls import include, patterns, url
-except ImportError:
-    # Pre-Django 1.4 compatibility
-    from django.conf.urls.defaults import include, patterns, url
 
 
 urls = patterns(
