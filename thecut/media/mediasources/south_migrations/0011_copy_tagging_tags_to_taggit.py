@@ -196,8 +196,8 @@ class Migration(DataMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
         },
-        AUTH_USER_MODEL: {
-            'Meta': {'object_name': 'User'},
+        'accounts.profile': {
+            'Meta': {'object_name': 'Profile'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
         },
         u'contenttypes.contenttype': {
