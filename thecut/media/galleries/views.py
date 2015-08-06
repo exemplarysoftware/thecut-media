@@ -3,14 +3,10 @@ from __future__ import absolute_import, unicode_literals
 from distutils.version import StrictVersion
 from django import get_version
 from django.shortcuts import get_object_or_404, redirect
+from django.views import generic
 from thecut.media.galleries import settings
 from thecut.media.galleries.models import Gallery, GalleryCategory
 
-if StrictVersion(get_version()) < StrictVersion('1.3'):
-    # Pre-Django 1.3 compatibility
-    import cbv as generic
-else:
-    from django.views import generic
 
 
 class DetailView(generic.DetailView):
