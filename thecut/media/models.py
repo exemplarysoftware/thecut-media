@@ -9,6 +9,7 @@ from model_utils.managers import PassThroughManager
 from taggit.managers import TaggableManager
 from thecut.ordering.models import OrderMixin
 from thecut.publishing.models import PublishableResource
+import django
 
 
 @python_2_unicode_compatible
@@ -32,7 +33,10 @@ class AbstractMediaItem(PublishableResource):
 
     content = models.TextField(blank=True, default='')
 
-    tags = TaggableManager(blank=True)
+    if django.VERSION < (1, 7):
+        tags = TaggableManager(blank=True)
+    else:
+        tags = TaggableManager(blank=True, related_name='+')
 
     attachments = generic.GenericRelation('media.AttachedMediaItem',
                                           content_type_field='content_type',
