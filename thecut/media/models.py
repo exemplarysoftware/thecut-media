@@ -57,14 +57,15 @@ class AbstractMediaItem(PublishableResource):
 class AttachedMediaItem(OrderMixin, models.Model):
 
     # Generic relation to media object.
-    content_type = models.ForeignKey('media.MediaContentType')
+    content_type = models.ForeignKey(
+        'media.MediaContentType', related_name='+', on_delete=models.CASCADE)
     object_id = models.IntegerField(db_index=True)
     content_object = fields.MediaForeignKey('content_type', 'object_id')
 
     # Generic relation to another object.
     parent_content_type = models.ForeignKey(
         'contenttypes.ContentType',
-        related_name='attachedmediaitem_parent_set')
+        related_name='attachedmediaitem_parent_set', on_delete=models.CASCADE)
     parent_object_id = models.IntegerField(db_index=True)
     parent_content_object = generic.GenericForeignKey('parent_content_type',
                                                       'parent_object_id')
