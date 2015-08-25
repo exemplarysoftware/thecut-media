@@ -8,7 +8,7 @@ import operator
 
 class MediaContentTypeManager(ContentTypeManager):
 
-    _queryset = None
+    _media_queryset = None
 
     def get_for_models(self, models):
         q_args = []
@@ -29,12 +29,12 @@ class MediaContentTypeManager(ContentTypeManager):
                                                                      **kwargs)
 
         # Evaluate the queryset and store it on the class
-        if MediaContentTypeManager._queryset is None:
+        if MediaContentTypeManager._media_queryset is None:
             models = get_media_source_models()
             query = reduce(operator.or_, (Q(app_label=model._meta.app_label,
                                             model=model._meta.model_name)
                                           for model in models))
             queryset = queryset.filter(query)
-            MediaContentTypeManager._queryset = queryset
+            MediaContentTypeManager._media_queryset = queryset
 
-        return MediaContentTypeManager._queryset
+        return MediaContentTypeManager._media_queryset

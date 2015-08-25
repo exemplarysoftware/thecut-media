@@ -9,6 +9,7 @@ from model_utils.managers import PassThroughManager
 from taggit.managers import TaggableManager
 from thecut.ordering.models import OrderMixin
 from thecut.publishing.models import PublishableResource
+import django
 
 
 @python_2_unicode_compatible
@@ -32,7 +33,10 @@ class AbstractMediaItem(PublishableResource):
 
     content = models.TextField(blank=True, default='')
 
-    tags = TaggableManager(blank=True)
+    if django.VERSION < (1, 7):
+        tags = TaggableManager(blank=True)
+    else:
+        tags = TaggableManager(blank=True, related_name='+')
 
     attachments = generic.GenericRelation('media.AttachedMediaItem',
                                           content_type_field='content_type',
@@ -53,14 +57,15 @@ class AbstractMediaItem(PublishableResource):
 class AttachedMediaItem(OrderMixin, models.Model):
 
     # Generic relation to media object.
-    content_type = models.ForeignKey('media.MediaContentType')
+    content_type = models.ForeignKey(
+        'media.MediaContentType', related_name='+', on_delete=models.CASCADE)
     object_id = models.IntegerField(db_index=True)
     content_object = fields.MediaForeignKey('content_type', 'object_id')
 
     # Generic relation to another object.
     parent_content_type = models.ForeignKey(
         'contenttypes.ContentType',
-        related_name='attachedmediaitem_parent_set')
+        related_name='attachedmediaitem_parent_set', on_delete=models.CASCADE)
     parent_object_id = models.IntegerField(db_index=True)
     parent_content_object = generic.GenericForeignKey('parent_content_type',
                                                       'parent_object_id')
