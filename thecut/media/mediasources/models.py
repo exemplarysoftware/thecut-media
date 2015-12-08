@@ -97,12 +97,10 @@ class AbstractDocument(IsProcessedMixin, FileMixin, AbstractMediaItem):
         abstract = True
 
     def get_image(self, no_placeholder=False):
-        if no_placeholder:
-            warnings.warn('no_placeholder argument is deprecated.',
-                          DeprecationWarning, stacklevel=2)
         if self.file:
             try:
-                image = get_thumbnail(self.file, '1000x1000', upscale=False)
+                image = get_thumbnail(self.file, '1000x1000', upscale=False,
+                                      no_placeholder=no_placeholder)
             except:
                 image = None
             return image
@@ -129,9 +127,6 @@ class AbstractImage(IsProcessedMixin, FileMixin, AbstractMediaItem):
         abstract = True
 
     def get_image(self, no_placeholder=False):
-        if no_placeholder:
-            warnings.warn('no_placeholder argument is deprecated.',
-                          DeprecationWarning, stacklevel=2)
         return self.file
 
 
@@ -157,7 +152,7 @@ class AbstractVideo(IsProcessedMixin, FileMixin, AbstractMediaItem):
     class Meta(AbstractMediaItem.Meta):
         abstract = True
 
-#    def get_image(self):
+#    def get_image(self, no_placeholder=False):
 #        return self.file
 
 #    def generate_image(self):
@@ -198,9 +193,6 @@ class AbstractYoutubeVideo(IsProcessedMixin, AbstractMediaItem):
             video_id=self.get_video_id())
 
     def get_image(self, no_placeholder=False):
-        if no_placeholder:
-            warnings.warn('no_placeholder argument is deprecated.',
-                          DeprecationWarning, stacklevel=2)
         return 'http://img.youtube.com/vi/{video_id}/0.jpg'.format(
             video_id=self.get_video_id())
 
@@ -235,9 +227,6 @@ class AbstractVimeoVideo(IsProcessedMixin, AbstractMediaItem):
         return self.url
 
     def get_image(self, no_placeholder=False):
-        if no_placeholder:
-            warnings.warn('no_placeholder argument is deprecated.',
-                          DeprecationWarning, stacklevel=2)
         return self.api_data['thumbnail_large']
 
     @property

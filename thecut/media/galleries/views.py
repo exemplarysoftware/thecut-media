@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
-from distutils.version import StrictVersion
-from django import get_version
 from django.shortcuts import get_object_or_404, redirect
 from django.views import generic
 from thecut.media.galleries import settings
 from thecut.media.galleries.models import Gallery, GalleryCategory
-
 
 
 class DetailView(generic.DetailView):
