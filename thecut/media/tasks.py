@@ -18,6 +18,14 @@ def generate_thumbnail(file_, geometry_string, options):
 def generate_thumbnails(file_, thumbnail_sizes=None):
     logger = generate_thumbnail.get_logger()
     thumbnails = thumbnail_sizes or settings.PREGENERATE_THUMBNAIL_SIZES
+
+    # Workaround for LazyStorage / LazyObject, which can't be pickled
+    if hasattr(file_, 'storage') \
+            and hasattr(file_.storage, '_wrapped') \
+            and hasattr(file_.storage, '_setup'):
+        file_.storage._setup()
+        file_.storage = file_.storage._wrapped
+
     for geometry_string, options in thumbnails:
         try:
             generate_thumbnail.delay(file_, geometry_string, options)

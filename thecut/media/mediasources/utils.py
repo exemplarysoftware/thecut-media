@@ -10,7 +10,7 @@ import warnings
 def generate_thumbnails(sender, instance, created, **kwargs):
     if created and settings.QUEUE_THUMBNAILS:
         from thecut.media import tasks
-        tasks.generate_thumbnails(instance.get_image())
+        tasks.generate_thumbnails(instance.get_image(no_placeholder=True))
 
 
 def delete_file(sender, instance, **kwargs):
