@@ -16,6 +16,8 @@ class FilterForm(forms.Form):
         return [t for t in self.cleaned_data['tags'].split(',') if t]
 
     def filter_queryset(self, queryset):
+        self.is_valid()
+
         for term in self.cleaned_data.get('q', []):
             queryset = queryset.filter(title__icontains=term)
 
