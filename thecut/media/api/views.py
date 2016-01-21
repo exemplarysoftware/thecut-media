@@ -117,23 +117,28 @@ class ContentTypeObjectListAPIView(BaseContentTypeObjectAPIMixin,
 
     pagination_class = pagination.TaggedPagination
 
-    def list(self, request, *args, **kwargs):
-        data = {
+    def get_form(self):
+        return self.form_class(data=self.get_form_data())
+
+    def get_form_data(self):
+        return {
             'q': self.request.query_params.get('q'),
             # TODO: Can we just make the form accept a list of values?
             'tags': ','.join(self.request.query_params.getlist('tag', ''))
         }
-        self.form = self.form_class(data=data)
+
+    def get_queryset(self, *args, **kwargs):
+        queryset = super(ContentTypeObjectListAPIView, self).get_queryset(
+            *args, **kwargs)
+        return self.get_form().filter_queryset(queryset)
+
+    def list(self, request, *args, **kwargs):
+        self.form = self.get_form()
         if not self.form.is_valid():
             return Response(self.form.errors,
                             status=status.HTTP_400_BAD_REQUEST)
         return super(ContentTypeObjectListAPIView, self).list(request, *args,
                                                               **kwargs)
-
-    def get_queryset(self, *args, **kwargs):
-        queryset = super(ContentTypeObjectListAPIView, self).get_queryset(
-            *args, **kwargs)
-        return self.form.filter_queryset(queryset)
 
 
 class ContentTypeObjectDetailAPIView(BaseContentTypeObjectAPIMixin,
