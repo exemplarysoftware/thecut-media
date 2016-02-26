@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 from . import content_types, utils
+from datetime import timedelta
 from django.core.exceptions import ValidationError
 from django.db import models
 from sorl.thumbnail import get_thumbnail
@@ -246,6 +247,11 @@ class AbstractVimeoVideo(IsProcessedMixin, AbstractMediaItem):
         if not self._oembed_data:
             self._oembed_data = self._get_oembed_data()
         return json.loads(self._oembed_data)
+
+    @property
+    def duration(self):
+        delta = timedelta(seconds=self.api_data['duration'])
+        return delta
 
     def _get_oembed_data(self):
         params = urlencode({'url': self.url})
