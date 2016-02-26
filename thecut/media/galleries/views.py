@@ -64,7 +64,24 @@ class MediaListView(generic.ListView):
     context_object_name = 'gallery_media_list'
     paginate_by = settings.GALLERY_MEDIA_PAGINATE_BY
     template_name = 'galleries/gallery_media_list.html'
+    template_name_field = 'template'
     _gallery = None
+
+    def get_template_names(self, *args, **kwargs):
+        """Select the template to render.
+
+        Basic reimplementation of SingleObjectTemplateResponseMixin's
+        get_template_name(). Renders with the gallery object's template
+        property if it's set.
+        """
+        templates = super(MediaListView, self).get_template_names(
+            *args, **kwargs)
+        gallery = self.get_gallery()
+        if gallery:
+            model_template = getattr(gallery, self.template_name_field, None)
+            if model_template:
+                templates = [model_template] + templates
+        return templates
 
     def get(self, *args, **kwargs):
         page = self.kwargs.get('page', None)
