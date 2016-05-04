@@ -37,7 +37,7 @@ def find_thumbnails_in_templates():
             for match in pattern.finditer(f.read()):
                 matches.add(match.group(1))
 
-    output = ''
+    output = []
 
     for match in sorted(matches):
         parts = match.split()
@@ -47,7 +47,7 @@ def find_thumbnails_in_templates():
             options.update({'crop': options['crop'].strip('"')})
         if 'quality' in options.keys():
             options.update({'quality': int(options['quality'])})
-        output += '(\'{}\', {}),\n'.format(geometry_size, options)
+        output += [(geometry_size, options)]
 
     return output
 
