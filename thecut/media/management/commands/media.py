@@ -17,7 +17,7 @@ class Command(BaseCommand):
 
     def _find_thumbnails(self):
         from thecut.media.utils import find_thumbnails_in_templates
-        output = self.stdout.write(find_thumbnails_in_templates())
+        output = find_thumbnails_in_templates()
         try:
             self.stdout.write(output)
         except AttributeError:
