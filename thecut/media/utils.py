@@ -85,8 +85,8 @@ def get_preview_thumbnail(image):
 def queue_thumbnails():
     """Queue thumbnail generation for all media instances with a ``get_image``
     method."""
-    from thecut.media.models import MediaContentType
-    from thecut.media.tasks import generate_thumbnails
+    from .models import MediaContentType
+    from .tasks import generate_thumbnails
 
     # Note, using iterator here as a workaround for bug #7241
     for contenttype in MediaContentType.objects.all().iterator():
