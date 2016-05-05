@@ -12,6 +12,8 @@ import warnings
 
 
 def find_thumbnails_in_templates():
+    """Returns a list of thumbnail geometries/options found in templates.
+    Experimental."""
     loaders = itertools.chain(*[e.engine.get_template_loaders(e.engine.loaders)
                                 for e in engines.all()])
 
@@ -78,6 +80,19 @@ def get_preview_thumbnail(image):
     geometry_size = settings.DEFAULT_ADMIN_THUMBNAIL_SIZE[0]
     options = settings.DEFAULT_ADMIN_THUMBNAIL_SIZE[1]
     return get_thumbnail(image, geometry_size, **options)
+
+
+def queue_thumbnails():
+    """Queue thumbnail generation for all media instances with a ``get_image``
+    method."""
+    from thecut.media.models import MediaContentType
+    from thecut.media.tasks import generate_thumbnails
+
+    for contenttype in MediaContentType.objects.all():
+        model_class = contenttype.model_class()
+        if hasattr(model_class, 'get_image'):
+            for mediaitem in model_class.objects.all():
+                generate_thumbnails(mediaitem.get_image())
 
 
 def get_media_source_content_types():
