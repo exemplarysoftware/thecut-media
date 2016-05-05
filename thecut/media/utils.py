@@ -88,7 +88,8 @@ def queue_thumbnails():
     from thecut.media.models import MediaContentType
     from thecut.media.tasks import generate_thumbnails
 
-    for contenttype in MediaContentType.objects.all():
+    # Note, using iterator here as a workaround for bug #7241
+    for contenttype in MediaContentType.objects.all().iterator():
         model_class = contenttype.model_class()
         if hasattr(model_class, 'get_image'):
             for mediaitem in model_class.objects.all():
