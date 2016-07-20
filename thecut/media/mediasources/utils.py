@@ -23,7 +23,8 @@ def get_content_type(uploaded_file):
 
     magic = Magic(mime=True)
     uploaded_file.seek(0)
-    content_type = magic.from_buffer(uploaded_file.read(5120))
+    content_type = magic.from_buffer(uploaded_file.read(
+        settings.MEDIASOURCES_MAGIC_BUFFER_SIZE))
     uploaded_file.seek(0)
     return content_type
 
