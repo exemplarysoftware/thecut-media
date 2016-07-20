@@ -17,6 +17,10 @@ USE_S3UPLOAD = 's3upload' in settings.INSTALLED_APPS and getattr(
 USE_EXIFTOOL = ExifTool and getattr(settings, 'MEDIASOURCES_USE_EXIFTOOL',
                                     True)
 
+MEDIASOURCES_MAGIC_BUFFER_SIZE = getattr(settings,
+                                         'MEDIASOURCES_MAGIC_BUFFER_SIZE',
+                                         5120)
+
 
 QUEUE_THUMBNAILS = media_settings.QUEUE_THUMBNAILS
 
