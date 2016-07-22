@@ -5,6 +5,8 @@ from magic import Magic
 from thecut.media import utils as media_utils
 from thecut.media.mediasources import settings
 import warnings
+import os
+from django.utils._os import upath
 
 
 def generate_thumbnails(sender, instance, created, **kwargs):
@@ -21,7 +23,10 @@ def delete_file(sender, instance, **kwargs):
 def get_content_type(uploaded_file):
     """Get the content type of an uploaded file."""
 
-    magic = Magic(mime=True)
+    msooxml_magic_file = os.path.join(
+        os.path.dirname(os.path.realpath(upath(__file__))),
+        'magic/msooxml.magic')
+    magic = Magic(mime=True, magic_file=msooxml_magic_file)
     uploaded_file.seek(0)
     content_type = magic.from_buffer(uploaded_file.read(
         settings.MEDIASOURCES_MAGIC_BUFFER_SIZE))
