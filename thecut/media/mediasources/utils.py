@@ -23,9 +23,14 @@ def delete_file(sender, instance, **kwargs):
 def get_content_type(uploaded_file):
     """Get the content type of an uploaded file."""
 
-    msooxml_magic_file = os.path.join(
-        os.path.dirname(os.path.realpath(upath(__file__))),
-        'magic/msooxml.magic')
+    if uploaded_file.name[-5:].lower() == ".docx" or \
+       uploaded_file.name[-5:].lower() == ".xlsx" or \
+       uploaded_file.name[-5:].lower() == ".pptx":
+            msooxml_magic_file = os.path.join(
+                os.path.dirname(os.path.realpath(upath(__file__))),
+                'magic/msooxml.magic')
+    else:
+        msooxml_magic_file = None
     magic = Magic(mime=True, magic_file=msooxml_magic_file)
     uploaded_file.seek(0)
     content_type = magic.from_buffer(uploaded_file.read(
