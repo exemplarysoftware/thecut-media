@@ -24,7 +24,8 @@ def get_content_type(uploaded_file):
     """Get the content type of an uploaded file."""
 
     msooxml_magic_file = os.path.join(
-        os.path.dirname(os.path.realpath(upath(__file__))), 'msooxml.magic')
+        os.path.dirname(os.path.realpath(upath(__file__))),
+        'magic/msooxml.magic')
     magic = Magic(mime=True, mime_file=msooxml_magic_file)
     uploaded_file.seek(0)
     content_type = magic.from_buffer(uploaded_file.read(
