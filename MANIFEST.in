@@ -4,3 +4,4 @@ graft thecut/media/static
 graft thecut/media/templates
 graft thecut/media/galleries/templates
 graft thecut/media/mediasources/templates
+graft thecut/media/mediasources/magic
