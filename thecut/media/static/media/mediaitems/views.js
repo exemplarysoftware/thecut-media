@@ -380,7 +380,7 @@ define(['jquery', 'dropzone', 'underscore', 'backbone.marionette', 'mediaitems/c
 
         onRender: function () {
             this.ui.itemList.sortable({
-                'handle': '.name'
+                'handle': '.order'
             });
         },
 

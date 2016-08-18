@@ -85,6 +85,26 @@
       vertical-align: bottom;
     }
 
+    .attachedmediaitem.manager .attachments ol li .order  {
+      display: block;
+      content: 'Drag to re-order item';
+      width: 21px;
+      height: 21px;
+      background: url("drag-icon.png") no-repeat 0 0;
+      cursor: grab;
+      cursor: -webkit-grab;
+      opacity: 0;
+      position: relative;
+      top: -2px;
+      transition: top 0.1s ease-out, opacity 0.1s ease-out;
+    }
+
+    .attachedmediaitem.manager .attachments ol li:hover .order,
+    .attachedmediaitem.manager .attachments ol li:focus .order  {
+      opacity: 1;
+      top: 0;
+    }
+
     .attachedmediaitem.manager .attachments ol li:nth-child(-n+5),
     .attachedmediaitem.manager .picker ol li:nth-child(-n+5) {
       margin-top: 0;
@@ -275,6 +295,9 @@
             .attachedmediaitem.manager .picker ol li .thumbnail:hover .button.action.remove:after {
               background-image: url(remove-icon.svg);
             }
+            .attachedmediaitem.manager .attachments ol li .order  {
+              background-image: url("drag-icon.svg");
+            }
           }
 
       .attachedmediaitem.manager .attachments ol li .name,
@@ -298,11 +321,6 @@
   margin: 0;
   padding: 30px;
 }
-
-.attachedmediaitem.manager .attachments ol li .name {
-  cursor: grab;
-}
-
 
 
 
@@ -719,6 +737,17 @@
   padding: 0;
   border-bottom: 1px solid #d9d9d9;
   text-align: left;
+  position: relative;
+}
+
+.attachedmediaitem.manager[data-contenttype="documents"] .attachments ol li  {
+  padding-left: 30px;
+}
+
+.attachedmediaitem.manager[data-contenttype="documents"] .attachments ol li .order  {
+  position: absolute;
+  top: 16px;
+  left: 0;
 }
 
   .attachedmediaitem.manager[data-contenttype="documents"] .attachments ol li:first-child,
