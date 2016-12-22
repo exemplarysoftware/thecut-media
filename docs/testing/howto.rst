@@ -38,7 +38,7 @@ You can use ``virtualenv`` to test without polluting your system's Python enviro
 
 5. Ensure a version of Django is installed::
 
-    (thecut-menus) $ pip install "Django>=1.8,<1.9"
+    (thecut-menus) $ pip install "Django>=1.10,<1.11"
 
 6. Run the test runner::
 
