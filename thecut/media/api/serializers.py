@@ -5,7 +5,7 @@ from ..mediasources.models import FileMixin
 from ..mediasources.settings import USE_S3UPLOAD
 from ..models import MediaContentType
 from django.core.urlresolvers import NoReverseMatch
-from django.utils.datastructures import SortedDict
+from collections import OrderedDict as SortedDict
 from rest_framework import serializers
 from rest_framework.reverse import reverse
 
