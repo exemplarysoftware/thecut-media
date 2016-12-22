@@ -2,9 +2,10 @@ from __future__ import print_function
 import codecs
 import io
 import os
-from thecut.media import __version__
+#from thecut.media import __version__
 from setuptools import setup, find_packages
 import sys
+from version import get_git_version
 
 
 here = os.path.abspath(os.path.dirname(__file__))
