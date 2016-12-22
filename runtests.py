@@ -17,8 +17,9 @@ try:
             "django.contrib.auth",
             "django.contrib.contenttypes",
             "django.contrib.sites",
-            "thecut.exampleapp",
+            "thecut.media",
             "test_app",
+            'sorl.thumbnail',
         ],
         SITE_ID=1,
         MIDDLEWARE_CLASSES=(),
@@ -53,7 +54,7 @@ except ImportError:
 
 def run_tests(*test_args):
     if not test_args:
-        test_args = ['thecut.exampleapp.tests']
+        test_args = ['thecut.media.tests']
 
     # Run tests
     TestRunner = get_runner(settings)
