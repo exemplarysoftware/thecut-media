@@ -1,7 +1,12 @@
 include RELEASE-VERSION
 include README
+include README.rst
+include HISTORY.rst
 graft thecut/media/static
 graft thecut/media/templates
 graft thecut/media/galleries/templates
 graft thecut/media/mediasources/templates
 graft thecut/media/mediasources/magic
+recursive-include docs *.rst
+include LICENSE
+
