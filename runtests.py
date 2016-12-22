@@ -18,6 +18,7 @@ try:
             "django.contrib.contenttypes",
             "django.contrib.sites",
             "thecut.media",
+            "thecut.media.mediasources",
             "test_app",
             "sorl.thumbnail",
             "taggit",

@@ -6,7 +6,14 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from sorl.thumbnail import get_thumbnail
 from thecut.media.models import AbstractMediaItem
-from urllib import urlencode, urlopen
+try:
+    from urllib import urlencode
+except ImportError:
+    from urllib.parse import urlencode
+try:
+    from urllib import urlopen
+except ImportError:
+    from urllib.request import urlopen
 import json
 import re
 import warnings
