@@ -5,6 +5,7 @@ from django.contrib.contenttypes.models import ContentTypeManager
 from django.db.models import Model, Q
 import operator
 import functools
+from six import string_types
 
 
 class MediaContentTypeManager(ContentTypeManager):
@@ -14,7 +15,7 @@ class MediaContentTypeManager(ContentTypeManager):
     def get_for_models(self, models):  # TODO: switch to *models?
         q_args = []
         for model in models:
-            if isinstance(model, basestring):
+            if isinstance(model, string_types):
                 app_label = model.split('.')[0]
                 model_name = '.'.join(model.split('.')[1:])
                 q_args += [(app_label, model_name)]
