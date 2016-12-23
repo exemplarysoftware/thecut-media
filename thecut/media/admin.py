@@ -7,6 +7,7 @@ from .models import AttachedMediaItem
 from django.conf.urls import include
 from django.contrib import admin
 from django.contrib.contenttypes.admin import GenericStackedInline
+from django.conf.urls import url
 
 
 class AttachedMediaItemInline(GenericStackedInline):
