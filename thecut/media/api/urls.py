@@ -37,7 +37,7 @@ def generate_urls(admin_site_name, namespace, media_models):
     ]
 
     urlpatterns = [
-        (r'^', include(urls, namespace=namespace))]
+        url(r'^', include(urls, namespace=namespace))]
 
     urlpatterns = format_suffix_patterns(urlpatterns, allowed=['json'])
 
