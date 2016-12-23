@@ -8,7 +8,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
-from django.utils.encoding import force_text, force_unicode
+from django.utils.encoding import force_text
 from django.utils.safestring import mark_safe
 from django.views import generic
 
@@ -30,7 +30,7 @@ class AdminAddMixin(object):
                     'app_label': opts.app_label, 'add': True,
                     'content_type': content_type, 'form_url': '',
                     'title': 'Add {0}'.format(
-                        force_unicode(opts.verbose_name)),
+                        force_text(opts.verbose_name)),
                     'root_path': getattr(admin.admin_site, 'root_path', None),
                     'media': mark_safe(admin.media + form.media),
                     'errors': form.errors,
@@ -154,7 +154,7 @@ class UploadView(AdminAddMixin, generic.FormView):
     def get_context_data(self, *args, **kwargs):
         context_data = super(UploadView, self).get_context_data(*args,
                                                                 **kwargs)
-        plural_name = force_unicode(
+        plural_name = force_text(
             self.kwargs['admin'].model._meta.verbose_name_plural)
         context_data.update({'title': 'Add {0}'.format(plural_name)})
         return context_data

@@ -19,6 +19,7 @@ try:
             "django.contrib.sites",
             "thecut.media",
             "thecut.media.mediasources",
+            "thecut.media.galleries",
             "test_app",
             "sorl.thumbnail",
             "taggit",
@@ -56,7 +57,8 @@ except ImportError:
 
 def run_tests(*test_args):
     if not test_args:
-        test_args = ['thecut.media.tests']
+        test_args = ['thecut.media.tests', 'thecut.media.galleries.tests',
+                     'thecut.media.mediasources.tests']
 
     # Run tests
     TestRunner = get_runner(settings)
