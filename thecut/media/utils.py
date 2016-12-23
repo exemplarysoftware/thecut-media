@@ -109,3 +109,14 @@ def get_media_source_content_types():
     from .models import MediaContentType
     return [(content_type.model_class(), content_type) for content_type
             in MediaContentType.objects.all()]
+
+
+# USED FOR DEBUGGING
+# FROM http://stackoverflow.com/a/23874019
+
+def show_urls(urllist, depth=0):
+    for entry in urllist:
+        print("  " * depth, entry.regex.pattern)
+        if hasattr(entry, 'url_patterns'):
+            show_urls(entry.url_patterns, depth + 1)
+

@@ -8,6 +8,7 @@ from django.conf.urls import include
 from django.contrib import admin
 from django.contrib.contenttypes.admin import GenericStackedInline
 from django.conf.urls import url
+from .utils import show_urls
 
 
 class AttachedMediaItemInline(GenericStackedInline):
@@ -40,8 +41,11 @@ class AttachedMediaItemMixin(admin.ModelAdmin):
             admin_site_name=self.admin_site.name,
             namespace=media_api_namespace,
             media_models=self.attached_media_models)
+        print("self.attached_media_models=",self.attached_media_models)
         urlpatterns = [
             url(r'^media/api/', include(media_api_urls)),
         ]
         urlpatterns += super(AttachedMediaItemMixin, self).get_urls()
+
+        show_urls(urlpatterns)
         return urlpatterns
