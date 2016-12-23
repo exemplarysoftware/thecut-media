@@ -40,7 +40,7 @@ class AttachedMediaItemMixin(admin.ModelAdmin):
             namespace=media_api_namespace,
             media_models=self.attached_media_models)
         urlpatterns = [
-            (r'^media/api/', include(media_api_urls)),
+            url(r'^media/api/', include(media_api_urls)),
         ]
         urlpatterns += super(AttachedMediaItemMixin, self).get_urls()
         return urlpatterns
