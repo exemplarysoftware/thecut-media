@@ -26,23 +26,23 @@ You can use ``virtualenv`` to test without polluting your system's Python enviro
     thecut-authorship
     thecut-ordering
     thecut-publishing
-    (thecut-menus) $ cd thecut
-    (thecut-menus) $ ln -s ~/thecut-authorship/thecut/authorship .
-    (thecut-menus) $ ln -s ~/thecut-ordering/thecut/ordering .
-    (thecut-menus) $ ln -s ~/thecut-publishing/thecut/publishing .
-    (thecut-menus) $ cd ..
+    (thecut-media) $ cd thecut
+    (thecut-media) $ ln -s ~/thecut-authorship/thecut/authorship .
+    (thecut-media) $ ln -s ~/thecut-ordering/thecut/ordering .
+    (thecut-media) $ ln -s ~/thecut-publishing/thecut/publishing .
+    (thecut-media) $ cd ..
 
 4. Install the test suite requirements::
 
-    (thecut-menus) $ pip install -r requirements-test.txt
+    (thecut-media) $ pip install -r requirements-test.txt
 
 5. Ensure a version of Django is installed::
 
-    (thecut-menus) $ pip install "Django>=1.10,<1.11"
+    (thecut-media) $ pip install "Django>=1.10,<1.11"
 
 6. Run the test runner::
 
-    (thecut-menus) $ python runtests.py
+    (thecut-media) $ python runtests.py
 
 7. Run the tests with coverage
     coverage run --branch --omit=lib/*,/home/mark/thecut-ordering/*,/home/mark/thecut-publishing/*,/home/mark/thecut-authorship/*,thecut/menus/migrations/* runtests.py
