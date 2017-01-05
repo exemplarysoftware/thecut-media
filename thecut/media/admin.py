@@ -59,7 +59,7 @@ class AttachedMediaItemMixin(admin.ModelAdmin):
         extra_context = extra_context or {}
         if version[1] == '8':
             data_api_href = '../media/api/contenttypes/'
-        if version[1] == '9' or version[1] == '10':
+        elif version[1] == '9' or version[1] == '10':
             data_api_href = '../../media/api/contenttypes/'
         else:
             assert False # Unknown version number
