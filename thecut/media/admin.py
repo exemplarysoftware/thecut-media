@@ -48,12 +48,12 @@ class AttachedMediaItemMixin(admin.ModelAdmin):
         ]
         urlpatterns += super(AttachedMediaItemMixin, self).get_urls()
 
-        show_urls(urlpatterns)
+        #show_urls(urlpatterns)
         return urlpatterns
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
         #print('AttachedMediaItemMixin change_view called')
-        version = get_django_version.split('.')
+        version = get_django_version().split('.')
         assert len(version) == 3
         assert version[0] == '1' # Unknown django version
         extra_context = extra_context or {}
