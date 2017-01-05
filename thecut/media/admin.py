@@ -49,3 +49,10 @@ class AttachedMediaItemMixin(admin.ModelAdmin):
 
         show_urls(urlpatterns)
         return urlpatterns
+
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        print('AttachedMediaItemMixin change_view called')
+        extra_context = extra_context or {}
+        extra_context['hello'] = 'hello world'
+        return self.changeform_view(request, object_id, form_url, extra_context)
+
