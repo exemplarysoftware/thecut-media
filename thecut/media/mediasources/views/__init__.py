@@ -32,7 +32,8 @@ class AdminAddMixin(object):
                     'title': 'Add {0}'.format(
                         force_text(opts.verbose_name)),
                     'root_path': getattr(admin.admin_site, 'root_path', None),
-                    'media': mark_safe(admin.media + form.media),
+                    #'media': mark_safe(admin.media + form.media),
+                    'media': mark_safe(admin.media),
                     #'errors': form.errors,
 
                     'change': False, 'is_popup': False, 'save_as': False,
