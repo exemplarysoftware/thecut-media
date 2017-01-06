@@ -64,5 +64,5 @@ class AttachedMediaItemMixin(admin.ModelAdmin):
         else:
             assert False # Unknown version number
         extra_context['data_api_href'] = data_api_href
-        return self.changeform_view(request, object_id, form_url, extra_context)
+        return super(AttachedMediaItemMixin, self).change_view(request, object_id, form_url, extra_context)
 
