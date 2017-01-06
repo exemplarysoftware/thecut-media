@@ -14,7 +14,7 @@ class DropzoneUploadView(AdminAddMixin, DropzoneS3UploadFormView):
     validate_upload_form_class = ContentTypeValidateS3UploadForm
 
     def _get_field(self):
-        return self._get_model()._meta.get_field_by_name('file')[0]
+        return self._get_model()._meta.get_field('file')
 
     def _get_model(self):
         return self.kwargs['admin'].model

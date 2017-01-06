@@ -35,7 +35,7 @@ class AdminMediaMixin(object):
 class MediaUploadMixin(object):
 
     def add_view(self, request, form_url='', extra_context=None):
-        field = self.model._meta.get_field_by_name('file')[0]
+        field = self.model._meta.get_field('file')
 
         view = UploadView.as_view()
         if settings.USE_S3UPLOAD:
