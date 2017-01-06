@@ -117,8 +117,10 @@ class AdminAddMixin(object):
     def render_to_response(self, *args, **kwargs):
         admin = self.kwargs['admin']
         current_app = admin.admin_site.name
+        #return super(AdminAddMixin, self).render_to_response(
+        #    *args, current_app=current_app, **kwargs)
         return super(AdminAddMixin, self).render_to_response(
-            *args, current_app=current_app, **kwargs)
+            *args, **kwargs)
 
 
 class UploadView(AdminAddMixin, generic.FormView):
