@@ -22,7 +22,7 @@ class AdminAddMixin(object):
                                                                    **kwargs)
 
         admin = self.kwargs['admin']
-        form = kwargs['form']
+        #form = kwargs['form']
         opts = admin.model._meta
         content_type = ContentType.objects.get_for_model(admin.model)
 
@@ -33,7 +33,7 @@ class AdminAddMixin(object):
                         force_text(opts.verbose_name)),
                     'root_path': getattr(admin.admin_site, 'root_path', None),
                     'media': mark_safe(admin.media + form.media),
-                    'errors': form.errors,
+                    #'errors': form.errors,
 
                     'change': False, 'is_popup': False, 'save_as': False,
                     'save_on_top': False, 'show_delete': False,
