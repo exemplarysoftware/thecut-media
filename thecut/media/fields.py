@@ -24,8 +24,8 @@ class MediaForeignKey(GenericForeignKey):
 
 class MediaGenericRelation(GenericRelation):
     def contribute_to_class(self, cls, name, **kwargs):
-        super(MediaGenericRelation, self).contribute_to_class(cls, name, **kwargs)
-        from django.contrib.contenttypes.fields import ReverseGenericManyToOneDescriptor
+        #super(MediaGenericRelation, self).contribute_to_class(cls, name, **kwargs)
+        #from django.contrib.contenttypes.fields import ReverseGenericManyToOneDescriptor
 
 
         class MediaReverseGenericManyToOneDescriptor(ReverseGenericManyToOneDescriptor):
@@ -36,7 +36,24 @@ class MediaGenericRelation(GenericRelation):
                 ret.images = lambda self: self.get_queryset().images
                 return ret
 
+        #setattr(cls, self.name, MediaReverseGenericManyToOneDescriptor(self.remote_field))
+
+        kwargs['private_only'] = True
+        super(GenericRelation, self).contribute_to_class(cls, name, **kwargs)
+        self.model = cls
         setattr(cls, self.name, MediaReverseGenericManyToOneDescriptor(self.remote_field))
+
+        # Add get_RELATED_order() and set_RELATED_order() to the model this
+        # field belongs to, if the model on the other end of this relation
+        # is ordered with respect to its corresponding GenericForeignKey.
+        if not cls._meta.abstract:
+
+            def make_generic_foreign_order_accessors(related_model, model):
+                if self._is_matching_generic_foreign_key(model._meta.order_with_respect_to):
+                    make_foreign_order_accessors(model, related_model)
+
+            lazy_related_operation(make_generic_foreign_order_accessors, self.model, self.remote_field.model)
+
 
 
 
