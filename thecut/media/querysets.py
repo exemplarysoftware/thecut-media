@@ -31,9 +31,9 @@ class AttachedMediaItemQuerySet(models.query.QuerySet):
         if images:
             return images[0].get_image()
 
-    @classmethod
-    def as_manager(cls):
-        ret = super(AttachedMediaItemQuerySet, cls).as_manager()
-
-        ret.images = lambda self: self.get_queryset().images
-        return ret
+    #@classmethod
+    #def as_manager(cls):
+    #    ret = super(AttachedMediaItemQuerySet, cls).as_manager()
+    #
+    #    ret.images = lambda self: self.get_queryset().images
+    #    return ret
