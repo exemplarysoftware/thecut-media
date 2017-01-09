@@ -37,7 +37,7 @@ class MediaGenericRelation(GenericRelation):
                 print("ret=",ret)
                 print("type(ret)=",type(ret))
                 print("dir(ret)=",dir(ret))
-                ret.__class__.images = property(lambda self: self.get_queryset().images)
+                ret.images = property(lambda self: self.get_queryset().images)
                 return ret
 
         #setattr(cls, self.name, MediaReverseGenericManyToOneDescriptor(self.remote_field))
