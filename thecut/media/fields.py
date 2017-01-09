@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 from django.contrib.contenttypes.fields import GenericRelation
+from django.db.models.fields.related import lazy_related_operation
 
 
 try:
