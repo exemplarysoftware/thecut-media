@@ -34,7 +34,7 @@ class MediaGenericRelation(GenericRelation):
             @property
             def related_manager_cls(self):
                 ret = super(MediaReverseGenericManyToOneDescriptor, self).related_manager_cls
-                ret.images = lambda self: self.get_queryset().images
+                ret.__class__.images = property(lambda self: self.get_queryset().images)
                 return ret
 
         #setattr(cls, self.name, MediaReverseGenericManyToOneDescriptor(self.remote_field))
