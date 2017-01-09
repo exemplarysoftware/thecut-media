@@ -11,6 +11,7 @@ class AttachedMediaItemQuerySet(models.query.QuerySet):
     :py:class:`~thecut.media.models.AttachedMediaItem` model."""
 
     def __init__(self, *args, **kwargs):
+        print("AttachedMediaItemQuerySet __init__")
         for class_ in utils.get_media_source_models():
             plural_name = class_._meta.verbose_name_plural.replace(' ', '')
             content_type = ContentType.objects.get_for_model(class_)
