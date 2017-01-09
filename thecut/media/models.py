@@ -7,7 +7,7 @@ from django.contrib.contenttypes.fields import (GenericRelation,
 from django.contrib.contenttypes.models import ContentType
 from django.utils.encoding import python_2_unicode_compatible
 from django.db import models
-from model_utils.managers import PassThroughManager
+#from model_utils.managers import PassThroughManager
 from taggit.managers import TaggableManager
 from thecut.ordering.models import OrderMixin
 from thecut.publishing.models import PublishableResource
@@ -72,8 +72,9 @@ class AttachedMediaItem(OrderMixin, models.Model):
     parent_content_object = GenericForeignKey('parent_content_type',
                                               'parent_object_id')
 
-    objects = PassThroughManager().for_queryset_class(
-        querysets.AttachedMediaItemQuerySet)()
+    #objects = PassThroughManager().for_queryset_class(
+    #    querysets.AttachedMediaItemQuerySet)()
+    objects = querysets.AttachedMediaItemQuerySet.as_manager()
 
     def __str__(self):
         return '{0} - {1}: {2}'.format(self.order, self.content_type,
