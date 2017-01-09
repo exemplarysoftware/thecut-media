@@ -25,7 +25,7 @@ class MediaForeignKey(GenericForeignKey):
 class MediaGenericRelation(GenericRelation):
     def contribute_to_class(self, cls, name, **kwargs):
         #super(MediaGenericRelation, self).contribute_to_class(cls, name, **kwargs)
-        #from django.contrib.contenttypes.fields import ReverseGenericManyToOneDescriptor
+        from django.contrib.contenttypes.fields import ReverseGenericManyToOneDescriptor
 
 
         class MediaReverseGenericManyToOneDescriptor(ReverseGenericManyToOneDescriptor):
