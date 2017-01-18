@@ -49,8 +49,8 @@ class BaseContentTypeAPIMixin(APIMixin):
         media_models = self.kwargs['media_models']
         if media_models:
             queryset = MediaContentType.objects.get_for_models(media_models)
-        print("BaseContentTypeAPIMixin media_models=",media_models)
-        print("BaseContentTypeAPIMixin list(queryset)=",list(queryset))
+        #print("BaseContentTypeAPIMixin media_models=",media_models)
+        #print("BaseContentTypeAPIMixin list(queryset)=",list(queryset))
         return queryset
 
     def get_serializer_context(self, *args, **kwargs):
