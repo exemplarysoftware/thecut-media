@@ -43,6 +43,8 @@ class AttachedMediaItemMixin(admin.ModelAdmin):
             namespace=media_api_namespace,
             media_models=self.attached_media_models)
         #print("self.attached_media_models=",self.attached_media_models)
+        print("AttachedMediaItemMixin self.admin_site.name=",self.admin_site.name)
+        print("AttachedMediaItemMixin media_api_namespace=",media_api_namespace)
         urlpatterns = [
             url(r'^media/api/', include(media_api_urls)),
         ]
