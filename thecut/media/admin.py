@@ -10,6 +10,7 @@ from django.contrib.contenttypes.admin import GenericStackedInline
 from django.conf.urls import url
 from .utils import show_urls
 from django import get_version as get_django_version
+from django.core.urlresolvers import reverse
 
 
 class AttachedMediaItemInline(GenericStackedInline):
@@ -45,6 +46,7 @@ class AttachedMediaItemMixin(admin.ModelAdmin):
         #print("self.attached_media_models=",self.attached_media_models)
         print("AttachedMediaItemMixin self.admin_site.name=",self.admin_site.name)
         print("AttachedMediaItemMixin media_api_namespace=",media_api_namespace)
+        print("Contenttypes url = ", reverse(self.admin_site.name + ":" + media_api_namespace + ":contenttype_list")
         urlpatterns = [
             url(r'^media/api/', include(media_api_urls)),
         ]
