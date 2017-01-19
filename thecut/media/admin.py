@@ -60,7 +60,7 @@ class AttachedMediaItemMixin(admin.ModelAdmin):
         #version = get_django_version().split('.')
         #assert len(version) == 3
         #assert version[0] == '1' # Unknown django version
-        #extra_context = extra_context or {}
+        extra_context = extra_context or {}
         #if version[1] == '8':
         #    data_api_href = '../media/api/contenttypes/'
         #elif version[1] == '9' or version[1] == '10':
