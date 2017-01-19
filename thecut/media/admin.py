@@ -43,10 +43,6 @@ class AttachedMediaItemMixin(admin.ModelAdmin):
             admin_site_name=self.admin_site.name,
             namespace=media_api_namespace,
             media_models=self.attached_media_models)
-        #print("self.attached_media_models=",self.attached_media_models)
-        print("AttachedMediaItemMixin self.admin_site.name=",self.admin_site.name)
-        print("AttachedMediaItemMixin media_api_namespace=",media_api_namespace)
-        #print("Contenttypes url = ", reverse(self.admin_site.name + ":" + media_api_namespace + ":contenttype_list"))
         urlpatterns = [
             url(r'^media/api/', include(media_api_urls)),
         ]
@@ -56,21 +52,9 @@ class AttachedMediaItemMixin(admin.ModelAdmin):
         return urlpatterns
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
-        #print('AttachedMediaItemMixin change_view called')
-        #version = get_django_version().split('.')
-        #assert len(version) == 3
-        #assert version[0] == '1' # Unknown django version
         extra_context = extra_context or {}
-        #if version[1] == '8':
-        #    data_api_href = '../media/api/contenttypes/'
-        #elif version[1] == '9' or version[1] == '10':
-        #    data_api_href = '../../media/api/contenttypes/'
-        #else:
-        #    assert False # Unknown version number
-        #extra_context['data_api_href'] = data_api_href
         media_api_namespace = 'media_api-{0}-{1}'.format(
             self.model._meta.app_label, self.model._meta.model_name)
-        print("Attempting to reverse " + self.admin_site.name + ":" + media_api_namespace + ":contenttype_list")
         extra_context['data_api_href'] = reverse(self.admin_site.name + ":" + media_api_namespace + ":contenttype_list")
         return super(AttachedMediaItemMixin, self).change_view(request, object_id, form_url, extra_context)
 
