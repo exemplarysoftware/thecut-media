@@ -5,6 +5,7 @@ from sorl.thumbnail.conf import (settings as thumbnail_settings,
                                  defaults as thumbnail_defaults)
 from sorl.thumbnail.images import ImageFile
 from thecut.media import settings, tasks, utils
+import six
 
 
 class ThumbnailBackend(base.ThumbnailBackend):
@@ -17,7 +18,7 @@ class ThumbnailBackend(base.ThumbnailBackend):
             return super(ThumbnailBackend, self).get_thumbnail(
                 file_, geometry_string, **options)
 
-        for key, value in self.default_options.iteritems():
+        for key, value in six.iteritems(self.default_options):
             options.setdefault(key, value)
 
         for key, attr in self.extra_options:
