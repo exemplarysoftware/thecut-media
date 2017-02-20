@@ -12,14 +12,13 @@ class ThumbnailBackend(base.ThumbnailBackend):
 
     def get_thumbnail(self, file_, geometry_string, **options):
 
+        if file_._file is None:
+            return None
         no_placeholder = options.pop('no_placeholder', False)
         if no_placeholder or not settings.QUEUE_THUMBNAILS:
             # Return the get_thumbnail method from standard backend.
-            if file_._file is None:
-                return None
-            else:
-                return super(ThumbnailBackend, self).get_thumbnail(
-                    file_, geometry_string, **options)
+            return super(ThumbnailBackend, self).get_thumbnail(
+                file_, geometry_string, **options)
 
         for key, value in six.iteritems(self.default_options):
             options.setdefault(key, value)
