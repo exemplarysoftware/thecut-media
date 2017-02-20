@@ -15,3 +15,7 @@ lib
 local
 dist
 share
+thecut/authorship
+thecut/ordering
+thecut/publishing
+
