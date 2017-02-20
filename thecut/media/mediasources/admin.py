@@ -19,8 +19,9 @@ def preview_image(obj):
         except:
             pass
         else:
-            html = '<span class="image-preview"><img src="{0}" alt="{1}" />' \
-                   '</span>'.format(thumb.url, obj)
+            if thumb is not None:
+                html = '<span class="image-preview"><img src="{0}" '\
+                       'alt="{1}" /> </span>'.format(thumb.url, obj)
     return html
 preview_image.short_description = 'Preview'
 preview_image.allow_tags = True
