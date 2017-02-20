@@ -15,11 +15,6 @@ class ThumbnailBackend(base.ThumbnailBackend):
         no_placeholder = options.pop('no_placeholder', False)
         if no_placeholder or not settings.QUEUE_THUMBNAILS:
             # Return the get_thumbnail method from standard backend.
-            print("ThumbnailBackend file_ = ", file_)
-            print("ThumbnailBackend type(file_) = ", type(file_))
-            print("ThumbnailBackend repr(file_) = ", repr(file_))
-            print("ThumbnailBackend dir(file_) = ", dir(file_))
-            print("ThumbnailBackend repr(file_._file) = ", repr(file_._file))
             if file_._file is None:
                 return None
             else:
