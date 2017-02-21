@@ -12,8 +12,8 @@ class ThumbnailBackend(base.ThumbnailBackend):
 
     def get_thumbnail(self, file_, geometry_string, **options):
 
-        #if file_._file is None:
-        #    return None
+        if not file_:
+            return DummyImageFile(geometry_string)
         no_placeholder = options.pop('no_placeholder', False)
         if no_placeholder or not settings.QUEUE_THUMBNAILS:
             # Return the get_thumbnail method from standard backend.
