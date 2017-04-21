@@ -10,6 +10,7 @@ class TestAddMediaGenericRelection(TestCase):
     def test_receiver(self):
         models.signals.class_prepared.disconnect(
             receivers.add_media_generic_relation)
+
         class TestContent(Content):
             pass
         models.signals.class_prepared.connect(

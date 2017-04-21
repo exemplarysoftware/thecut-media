@@ -2,6 +2,7 @@
 from __future__ import absolute_import, unicode_literals
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db.models.fields.related import lazy_related_operation
+from django.db.models.base import make_foreign_order_accessors
 
 
 try:
@@ -25,28 +26,26 @@ class MediaForeignKey(GenericForeignKey):
 
 class MediaGenericRelation(GenericRelation):
     def contribute_to_class(self, cls, name, **kwargs):
-        #super(MediaGenericRelation, self).contribute_to_class(cls, name, **kwargs)
-        from django.contrib.contenttypes.fields import ReverseGenericManyToOneDescriptor
+        from django.contrib.contenttypes.fields import \
+            ReverseGenericManyToOneDescriptor
 
-
-        class MediaReverseGenericManyToOneDescriptor(ReverseGenericManyToOneDescriptor):
+        class MediaReverseGenericManyToOneDescriptor(
+           ReverseGenericManyToOneDescriptor):
 
             @property
             def related_manager_cls(self):
-                ret = super(MediaReverseGenericManyToOneDescriptor, self).related_manager_cls
-                #print("ret=",ret)
-                #print("type(ret)=",type(ret))
-                #print("dir(ret)=",dir(ret))
+                ret = super(MediaReverseGenericManyToOneDescriptor, self).\
+                    related_manager_cls
                 ret.images = property(lambda self: self.get_queryset().images)
-                ret.youtubevideos = property(lambda self: self.get_queryset().youtubevideos)
+                ret.youtubevideos = property(lambda self: self.get_queryset()
+                                             .youtubevideos)
                 return ret
-
-        #setattr(cls, self.name, MediaReverseGenericManyToOneDescriptor(self.remote_field))
 
         kwargs['private_only'] = True
         super(GenericRelation, self).contribute_to_class(cls, name, **kwargs)
         self.model = cls
-        setattr(cls, self.name, MediaReverseGenericManyToOneDescriptor(self.remote_field))
+        setattr(cls, self.name, MediaReverseGenericManyToOneDescriptor(
+            self.remote_field))
 
         # Add get_RELATED_order() and set_RELATED_order() to the model this
         # field belongs to, if the model on the other end of this relation
@@ -54,11 +53,9 @@ class MediaGenericRelation(GenericRelation):
         if not cls._meta.abstract:
 
             def make_generic_foreign_order_accessors(related_model, model):
-                if self._is_matching_generic_foreign_key(model._meta.order_with_respect_to):
+                if self._is_matching_generic_foreign_key(
+                   model._meta.order_with_respect_to):
                     make_foreign_order_accessors(model, related_model)
 
-            lazy_related_operation(make_generic_foreign_order_accessors, self.model, self.remote_field.model)
-
-
-
-
+            lazy_related_operation(make_generic_foreign_order_accessors,
+                                   self.model, self.remote_field.model)

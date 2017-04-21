@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 from . import fields, managers, querysets, receivers
-#from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.fields import (GenericRelation,
                                                 GenericForeignKey)
 from django.contrib.contenttypes.models import ContentType
 from django.utils.encoding import python_2_unicode_compatible
 from django.db import models
-#from model_utils.managers import PassThroughManager
 from taggit.managers import TaggableManager
 from thecut.ordering.models import OrderMixin
 from thecut.publishing.models import PublishableResource
@@ -72,8 +70,6 @@ class AttachedMediaItem(OrderMixin, models.Model):
     parent_content_object = GenericForeignKey('parent_content_type',
                                               'parent_object_id')
 
-    #objects = PassThroughManager().for_queryset_class(
-    #    querysets.AttachedMediaItemQuerySet)()
     objects = querysets.AttachedMediaItemQuerySet.as_manager()
 
     def __str__(self):

@@ -8,8 +8,6 @@ from django.conf.urls import include
 from django.contrib import admin
 from django.contrib.contenttypes.admin import GenericStackedInline
 from django.conf.urls import url
-from .utils import show_urls
-from django import get_version as get_django_version
 from django.core.urlresolvers import reverse
 
 
@@ -48,13 +46,16 @@ class AttachedMediaItemMixin(admin.ModelAdmin):
         ]
         urlpatterns += super(AttachedMediaItemMixin, self).get_urls()
 
-        #show_urls(urlpatterns)
         return urlpatterns
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
         extra_context = extra_context or {}
         media_api_namespace = 'media_api-{0}-{1}'.format(
             self.model._meta.app_label, self.model._meta.model_name)
-        extra_context['data_api_href'] = reverse(self.admin_site.name + ":" + media_api_namespace + ":contenttype_list")
-        return super(AttachedMediaItemMixin, self).change_view(request, object_id, form_url, extra_context)
-
+        extra_context['data_api_href'] = reverse(self.admin_site.name + ":" +
+                                                 media_api_namespace +
+                                                 ":contenttype_list")
+        return super(AttachedMediaItemMixin, self).change_view(request,
+                                                               object_id,
+                                                               form_url,
+                                                               extra_context)

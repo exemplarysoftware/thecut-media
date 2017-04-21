@@ -22,8 +22,9 @@ class MediaContentTypeManager(ContentTypeManager):
             elif issubclass(model, Model):
                 q_args += [(model._meta.app_label, model._meta.model_name)]
         query = functools.reduce(operator.or_, (Q(app_label__iexact=app_label,
-                                        model__iexact=model)
-                                      for app_label, model in q_args))
+                                                  model__iexact=model)
+                                                for app_label, model in q_args
+                                                ))
         return self.filter(query)
 
     def get_queryset(self, *args, **kwargs):
@@ -33,9 +34,11 @@ class MediaContentTypeManager(ContentTypeManager):
         # Evaluate the queryset and store it on the class
         if MediaContentTypeManager._media_queryset is None:
             models = get_media_source_models()
-            query = functools.reduce(operator.or_, (Q(app_label=model._meta.app_label,
-                                            model=model._meta.model_name)
-                                          for model in models))
+            query = functools.reduce(operator.or_, (Q(app_label=model._meta.
+                                                      app_label,
+                                                      model=model._meta.
+                                                      model_name)
+                                                    for model in models))
             queryset = queryset.filter(query)
             MediaContentTypeManager._media_queryset = queryset
 

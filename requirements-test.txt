@@ -7,4 +7,5 @@ pillow>=3,<4
 sorl-thumbnail>=12.3,<12.4
 django-model-utils==2.3.1
 django-taggit==0.18.1 
+factory-boy==2.8.1
 

@@ -1,4 +1,5 @@
 import sys
+import os
 
 try:
     from django.conf import settings
@@ -14,6 +15,7 @@ try:
         },
         ROOT_URLCONF="test_app.urls",
         INSTALLED_APPS=[
+            "django.contrib.admin",
             "django.contrib.auth",
             "django.contrib.contenttypes",
             "django.contrib.sites",
@@ -38,6 +40,9 @@ try:
                 },
             },
         ],
+        # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+        BASE_DIR = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'thecut-media'),
     )
 
     try:

@@ -15,7 +15,6 @@ def delete_media_attachments(sender, instance, **kwargs):
 
 
 def add_media_generic_relation(sender, **kwargs):
-    from django.contrib.contenttypes.fields import GenericRelation
     from thecut.publishing.models import Content
     if issubclass(sender, Content):
         sender.add_to_class(

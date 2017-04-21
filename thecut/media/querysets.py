@@ -11,7 +11,6 @@ class AttachedMediaItemQuerySet(models.query.QuerySet):
     :py:class:`~thecut.media.models.AttachedMediaItem` model."""
 
     def __init__(self, *args, **kwargs):
-        #print("AttachedMediaItemQuerySet __init__")
         for class_ in utils.get_media_source_models():
             plural_name = class_._meta.verbose_name_plural.replace(' ', '')
             content_type = ContentType.objects.get_for_model(class_)
@@ -30,10 +29,3 @@ class AttachedMediaItemQuerySet(models.query.QuerySet):
         images = self.images()[:1]
         if images:
             return images[0].get_image()
-
-    #@classmethod
-    #def as_manager(cls):
-    #    ret = super(AttachedMediaItemQuerySet, cls).as_manager()
-    #
-    #    ret.images = lambda self: self.get_queryset().images
-    #    return ret
