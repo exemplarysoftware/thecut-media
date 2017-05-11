@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 from . import settings
+from django.apps import apps
 from django.core.files.images import ImageFile
-from django.db.models import get_models
 from django.template import engines
 from sorl.thumbnail import get_thumbnail
 import itertools
@@ -57,7 +57,7 @@ def find_thumbnails_in_templates():
 def get_media_source_models():
     """Returns list of models which subclass AbstractMediaItem."""
     from .models import AbstractMediaItem
-    return [model for model in get_models() if issubclass(
+    return [model for model in apps.get_models() if issubclass(
             model, AbstractMediaItem)]
 
 
