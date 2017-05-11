@@ -6,7 +6,7 @@ from .forms import AttachedMediaItemInlineForm
 from .models import AttachedMediaItem
 from django.conf.urls import include, patterns
 from django.contrib import admin
-from django.contrib.contenttypes.generic import GenericStackedInline
+from django.contrib.contenttypes.admin import GenericStackedInline
 
 
 class AttachedMediaItemInline(GenericStackedInline):
