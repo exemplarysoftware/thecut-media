@@ -4,7 +4,7 @@ from . import settings
 from .api.urls import generate_urls as generate_api_urls
 from .forms import AttachedMediaItemInlineForm
 from .models import AttachedMediaItem
-from django.conf.urls import include, patterns
+from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.contenttypes.admin import GenericStackedInline
 
@@ -39,9 +39,6 @@ class AttachedMediaItemMixin(admin.ModelAdmin):
             admin_site_name=self.admin_site.name,
             namespace=media_api_namespace,
             media_models=self.attached_media_models)
-        urlpatterns = patterns(
-            'thecut.media.views',
-            (r'^media/api/', include(media_api_urls)),
-        )
+        urlpatterns = [url(r'^media/api/', include(media_api_urls))]
         urlpatterns += super(AttachedMediaItemMixin, self).get_urls()
         return urlpatterns

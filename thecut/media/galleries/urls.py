@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
-from django.conf.urls import include, patterns, url
+from django.conf.urls import include, url
 from thecut.media.galleries import feeds, views
 
 
-urls = patterns(
-    'thecut.media.galleries.views',
+urls = [
 
     url(r'^$',
         views.ListView.as_view(), name='gallery_list'),
@@ -26,6 +25,6 @@ urls = patterns(
     url(r'^(?P<slug>[\w-]+)/(?P<page>\d+)$',
         views.MediaListView.as_view(), name='paginated_gallery_media_list'),
 
-)
+]
 
-urlpatterns = patterns('', (r'^', include(urls, namespace='galleries')))
+urlpatterns = [url(r'^', include(urls, namespace='galleries'))]

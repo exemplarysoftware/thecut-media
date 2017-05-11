@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 from . import views
-from django.conf.urls import include, patterns, url
+from django.conf.urls import include, url
 from rest_framework.urlpatterns import format_suffix_patterns
 
 
@@ -9,8 +9,7 @@ def generate_urls(admin_site_name, namespace, media_models):
 
     full_namespace = '{0}:{1}'.format(admin_site_name, namespace)
 
-    urls = patterns(
-        'thecut.media.api.views',
+    urls = [
 
         url(r'^$', views.MediaRootAPIView.as_view(),
             {'url_namespace': full_namespace}, name='root'),
@@ -35,10 +34,9 @@ def generate_urls(admin_site_name, namespace, media_models):
             {'url_namespace': full_namespace, 'media_models': media_models},
             name='contenttype_object_detail'),
 
-    )
+    ]
 
-    urlpatterns = patterns(
-        '', (r'^', include(urls, namespace=namespace)))
+    urlpatterns = [url(r'^', include(urls, namespace=namespace))]
 
     urlpatterns = format_suffix_patterns(urlpatterns, allowed=['json'])
 
