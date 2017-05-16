@@ -17,6 +17,8 @@ class AttachedMediaItemQuerySet(models.query.QuerySet):
             objects = partial(self.get_objects_for_content_type,
                               content_type=content_type)
             setattr(self, plural_name, objects)
+            attr = getattr(self, plural_name)
+            attr.generated_mediaitemqueryset_method = True
         super(AttachedMediaItemQuerySet, self).__init__(*args, **kwargs)
 
     def get_objects_for_content_type(self, content_type):

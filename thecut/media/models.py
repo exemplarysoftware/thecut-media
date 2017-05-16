@@ -70,11 +70,13 @@ class AttachedMediaItem(OrderMixin, models.Model):
     parent_content_object = GenericForeignKey('parent_content_type',
                                               'parent_object_id')
 
-    objects = querysets.AttachedMediaItemQuerySet.as_manager()
+    objects = managers.AttachedMediaItemManager.from_queryset(
+        querysets.AttachedMediaItemQuerySet)()
 
     def __str__(self):
         return '{0} - {1}: {2}'.format(self.order, self.content_type,
                                        self.content_object)
+
 
 models.signals.pre_delete.connect(receivers.delete_media_attachments)
 

@@ -2,8 +2,21 @@
 from __future__ import absolute_import, unicode_literals
 from .utils import get_media_source_models
 from django.contrib.contenttypes.models import ContentTypeManager
-from django.db.models import Model, Q
+from django.db.models import Manager, Model, Q
 import operator
+
+
+class AttachedMediaItemManager(Manager):
+
+    def __getattr__(self, name):
+        # Here we ensure that our dynamic queryset methods can be called (they
+        # are not detected and attached to the manager by Django).
+        queryset = self.get_queryset()
+        if hasattr(queryset, name):
+            attr = getattr(queryset, name)
+            if hasattr(attr, 'generated_mediaitemqueryset_method'):
+                return attr
+        raise AttributeError
 
 
 class MediaContentTypeManager(ContentTypeManager):
