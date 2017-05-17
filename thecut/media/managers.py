@@ -37,7 +37,7 @@ class MediaContentTypeManager(ContentTypeManager):
                                  (Q(app_label__iexact=app_label,
                                     model__iexact=model)
                                   for app_label, model in q_args))
-        return self.filter(query)
+        return self.filter(query).order_by('model')
 
     def get_queryset(self, *args, **kwargs):
         queryset = super(MediaContentTypeManager, self).get_queryset(*args,
