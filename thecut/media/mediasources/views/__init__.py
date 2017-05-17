@@ -6,11 +6,15 @@ from ..utils import get_metadata
 from django.contrib.admin.options import csrf_protect_m
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
-from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
 from django.utils.encoding import force_text, force_unicode
 from django.utils.safestring import mark_safe
 from django.views import generic
+
+try:
+    from django.urls import reverse
+except ImportError:
+    from django.core.urlresolvers import reverse
 
 
 class AdminAddMixin(object):

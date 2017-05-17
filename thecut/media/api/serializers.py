@@ -5,9 +5,13 @@ from ..mediasources.models import FileMixin
 from ..mediasources.settings import USE_S3UPLOAD
 from ..models import MediaContentType
 from collections import OrderedDict
-from django.core.urlresolvers import NoReverseMatch
 from rest_framework import serializers
 from rest_framework.reverse import reverse
+
+try:
+    from django.urls import NoReverseMatch
+except ImportError:
+    from django.core.urlresolvers import NoReverseMatch
 
 
 class BaseFileUpload(object):
