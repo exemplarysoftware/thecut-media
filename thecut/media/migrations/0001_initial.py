@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
 from django.db import models, migrations
+import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
                 ('order', models.PositiveIntegerField(default=0)),
                 ('object_id', models.IntegerField(db_index=True)),
                 ('parent_object_id', models.IntegerField(db_index=True)),
-                ('parent_content_type', models.ForeignKey(related_name='attachedmediaitem_parent_set', to='contenttypes.ContentType')),
+                ('parent_content_type', models.ForeignKey(related_name='attachedmediaitem_parent_set', on_delete=django.db.models.deletion.CASCADE, to='contenttypes.ContentType')),
             ],
             options={
                 'ordering': ('order',),
@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='attachedmediaitem',
             name='content_type',
-            field=models.ForeignKey(to='media.MediaContentType'),
+            field=models.ForeignKey(to='media.MediaContentType', on_delete=django.db.models.deletion.CASCADE),
             preserve_default=True,
         ),
     ]
