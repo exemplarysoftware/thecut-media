@@ -57,20 +57,24 @@ class MediaUploadMixin(object):
 class AudioAdmin(MediaUploadMixin, AuthorshipMixin, AdminMediaMixin,
                  admin.ModelAdmin):
 
-    fieldsets = (
-        (None, {'fields': ('file', 'title', 'caption', 'content', 'tags')}),
-        ('Publishing', {'fields': (('publish_at', 'is_enabled'), 'expire_at',
+    fieldsets = [
+        (None, {'fields': ['file', 'title', 'caption', 'content', 'tags']}),
+        ('Publishing', {'fields': [('publish_at', 'is_enabled'), 'expire_at',
                                    'publish_by', 'is_featured',
                                    ('created_at', 'created_by'),
-                                   ('updated_at', 'updated_by')),
-                        'classes': ('collapse',)}),
-    )
+                                   ('updated_at', 'updated_by')],
+                        'classes': ['collapse']}),
+    ]
+
     form = AudioAdminForm
-    list_display = ('title', 'updated_at', 'is_enabled', 'is_featured',
-                    preview_image)
-    list_filter = ('updated_at', 'is_enabled', 'is_featured')
-    readonly_fields = ('created_at', 'created_by', 'updated_at', 'updated_by')
-    search_fields = ('title',)
+
+    list_display = ['title', 'updated_at', 'is_enabled', 'is_featured']
+
+    list_filter = ['updated_at', 'is_enabled', 'is_featured']
+
+    readonly_fields = ['created_at', 'created_by', 'updated_at', 'updated_by']
+
+    search_fields = ['title']
 
 admin.site.register(Audio, AudioAdmin)
 
@@ -78,20 +82,24 @@ admin.site.register(Audio, AudioAdmin)
 class DocumentAdmin(MediaUploadMixin, AuthorshipMixin, AdminMediaMixin,
                     admin.ModelAdmin):
 
-    fieldsets = (
-        (None, {'fields': ('file', 'title', 'caption', 'content', 'tags')}),
-        ('Publishing', {'fields': (('publish_at', 'is_enabled'), 'expire_at',
+    fieldsets = [
+        (None, {'fields': ['file', 'title', 'caption', 'content', 'tags']}),
+        ('Publishing', {'fields': [('publish_at', 'is_enabled'), 'expire_at',
                                    'publish_by', 'is_featured',
                                    ('created_at', 'created_by'),
-                                   ('updated_at', 'updated_by')),
-                        'classes': ('collapse',)}),
-    )
+                                   ('updated_at', 'updated_by')],
+                        'classes': ['collapse']}),
+    ]
+
     form = DocumentAdminForm
-    list_display = ('title', 'updated_at', 'is_enabled', 'is_featured',
-                    preview_image)
-    list_filter = ('updated_at', 'is_enabled', 'is_featured')
-    readonly_fields = ('created_at', 'created_by', 'updated_at', 'updated_by')
-    search_fields = ('title',)
+
+    list_display = ['title', 'updated_at', 'is_enabled', 'is_featured']
+
+    list_filter = ['updated_at', 'is_enabled', 'is_featured']
+
+    readonly_fields = ['created_at', 'created_by', 'updated_at', 'updated_by']
+
+    search_fields = ['title']
 
 admin.site.register(Document, DocumentAdmin)
 
@@ -99,20 +107,25 @@ admin.site.register(Document, DocumentAdmin)
 class ImageAdmin(MediaUploadMixin, AuthorshipMixin, AdminMediaMixin,
                  admin.ModelAdmin):
 
-    fieldsets = (
-        (None, {'fields': ('file', 'title', 'caption', 'content', 'tags')}),
-        ('Publishing', {'fields': (('publish_at', 'is_enabled'), 'expire_at',
+    fieldsets = [
+        (None, {'fields': ['file', 'title', 'caption', 'content', 'tags']}),
+        ('Publishing', {'fields': [('publish_at', 'is_enabled'), 'expire_at',
                                    'publish_by', 'is_featured',
                                    ('created_at', 'created_by'),
-                                   ('updated_at', 'updated_by')),
-                        'classes': ('collapse',)}),
-    )
+                                   ('updated_at', 'updated_by')],
+                        'classes': ['collapse']}),
+    ]
+
     form = ImageAdminForm
-    list_display = ('title', 'updated_at', 'is_enabled', 'is_featured',
-                    preview_image)
-    list_filter = ('updated_at', 'is_enabled', 'is_featured')
-    readonly_fields = ('created_at', 'created_by', 'updated_at', 'updated_by')
-    search_fields = ('title',)
+
+    list_display = ['title', 'updated_at', 'is_enabled', 'is_featured',
+                    preview_image]
+
+    list_filter = ['updated_at', 'is_enabled', 'is_featured']
+
+    readonly_fields = ['created_at', 'created_by', 'updated_at', 'updated_by']
+
+    search_fields = ['title']
 
 admin.site.register(Image, ImageAdmin)
 
@@ -120,59 +133,74 @@ admin.site.register(Image, ImageAdmin)
 class VideoAdmin(MediaUploadMixin, AuthorshipMixin, AdminMediaMixin,
                  admin.ModelAdmin):
 
-    fieldsets = (
-        (None, {'fields': ('file', 'title', 'caption', 'content', 'tags')}),
-        ('Publishing', {'fields': (('publish_at', 'is_enabled'), 'expire_at',
+    fieldsets = [
+        (None, {'fields': ['file', 'title', 'caption', 'content', 'tags']}),
+        ('Publishing', {'fields': [('publish_at', 'is_enabled'), 'expire_at',
                                    'publish_by', 'is_featured',
                                    ('created_at', 'created_by'),
-                                   ('updated_at', 'updated_by')),
-                        'classes': ('collapse',)}),
-    )
+                                   ('updated_at', 'updated_by')],
+                        'classes': ['collapse']}),
+    ]
+
     form = VideoAdminForm
-    list_display = ('title', 'updated_at', 'is_enabled', 'is_featured',
-                    preview_image)
-    list_filter = ('updated_at', 'is_enabled', 'is_featured')
-    readonly_fields = ('created_at', 'created_by', 'updated_at', 'updated_by')
-    search_fields = ('title',)
+
+    list_display = ['title', 'updated_at', 'is_enabled', 'is_featured',
+                    preview_image]
+
+    list_filter = ['updated_at', 'is_enabled', 'is_featured']
+
+    readonly_fields = ['created_at', 'created_by', 'updated_at', 'updated_by']
+
+    search_fields = ['title']
 
 admin.site.register(Video, VideoAdmin)
 
 
 class YoutubeVideoAdmin(AuthorshipMixin, AdminMediaMixin, admin.ModelAdmin):
 
-    fieldsets = (
-        (None, {'fields': ('url', 'title', 'caption', 'content', 'tags')}),
-        ('Publishing', {'fields': (('publish_at', 'is_enabled'), 'expire_at',
+    fieldsets = [
+        (None, {'fields': ['url', 'title', 'caption', 'content', 'tags']}),
+        ('Publishing', {'fields': [('publish_at', 'is_enabled'), 'expire_at',
                                    'publish_by', 'is_featured',
                                    ('created_at', 'created_by'),
-                                   ('updated_at', 'updated_by')),
-                        'classes': ('collapse',)}),
-    )
+                                   ('updated_at', 'updated_by')],
+                        'classes': ['collapse']}),
+    ]
+
     form = YoutubeVideoAdminForm
-    list_display = ('title', 'updated_at', 'is_enabled', 'is_featured',
-                    preview_image)
-    list_filter = ('updated_at', 'is_enabled', 'is_featured')
-    readonly_fields = ('created_at', 'created_by', 'updated_at', 'updated_by')
-    search_fields = ('title',)
+
+    list_display = ['title', 'updated_at', 'is_enabled', 'is_featured',
+                    preview_image]
+
+    list_filter = ['updated_at', 'is_enabled', 'is_featured']
+
+    readonly_fields = ['created_at', 'created_by', 'updated_at', 'updated_by']
+
+    search_fields = ['title']
 
 admin.site.register(YoutubeVideo, YoutubeVideoAdmin)
 
 
 class VimeoVideoAdmin(AuthorshipMixin, AdminMediaMixin, admin.ModelAdmin):
 
-    fieldsets = (
-        (None, {'fields': ('url', 'title', 'caption', 'content', 'tags')}),
-        ('Publishing', {'fields': (('publish_at', 'is_enabled'), 'expire_at',
+    fieldsets = [
+        (None, {'fields': ['url', 'title', 'caption', 'content', 'tags']}),
+        ('Publishing', {'fields': [('publish_at', 'is_enabled'), 'expire_at',
                                    'publish_by', 'is_featured',
                                    ('created_at', 'created_by'),
-                                   ('updated_at', 'updated_by')),
-                        'classes': ('collapse',)}),
-    )
+                                   ('updated_at', 'updated_by')],
+                        'classes': ['collapse']}),
+    ]
+
     form = VimeoVideoAdminForm
-    list_display = ('title', 'updated_at', 'is_enabled', 'is_featured',
-                    preview_image)
-    list_filter = ('updated_at', 'is_enabled', 'is_featured')
-    readonly_fields = ('created_at', 'created_by', 'updated_at', 'updated_by')
-    search_fields = ('title',)
+
+    list_display = ['title', 'updated_at', 'is_enabled', 'is_featured',
+                    preview_image]
+
+    list_filter = ['updated_at', 'is_enabled', 'is_featured']
+
+    readonly_fields = ['created_at', 'created_by', 'updated_at', 'updated_by']
+
+    search_fields = ['title']
 
 admin.site.register(VimeoVideo, VimeoVideoAdmin)
