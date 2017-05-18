@@ -6,6 +6,11 @@ from django.db.models import Manager, Model, Q
 import functools
 import operator
 
+try:
+    basestring
+except NameError:
+    basestring = str
+
 
 class AttachedMediaItemManager(Manager):
 
