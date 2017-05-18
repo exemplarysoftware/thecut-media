@@ -6,10 +6,15 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from sorl.thumbnail import get_thumbnail
 from thecut.media.models import AbstractMediaItem
-from urllib import urlencode, urlopen
 import json
 import re
 import warnings
+
+try:
+    from urllib.parse import urlencode
+    from urllib.request import urlopen
+except ImportError:  # Python 2
+    from urllib import urlencode, urlopen
 
 
 class IsProcessedMixin(object):
