@@ -26,7 +26,7 @@ class AdminAddMixin(object):
                                                                    **kwargs)
 
         admin = self.kwargs['admin']
-        form = kwargs['form']
+        form = context_data.get('form', kwargs.get('form'))
         opts = admin.model._meta
         content_type = ContentType.objects.get_for_model(admin.model)
 
@@ -116,12 +116,6 @@ class AdminAddMixin(object):
 
     def has_delete_permission(self):
         return self.kwargs['admin'].has_delete_permission(self.request)
-
-    def render_to_response(self, *args, **kwargs):
-        admin = self.kwargs['admin']
-        current_app = admin.admin_site.name
-        return super(AdminAddMixin, self).render_to_response(
-            *args, current_app=current_app, **kwargs)
 
 
 class UploadView(AdminAddMixin, generic.FormView):
