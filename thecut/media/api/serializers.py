@@ -4,10 +4,14 @@ from .. import utils
 from ..mediasources.models import FileMixin
 from ..mediasources.settings import USE_S3UPLOAD
 from ..models import MediaContentType
-from django.core.urlresolvers import NoReverseMatch
-from django.utils.datastructures import SortedDict
+from collections import OrderedDict
 from rest_framework import serializers
 from rest_framework.reverse import reverse
+
+try:
+    from django.urls import NoReverseMatch
+except ImportError:
+    from django.core.urlresolvers import NoReverseMatch
 
 
 class BaseFileUpload(object):
@@ -35,7 +39,7 @@ class BaseFileUpload(object):
 
     def get_form_data(self):
         form = self.get_form()
-        data = SortedDict()
+        data = OrderedDict()
         for field in form.fields:
             field_name = form.add_prefix(field)
             initial_data = form.fields[field].initial

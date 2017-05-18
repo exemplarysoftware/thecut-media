@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 from . import fields, managers, querysets, receivers
-from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.fields import (GenericForeignKey,
+                                                GenericRelation)
 from django.contrib.contenttypes.models import ContentType
 from django.utils.encoding import python_2_unicode_compatible
 from django.db import models
-from model_utils.managers import PassThroughManager
 from taggit.managers import TaggableManager
 from thecut.ordering.models import OrderMixin
 from thecut.publishing.models import PublishableResource
@@ -38,9 +38,9 @@ class AbstractMediaItem(PublishableResource):
     else:
         tags = TaggableManager(blank=True, related_name='+')
 
-    attachments = generic.GenericRelation('media.AttachedMediaItem',
-                                          content_type_field='content_type',
-                                          object_id_field='object_id')
+    attachments = GenericRelation('media.AttachedMediaItem',
+                                  content_type_field='content_type',
+                                  object_id_field='object_id')
 
     class Meta(PublishableResource.Meta):
         abstract = True
@@ -67,15 +67,16 @@ class AttachedMediaItem(OrderMixin, models.Model):
         'contenttypes.ContentType',
         related_name='attachedmediaitem_parent_set', on_delete=models.CASCADE)
     parent_object_id = models.IntegerField(db_index=True)
-    parent_content_object = generic.GenericForeignKey('parent_content_type',
-                                                      'parent_object_id')
+    parent_content_object = GenericForeignKey('parent_content_type',
+                                              'parent_object_id')
 
-    objects = PassThroughManager().for_queryset_class(
+    objects = managers.AttachedMediaItemManager.from_queryset(
         querysets.AttachedMediaItemQuerySet)()
 
     def __str__(self):
         return '{0} - {1}: {2}'.format(self.order, self.content_type,
                                        self.content_object)
+
 
 models.signals.pre_delete.connect(receivers.delete_media_attachments)
 

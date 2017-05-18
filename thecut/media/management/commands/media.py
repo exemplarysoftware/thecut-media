@@ -11,7 +11,7 @@ class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option('--quantity', action='store', type='int', dest='quantity',
                     default=1, help='Number of instances to create'),
-        )
+    )
 
     help = ('findthumbnails: Attempt to find thumbnail references in '
             'templates\n'

@@ -19,11 +19,11 @@ To install this application (whilst in the project's activated virtualenv)::
 Add the ``thecut.media`` and ``thecut.media.mediasources`` to the project's
 ``INSTALLED_APPS`` setting::
 
-    INSTALLED_APPS = (
+    INSTALLED_APPS = [
         ...
         'thecut.media',
         'thecut.media.mediasources'
-    )
+    ]
 
 
 Add ``MEDIA_SOURCES`` and ``THUMBNAIL_ENGINE`` setting::
@@ -32,6 +32,7 @@ Add ``MEDIA_SOURCES`` and ``THUMBNAIL_ENGINE`` setting::
         'thecut.media.mediasources.models.Image',
         'thecut.media.mediasources.models.Document',
     ]
+
     THUMBNAIL_ENGINE = 'sorl.thumbnail.engines.pil_engine.Engine'
 
 

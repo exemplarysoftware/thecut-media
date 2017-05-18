@@ -6,11 +6,15 @@ from ..utils import get_metadata
 from django.contrib.admin.options import csrf_protect_m
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
-from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
 from django.utils.encoding import force_text, force_unicode
 from django.utils.safestring import mark_safe
 from django.views import generic
+
+try:
+    from django.urls import reverse
+except ImportError:
+    from django.core.urlresolvers import reverse
 
 
 class AdminAddMixin(object):
@@ -22,7 +26,7 @@ class AdminAddMixin(object):
                                                                    **kwargs)
 
         admin = self.kwargs['admin']
-        form = kwargs['form']
+        form = context_data.get('form', kwargs.get('form'))
         opts = admin.model._meta
         content_type = ContentType.objects.get_for_model(admin.model)
 
@@ -112,12 +116,6 @@ class AdminAddMixin(object):
 
     def has_delete_permission(self):
         return self.kwargs['admin'].has_delete_permission(self.request)
-
-    def render_to_response(self, *args, **kwargs):
-        admin = self.kwargs['admin']
-        current_app = admin.admin_site.name
-        return super(AdminAddMixin, self).render_to_response(
-            *args, current_app=current_app, **kwargs)
 
 
 class UploadView(AdminAddMixin, generic.FormView):

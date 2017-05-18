@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
-from django.db import models, migrations
-import thecut.media.mediasources.models
-import django.utils.timezone
 from django.conf import settings
+from django.db import models, migrations
+import django.db.models.deletion
+import django.utils.timezone
 import taggit.managers
+import thecut.media.mediasources.models
 
 
 class Migration(migrations.Migration):
@@ -30,10 +30,10 @@ class Migration(migrations.Migration):
                 ('caption', models.TextField(default='', blank=True)),
                 ('content', models.TextField(default='', blank=True)),
                 ('file', models.FileField(max_length=250, upload_to='uploads/media/audios/%Y/%m/%d')),
-                ('created_by', models.ForeignKey(related_name='+', editable=False, to=settings.AUTH_USER_MODEL)),
-                ('publish_by', models.ForeignKey(related_name='+', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+                ('created_by', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.CASCADE, editable=False, to=settings.AUTH_USER_MODEL)),
+                ('publish_by', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.CASCADE, blank=True, to=settings.AUTH_USER_MODEL, null=True)),
                 ('tags', taggit.managers.TaggableManager(to='taggit.Tag', through='taggit.TaggedItem', blank=True, help_text='A comma-separated list of tags.', verbose_name='Tags')),
-                ('updated_by', models.ForeignKey(related_name='+', editable=False, to=settings.AUTH_USER_MODEL)),
+                ('updated_by', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.CASCADE, editable=False, to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'ordering': ['-created_at'],
@@ -56,10 +56,10 @@ class Migration(migrations.Migration):
                 ('caption', models.TextField(default='', blank=True)),
                 ('content', models.TextField(default='', blank=True)),
                 ('file', models.FileField(max_length=250, upload_to='uploads/media/documents/%Y/%m/%d')),
-                ('created_by', models.ForeignKey(related_name='+', editable=False, to=settings.AUTH_USER_MODEL)),
-                ('publish_by', models.ForeignKey(related_name='+', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+                ('created_by', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.CASCADE, editable=False, to=settings.AUTH_USER_MODEL)),
+                ('publish_by', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.CASCADE, blank=True, to=settings.AUTH_USER_MODEL, null=True)),
                 ('tags', taggit.managers.TaggableManager(to='taggit.Tag', through='taggit.TaggedItem', blank=True, help_text='A comma-separated list of tags.', verbose_name='Tags')),
-                ('updated_by', models.ForeignKey(related_name='+', editable=False, to=settings.AUTH_USER_MODEL)),
+                ('updated_by', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.CASCADE, editable=False, to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'ordering': ['-created_at'],
@@ -82,10 +82,10 @@ class Migration(migrations.Migration):
                 ('caption', models.TextField(default='', blank=True)),
                 ('content', models.TextField(default='', blank=True)),
                 ('file', models.ImageField(max_length=250, upload_to='uploads/media/images/%Y/%m/%d')),
-                ('created_by', models.ForeignKey(related_name='+', editable=False, to=settings.AUTH_USER_MODEL)),
-                ('publish_by', models.ForeignKey(related_name='+', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+                ('created_by', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.CASCADE, editable=False, to=settings.AUTH_USER_MODEL)),
+                ('publish_by', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.CASCADE, blank=True, to=settings.AUTH_USER_MODEL, null=True)),
                 ('tags', taggit.managers.TaggableManager(to='taggit.Tag', through='taggit.TaggedItem', blank=True, help_text='A comma-separated list of tags.', verbose_name='Tags')),
-                ('updated_by', models.ForeignKey(related_name='+', editable=False, to=settings.AUTH_USER_MODEL)),
+                ('updated_by', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.CASCADE, editable=False, to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'ordering': ['-created_at'],
@@ -108,10 +108,10 @@ class Migration(migrations.Migration):
                 ('caption', models.TextField(default='', blank=True)),
                 ('content', models.TextField(default='', blank=True)),
                 ('file', models.FileField(max_length=250, upload_to='uploads/media/videos/%Y/%m/%d')),
-                ('created_by', models.ForeignKey(related_name='+', editable=False, to=settings.AUTH_USER_MODEL)),
-                ('publish_by', models.ForeignKey(related_name='+', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+                ('created_by', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.CASCADE, editable=False, to=settings.AUTH_USER_MODEL)),
+                ('publish_by', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.CASCADE, blank=True, to=settings.AUTH_USER_MODEL, null=True)),
                 ('tags', taggit.managers.TaggableManager(to='taggit.Tag', through='taggit.TaggedItem', blank=True, help_text='A comma-separated list of tags.', verbose_name='Tags')),
-                ('updated_by', models.ForeignKey(related_name='+', editable=False, to=settings.AUTH_USER_MODEL)),
+                ('updated_by', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.CASCADE, editable=False, to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'ordering': ['-created_at'],
@@ -136,10 +136,10 @@ class Migration(migrations.Migration):
                 ('url', models.URLField(help_text='e.g. http://vimeo.com/123456')),
                 ('_api_data', models.TextField(default='', editable=False, blank=True)),
                 ('_oembed_data', models.TextField(default='', editable=False, blank=True)),
-                ('created_by', models.ForeignKey(related_name='+', editable=False, to=settings.AUTH_USER_MODEL)),
-                ('publish_by', models.ForeignKey(related_name='+', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+                ('created_by', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.CASCADE, editable=False, to=settings.AUTH_USER_MODEL)),
+                ('publish_by', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.CASCADE, blank=True, to=settings.AUTH_USER_MODEL, null=True)),
                 ('tags', taggit.managers.TaggableManager(to='taggit.Tag', through='taggit.TaggedItem', blank=True, help_text='A comma-separated list of tags.', verbose_name='Tags')),
-                ('updated_by', models.ForeignKey(related_name='+', editable=False, to=settings.AUTH_USER_MODEL)),
+                ('updated_by', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.CASCADE, editable=False, to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'ordering': ['-created_at'],
@@ -162,10 +162,10 @@ class Migration(migrations.Migration):
                 ('caption', models.TextField(default='', blank=True)),
                 ('content', models.TextField(default='', blank=True)),
                 ('url', models.URLField()),
-                ('created_by', models.ForeignKey(related_name='+', editable=False, to=settings.AUTH_USER_MODEL)),
-                ('publish_by', models.ForeignKey(related_name='+', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+                ('created_by', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.CASCADE, editable=False, to=settings.AUTH_USER_MODEL)),
+                ('publish_by', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.CASCADE, blank=True, to=settings.AUTH_USER_MODEL, null=True)),
                 ('tags', taggit.managers.TaggableManager(to='taggit.Tag', through='taggit.TaggedItem', blank=True, help_text='A comma-separated list of tags.', verbose_name='Tags')),
-                ('updated_by', models.ForeignKey(related_name='+', editable=False, to=settings.AUTH_USER_MODEL)),
+                ('updated_by', models.ForeignKey(related_name='+', on_delete=django.db.models.deletion.CASCADE, editable=False, to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'ordering': ['-created_at'],
