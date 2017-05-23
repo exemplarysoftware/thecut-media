@@ -37,19 +37,27 @@ class AttachedMediaItemMixin(admin.ModelAdmin):
 
     attached_media_models = settings.DEFAULT_ATTACHED_MEDIA_MODELS
 
+    def _add_media_api_url_to_context(self, context):
+        media_contenttypes_api_url = reverse(
+            '{}:{}:contenttype_list'.format(
+                self.admin_site.name, self._get_media_api_url_namespace()))
+        context.update({
+            'media_contenttypes_api_url': media_contenttypes_api_url})
+        return context
+
     def _get_media_api_url_namespace(self):
         return 'media_api-{}-{}'.format(self.model._meta.app_label,
                                         self.model._meta.model_name)
 
+    def add_view(self, *args, **kwargs):
+        extra_context = kwargs.pop('extra_context', {})
+        extra_context = self._add_media_api_url_to_context(extra_context)
+        kwargs.update({'extra_context': extra_context})
+        return super(AttachedMediaItemMixin, self).add_view(*args, **kwargs)
+
     def change_view(self, *args, **kwargs):
         extra_context = kwargs.pop('extra_context', {})
-
-        media_contenttypes_api_url = reverse(
-            '{}:{}:contenttype_list'.format(
-                self.admin_site.name, self._get_media_api_url_namespace()))
-        extra_context.update(
-            {'media_contenttypes_api_url': media_contenttypes_api_url})
-
+        extra_context = self._add_media_api_url_to_context(extra_context)
         kwargs.update({'extra_context': extra_context})
         return super(AttachedMediaItemMixin, self).change_view(*args, **kwargs)
 
