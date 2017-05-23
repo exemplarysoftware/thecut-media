@@ -8,10 +8,8 @@ class Command(BaseCommand):
 
     args = '[findthumbnails] [queuethumbnails]'
 
-    option_list = BaseCommand.option_list + (
-        make_option('--quantity', action='store', type='int', dest='quantity',
-                    default=1, help='Number of instances to create'),
-        )
+    def add_arguments(self, parser):
+        parser.add_argument('command')
 
     help = ('findthumbnails: Attempt to find thumbnail references in '
             'templates\n'
