@@ -4,6 +4,7 @@ from . import settings
 from django.apps import apps
 from django.core.files.images import ImageFile
 from django.template import engines
+from django.utils.encoding import smart_text
 from sorl.thumbnail import get_thumbnail
 import itertools
 import os
@@ -20,7 +21,8 @@ def find_thumbnails_in_templates():
     paths = set()
 
     for loader in loaders:
-        paths.update(loader.get_template_sources(''))
+        paths.update(
+            smart_text(origin) for origin in loader.get_template_sources(''))
 
     templates = set()
 
@@ -29,7 +31,7 @@ def find_thumbnails_in_templates():
             templates.update(os.path.join(root, name) for name in files)
 
     pattern = re.compile(
-        r'{%\s*thumbnail\s+[\w\.]+\s([\w\s\."=]*) as [\w]*\s*%}',
+        r'{%\s*thumbnail\s+[\w\.]+\s([\w\s\."\'=]*) as [\w]*\s*%}',
         flags=re.IGNORECASE)
 
     matches = set()
@@ -43,10 +45,10 @@ def find_thumbnails_in_templates():
 
     for match in sorted(matches):
         parts = match.split()
-        geometry_size, options = parts[0].strip('"'), parts[1:]
+        geometry_size, options = parts[0].strip('"\''), parts[1:]
         options = dict([i.split('=') for i in options])
         if 'crop' in options.keys():
-            options.update({'crop': options['crop'].strip('"')})
+            options.update({'crop': options['crop'].strip('"\'')})
         if 'quality' in options.keys():
             options.update({'quality': int(options['quality'])})
         output += [(geometry_size, options)]
