@@ -4,6 +4,7 @@ from . import settings
 from django.apps import apps
 from django.core.files.images import ImageFile
 from django.template import engines
+from django.utils.encoding import smart_text
 from sorl.thumbnail import get_thumbnail
 import itertools
 import os
@@ -20,7 +21,8 @@ def find_thumbnails_in_templates():
     paths = set()
 
     for loader in loaders:
-        paths.update(loader.get_template_sources(''))
+        paths.update(
+            smart_text(origin) for origin in loader.get_template_sources(''))
 
     templates = set()
 

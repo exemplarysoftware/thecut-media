@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 from django.core.management.base import BaseCommand, CommandError
+from pprint import pformat
 
 
 class Command(BaseCommand):
@@ -15,21 +16,14 @@ class Command(BaseCommand):
     def _find_thumbnails(self):
         from thecut.media.utils import find_thumbnails_in_templates
         output = find_thumbnails_in_templates()
-        try:
-            self.stdout.write(output)
-        except AttributeError:
-            print(output)
+        self.stdout.write(pformat(output))
 
     def _queue_thumbnails(self):
         from thecut.media.utils import queue_thumbnails
         output = queue_thumbnails()
-        try:
-            self.stdout.write(output)
-        except AttributeError:
-            print(output)
+        self.stdout.write(pformat(output))
 
     def handle(self, *args, **options):
-
         command = options.get('command')
 
         if command not in ['findthumbnails', 'queuethumbnails']:
