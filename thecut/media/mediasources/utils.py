@@ -9,8 +9,8 @@ import os
 from django.utils._os import upath
 
 
-def generate_thumbnails(sender, instance, created, **kwargs):
-    if created and settings.QUEUE_THUMBNAILS:
+def generate_thumbnails(sender, instance, created, raw=False, **kwargs):
+    if created and settings.QUEUE_THUMBNAILS and not raw:
         from thecut.media import tasks
         tasks.generate_thumbnails(instance.get_image(no_placeholder=True))
 
