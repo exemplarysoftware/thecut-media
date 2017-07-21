@@ -189,27 +189,34 @@ models.signals.pre_delete.connect(utils.delete_file, sender=Video)
 
 class AbstractYoutubeVideo(IsProcessedMixin, AbstractMediaItem):
 
+    _url_regex = r'^https?://(?:www.youtube.com/watch\?(?:&{,1}.*)v=|' \
+                  'youtu.be/)([-a-z0-9A-Z_]+)(?:&{,1}.*)$'
+
     url = models.URLField()
 
     class Meta(AbstractMediaItem.Meta):
         abstract = True
 
+    def clean(self, *args, **kwargs):
+        super(AbstractYoutubeVideo, self).clean(*args, **kwargs)
+
+        if 'url' not in kwargs.get('exclude', []) and not re.match(
+                self._url_regex, self.url):
+            raise ValidationError({
+                'url': ValidationError('Could not process URL. Is it a valid '
+                                       'YouTube video URL?',
+                                       code='invalid_url')})
+
     def get_absolute_url(self):
-        return 'http://www.youtube.com/watch?v={video_id}'.format(
-            video_id=self.get_video_id())
+        return self.url
 
     def get_image(self, no_placeholder=False):
         return 'http://img.youtube.com/vi/{video_id}/0.jpg'.format(
             video_id=self.get_video_id())
 
     def get_video_id(self):
-        match = re.match(r'https?://youtu.be/([-a-z0-9A-Z_]+)$', self.url)
-        if not match:
-            match = re.match(
-                r'^https?://www.youtube.com/watch\?v=([-a-z0-9A-Z_]+)'
-                '(?:&{,1}.*)$', self.url)
-        if match:
-            return match.groups()[0]
+        match = re.match(self._url_regex, self.url)
+        return match and match.groups()[0] or None
 
 
 class YoutubeVideo(AbstractYoutubeVideo):
