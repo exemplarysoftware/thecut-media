@@ -4,6 +4,7 @@ from . import content_types, utils
 from datetime import timedelta
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils.safestring import mark_safe
 from sorl.thumbnail import get_thumbnail
 from thecut.media.models import AbstractMediaItem
 import json
@@ -189,6 +190,8 @@ models.signals.pre_delete.connect(utils.delete_file, sender=Video)
 
 class AbstractYoutubeVideo(IsProcessedMixin, AbstractMediaItem):
 
+    _oembed_data = models.TextField(blank=True, default='', editable=False)
+
     _url_regex = r'^https?://(?:www.youtube.com/watch\?(?:&{,1}.*)v=|' \
                   'youtu.be/)([-a-z0-9A-Z_]+)(?:&{,1}.*)$'
 
@@ -196,6 +199,12 @@ class AbstractYoutubeVideo(IsProcessedMixin, AbstractMediaItem):
 
     class Meta(AbstractMediaItem.Meta):
         abstract = True
+
+    def _get_oembed_data(self):
+        params = urlencode({'url': self.url, 'format': 'json'})
+        uri = 'https://www.youtube.com/oembed?{}'.format(params)
+        response = urlopen(uri)
+        return response.read()
 
     def clean(self, *args, **kwargs):
         super(AbstractYoutubeVideo, self).clean(*args, **kwargs)
@@ -211,12 +220,26 @@ class AbstractYoutubeVideo(IsProcessedMixin, AbstractMediaItem):
         return self.url
 
     def get_image(self, no_placeholder=False):
-        return 'http://img.youtube.com/vi/{video_id}/0.jpg'.format(
-            video_id=self.get_video_id())
+        return self.oembed_data.get('thumbnail_url')
 
     def get_video_id(self):
         match = re.match(self._url_regex, self.url)
         return match and match.groups()[0] or None
+
+    def html(self):
+        return mark_safe(self.oembed_data['html'])
+
+    @property
+    def oembed_data(self):
+        if not self._oembed_data:
+            self._oembed_data = self._get_oembed_data()
+        return json.loads(self._oembed_data)
+
+    def save(self, *args, **kwargs):
+        oembed_data = self.oembed_data  # Triggers fetching json before save
+        if not self.title:
+            self.title = oembed_data.get('title')
+        return super(AbstractYoutubeVideo, self).save(*args, **kwargs)
 
 
 class YoutubeVideo(AbstractYoutubeVideo):
@@ -277,7 +300,7 @@ class AbstractVimeoVideo(IsProcessedMixin, AbstractMediaItem):
         return match and match.groups()[0] or None
 
     def html(self):
-        return self.oembed_data['html']
+        return mark_safe(self.oembed_data['html'])
 
     def save(self, *args, **kwargs):
         if not self.pk:
