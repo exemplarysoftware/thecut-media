@@ -252,7 +252,7 @@ models.signals.post_save.connect(utils.generate_thumbnails,
 
 class AbstractVimeoVideo(IsProcessedMixin, AbstractMediaItem):
 
-    url = models.URLField(help_text='e.g. http://vimeo.com/123456')
+    url = models.URLField(help_text='e.g. https://vimeo.com/123456')
     _api_data = models.TextField(blank=True, default='', editable=False)
     _oembed_data = models.TextField(blank=True, default='', editable=False)
 
@@ -272,9 +272,9 @@ class AbstractVimeoVideo(IsProcessedMixin, AbstractMediaItem):
         return json.loads(self._api_data)[0]
 
     def _get_api_data(self):
-        base_uri = 'http://vimeo.com/api/v2/'
-        video_uri = '{0}video/{1}.json'.format(base_uri, self.get_video_id())
-        response = urlopen(video_uri)
+        uri = 'https://vimeo.com/api/v2/video/{}.json'.format(
+            self.get_video_id())
+        response = urlopen(uri)
         return response.read()
 
     @property
@@ -290,7 +290,7 @@ class AbstractVimeoVideo(IsProcessedMixin, AbstractMediaItem):
 
     def _get_oembed_data(self):
         params = urlencode({'url': self.url})
-        uri = 'http://vimeo.com/api/oembed.json?{0}'.format(params)
+        uri = 'https://vimeo.com/api/oembed.json?{}'.format(params)
         response = urlopen(uri)
         return response.read()
 
