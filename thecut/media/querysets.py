@@ -22,12 +22,11 @@ class AttachedMediaItemQuerySet(models.query.QuerySet):
         super(AttachedMediaItemQuerySet, self).__init__(*args, **kwargs)
 
     def get_objects_for_content_type(self, content_type):
-        pks = self.filter(content_type=content_type).values_list('pk',
-                                                                 flat=True)
         return content_type.model_class().objects.filter(
-            attachments__pk__in=pks).order_by('attachments__order')
+            attachments__in=self.filter(content_type=content_type)).order_by(
+            'attachments__order')
 
     def get_image(self):
-        images = self.images()[:1]
-        if images:
-            return images[0].get_image()
+        image = self.images().first()
+        if image:
+            return image.get_image()
