@@ -31,7 +31,7 @@ class MediaContentTypeManager(ContentTypeManager):
 
     _media_queryset = None
 
-    def get_for_models(self, *models):
+    def filter_for_models(self, *models):
         q_args = []
         for model in models:
             if isinstance(model, basestring):
