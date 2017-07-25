@@ -193,7 +193,7 @@ class AbstractYoutubeVideo(IsProcessedMixin, AbstractMediaItem):
     _oembed_data = models.TextField(blank=True, default='', editable=False)
 
     _url_regex = r'^https?://(?:www.youtube.com/watch\?(?:&{,1}.*)v=|' \
-                  'youtu.be/)([-a-z0-9A-Z_]+)(?:&{,1}.*)$'
+                 'youtu.be/)([-a-z0-9A-Z_]+)(?:&{,1}.*)$'
 
     url = models.URLField()
 
