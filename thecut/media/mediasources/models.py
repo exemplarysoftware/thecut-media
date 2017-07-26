@@ -7,6 +7,7 @@ from django.db import models
 from django.utils.safestring import mark_safe
 from sorl.thumbnail import get_thumbnail
 from thecut.media.models import AbstractMediaItem
+import codecs
 import json
 import re
 
@@ -184,7 +185,9 @@ class AbstractYoutubeVideo(AbstractMediaItem):
         params = urlencode({'url': self.url, 'format': 'json'})
         uri = 'https://www.youtube.com/oembed?{}'.format(params)
         response = urlopen(uri)
-        return response.read()
+        # TODO Obtain encoding from http respsonse?
+        reader = codecs.getreader('utf-8')
+        return reader(response).read()
 
     def clean(self, *args, **kwargs):
         super(AbstractYoutubeVideo, self).clean(*args, **kwargs)
@@ -272,7 +275,9 @@ class AbstractVimeoVideo(AbstractMediaItem):
         params = urlencode({'url': self.url})
         uri = 'https://vimeo.com/api/oembed.json?{}'.format(params)
         response = urlopen(uri)
-        return response.read()
+        # TODO Obtain encoding from http respsonse?
+        reader = codecs.getreader('utf-8')
+        return reader(response).read()
 
     def get_video_id(self):
         url_pattern = re.compile(r'vimeo.com\/(\d+)\/?')
