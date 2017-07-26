@@ -96,18 +96,3 @@ def queue_thumbnails():
         if hasattr(model_class, 'get_image'):
             for mediaitem in model_class.objects.all():
                 generate_thumbnails(mediaitem.get_image())
-
-
-def get_media_source_content_types():
-    """Deprecated method. Use MediaContentType.objects.
-
-    Returns list of tuples containing model and content type.
-
-    """
-
-    warnings.warn('get_media_source_content_types is deprecated. Use '
-                  'MediaContentType.objects.', DeprecationWarning,
-                  stacklevel=2)
-    from .models import MediaContentType
-    return [(content_type.model_class(), content_type) for content_type
-            in MediaContentType.objects.all()]

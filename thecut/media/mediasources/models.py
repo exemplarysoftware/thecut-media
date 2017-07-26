@@ -57,10 +57,6 @@ class FileMixin(FileFieldLengthMixin, object):
     def get_filename(self):
         return self.file.name.split('/')[-1]
 
-    def get_mime_type(self):
-        # Will be deprecated
-        return self.get_content_type()
-
     def save(self, *args, **kwargs):
         if self.pk:
             try:

@@ -33,10 +33,7 @@ class AbstractMediaItem(PublishableResource):
 
     content = models.TextField(blank=True, default='')
 
-    if django.VERSION < (1, 7):
-        tags = TaggableManager(blank=True)
-    else:
-        tags = TaggableManager(blank=True, related_name='+')
+    tags = TaggableManager(blank=True, related_name='+')
 
     attachments = GenericRelation('media.AttachedMediaItem',
                                   content_type_field='content_type',
