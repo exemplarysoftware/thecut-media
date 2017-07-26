@@ -7,30 +7,15 @@ from django.db import models
 from django.utils.safestring import mark_safe
 from sorl.thumbnail import get_thumbnail
 from thecut.media.models import AbstractMediaItem
+import codecs
 import json
 import re
-import warnings
 
 try:
     from urllib.parse import urlencode
     from urllib.request import urlopen
 except ImportError:  # Python 2
     from urllib import urlencode, urlopen
-
-
-class IsProcessedMixin(object):
-
-    @property
-    def is_processed(self):
-        warnings.warn('is_processed property is deprecated.',
-                      DeprecationWarning, stacklevel=2)
-        return True
-
-    @is_processed.setter
-    def is_processed(self, value):
-        warnings.warn('is_processed property is deprecated.',
-                      DeprecationWarning, stacklevel=2)
-        pass
 
 
 class FileFieldLengthMixin(object):
@@ -73,10 +58,6 @@ class FileMixin(FileFieldLengthMixin, object):
     def get_filename(self):
         return self.file.name.split('/')[-1]
 
-    def get_mime_type(self):
-        # Will be deprecated
-        return self.get_content_type()
-
     def save(self, *args, **kwargs):
         if self.pk:
             try:
@@ -93,7 +74,7 @@ class FileMixin(FileFieldLengthMixin, object):
         return super(FileMixin, self).save(*args, **kwargs)
 
 
-class AbstractDocument(IsProcessedMixin, FileMixin, AbstractMediaItem):
+class AbstractDocument(FileMixin, AbstractMediaItem):
 
     file = models.FileField(max_length=250,
                             upload_to='uploads/media/documents/%Y/%m/%d')
@@ -119,11 +100,8 @@ class Document(AbstractDocument):
 
     pass
 
-models.signals.post_save.connect(utils.generate_thumbnails, sender=Document)
-models.signals.pre_delete.connect(utils.delete_file, sender=Document)
 
-
-class AbstractImage(IsProcessedMixin, FileMixin, AbstractMediaItem):
+class AbstractImage(FileMixin, AbstractMediaItem):
 
     file = models.ImageField(max_length=250,
                              upload_to='uploads/media/images/%Y/%m/%d')
@@ -141,11 +119,8 @@ class Image(AbstractImage):
 
     pass
 
-models.signals.post_save.connect(utils.generate_thumbnails, sender=Image)
-models.signals.pre_delete.connect(utils.delete_file, sender=Image)
 
-
-class AbstractVideo(IsProcessedMixin, FileMixin, AbstractMediaItem):
+class AbstractVideo(FileMixin, AbstractMediaItem):
 
     file = models.FileField(max_length=250,
                             upload_to='uploads/media/videos/%Y/%m/%d')
@@ -184,16 +159,13 @@ class Video(AbstractVideo):
 
     pass
 
-models.signals.post_save.connect(utils.generate_thumbnails, sender=Video)
-models.signals.pre_delete.connect(utils.delete_file, sender=Video)
 
-
-class AbstractYoutubeVideo(IsProcessedMixin, AbstractMediaItem):
+class AbstractYoutubeVideo(AbstractMediaItem):
 
     _oembed_data = models.TextField(blank=True, default='', editable=False)
 
     _url_regex = r'^https?://(?:www.youtube.com/watch\?(?:&{,1}.*)v=|' \
-                  'youtu.be/)([-a-z0-9A-Z_]+)(?:&{,1}.*)$'
+                 'youtu.be/)([-a-z0-9A-Z_]+)(?:&{,1}.*)$'
 
     url = models.URLField()
 
@@ -204,7 +176,9 @@ class AbstractYoutubeVideo(IsProcessedMixin, AbstractMediaItem):
         params = urlencode({'url': self.url, 'format': 'json'})
         uri = 'https://www.youtube.com/oembed?{}'.format(params)
         response = urlopen(uri)
-        return response.read()
+        # TODO Obtain encoding from http respsonse?
+        reader = codecs.getreader('utf-8')
+        return reader(response).read()
 
     def clean(self, *args, **kwargs):
         super(AbstractYoutubeVideo, self).clean(*args, **kwargs)
@@ -246,13 +220,10 @@ class YoutubeVideo(AbstractYoutubeVideo):
 
     pass
 
-models.signals.post_save.connect(utils.generate_thumbnails,
-                                 sender=YoutubeVideo)
 
+class AbstractVimeoVideo(AbstractMediaItem):
 
-class AbstractVimeoVideo(IsProcessedMixin, AbstractMediaItem):
-
-    url = models.URLField(help_text='e.g. http://vimeo.com/123456')
+    url = models.URLField(help_text='e.g. https://vimeo.com/123456')
     _api_data = models.TextField(blank=True, default='', editable=False)
     _oembed_data = models.TextField(blank=True, default='', editable=False)
 
@@ -272,9 +243,9 @@ class AbstractVimeoVideo(IsProcessedMixin, AbstractMediaItem):
         return json.loads(self._api_data)[0]
 
     def _get_api_data(self):
-        base_uri = 'http://vimeo.com/api/v2/'
-        video_uri = '{0}video/{1}.json'.format(base_uri, self.get_video_id())
-        response = urlopen(video_uri)
+        uri = 'https://vimeo.com/api/v2/video/{}.json'.format(
+            self.get_video_id())
+        response = urlopen(uri)
         return response.read()
 
     @property
@@ -290,9 +261,11 @@ class AbstractVimeoVideo(IsProcessedMixin, AbstractMediaItem):
 
     def _get_oembed_data(self):
         params = urlencode({'url': self.url})
-        uri = 'http://vimeo.com/api/oembed.json?{0}'.format(params)
+        uri = 'https://vimeo.com/api/oembed.json?{}'.format(params)
         response = urlopen(uri)
-        return response.read()
+        # TODO Obtain encoding from http respsonse?
+        reader = codecs.getreader('utf-8')
+        return reader(response).read()
 
     def get_video_id(self):
         url_pattern = re.compile(r'vimeo.com\/(\d+)\/?')
@@ -316,10 +289,8 @@ class VimeoVideo(AbstractVimeoVideo):
 
     pass
 
-models.signals.post_save.connect(utils.generate_thumbnails, sender=VimeoVideo)
 
-
-class AbstractAudio(IsProcessedMixin, FileMixin, AbstractMediaItem):
+class AbstractAudio(FileMixin, AbstractMediaItem):
 
     file = models.FileField(max_length=250,
                             upload_to='uploads/media/audios/%Y/%m/%d')
@@ -333,5 +304,3 @@ class AbstractAudio(IsProcessedMixin, FileMixin, AbstractMediaItem):
 class Audio(AbstractAudio):
 
     pass
-
-models.signals.pre_delete.connect(utils.delete_file, sender=Audio)

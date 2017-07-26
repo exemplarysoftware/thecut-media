@@ -3,8 +3,8 @@ from __future__ import absolute_import, unicode_literals
 from . import settings
 from ..utils import get_preview_thumbnail
 from .forms import (AudioAdminForm, DocumentAdminForm, ImageAdminForm,
-                    VideoAdminForm, YoutubeVideoAdminForm, VimeoVideoAdminForm)
-from .models import Audio, Document, Image, Video, YoutubeVideo, VimeoVideo
+                    VideoAdminForm, VimeoVideoAdminForm, YoutubeVideoAdminForm)
+from .models import Audio, Document, Image, Video, VimeoVideo, YoutubeVideo
 from .views import UploadView
 from django.contrib import admin
 from django.utils.functional import LazyObject

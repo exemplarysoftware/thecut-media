@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 from django.core.files.uploadedfile import TemporaryUploadedFile
-from magic import Magic
-from thecut.media import utils as media_utils
-from thecut.media.mediasources import settings
-import warnings
-import os
 from django.utils._os import upath
+from magic import Magic
+from thecut.media.mediasources import settings
+import os
 
 
 def generate_thumbnails(sender, instance, created, raw=False, **kwargs):
@@ -23,9 +21,9 @@ def delete_file(sender, instance, **kwargs):
 def get_content_type(uploaded_file):
     """Get the content type of an uploaded file."""
 
-    if uploaded_file.name[-5:].lower() == ".docx" or \
-       uploaded_file.name[-5:].lower() == ".xlsx" or \
-       uploaded_file.name[-5:].lower() == ".pptx":
+    if uploaded_file.name[-5:].lower() == '.docx' or \
+       uploaded_file.name[-5:].lower() == '.xlsx' or \
+       uploaded_file.name[-5:].lower() == '.pptx':
             msooxml_magic_file = os.path.join(
                 os.path.dirname(os.path.realpath(upath(__file__))),
                 'magic/msooxml.magic')
@@ -59,48 +57,3 @@ def get_metadata(uploaded_file):
         metadata = et.get_metadata(temp_file.temporary_file_path())
 
     return metadata
-
-
-# Deprecated functions
-
-
-def get_placeholder_image(*args, **kwargs):
-    """Deprecated - moved to thecut.media.utils."""
-    warnings.warn('This function has been moved to thecut.media.utils.',
-                  DeprecationWarning, stacklevel=2)
-    return media_utils.get_placeholder_image(*args, **kwargs)
-
-
-def generate_image_thumbnails(sender, instance, created, **kwargs):
-    """Deprecated - replaced by generate_thumbnails."""
-    warnings.warn('This function has been replaced by generate_thumbnails.',
-                  DeprecationWarning, stacklevel=2)
-    return generate_thumbnails(sender, instance, created, **kwargs)
-
-
-def generate_document_thumbnails(sender, instance, created, **kwargs):
-    """Deprecated - replaced by generate_thumbnails."""
-    warnings.warn('This function has been replaced by generate_thumbnails.',
-                  DeprecationWarning, stacklevel=2)
-    return generate_thumbnails(sender, instance, created, **kwargs)
-
-
-def generate_video_thumbnails(sender, instance, created, **kwargs):
-    """Deprecated - replaced by generate_thumbnails."""
-    warnings.warn('This function has been replaced by generate_thumbnails.',
-                  DeprecationWarning, stacklevel=2)
-    return generate_thumbnails(sender, instance, created, **kwargs)
-
-
-def generate_youtube_video_thumbnails(sender, instance, created, **kwargs):
-    """Deprecated - replaced by generate_thumbnails."""
-    warnings.warn('This function has been replaced by generate_thumbnails.',
-                  DeprecationWarning, stacklevel=2)
-    return generate_thumbnails(sender, instance, created, **kwargs)
-
-
-def generate_vimeo_video_thumbnails(sender, instance, created, **kwargs):
-    """Deprecated - replaced by generate_thumbnails."""
-    warnings.warn('This function has been replaced by generate_thumbnails.',
-                  DeprecationWarning, stacklevel=2)
-    return generate_thumbnails(sender, instance, created, **kwargs)

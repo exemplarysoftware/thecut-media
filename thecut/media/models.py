@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
-from . import fields, managers, querysets, receivers
+from . import fields, managers, querysets
 from django.contrib.contenttypes.fields import (GenericForeignKey,
                                                 GenericRelation)
 from django.contrib.contenttypes.models import ContentType
-from django.utils.encoding import python_2_unicode_compatible
 from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
 from taggit.managers import TaggableManager
 from thecut.ordering.models import OrderMixin
 from thecut.publishing.models import PublishableResource
-import django
 
 
 @python_2_unicode_compatible
@@ -33,10 +32,7 @@ class AbstractMediaItem(PublishableResource):
 
     content = models.TextField(blank=True, default='')
 
-    if django.VERSION < (1, 7):
-        tags = TaggableManager(blank=True)
-    else:
-        tags = TaggableManager(blank=True, related_name='+')
+    tags = TaggableManager(blank=True, related_name='+')
 
     attachments = GenericRelation('media.AttachedMediaItem',
                                   content_type_field='content_type',
@@ -66,7 +62,7 @@ class AttachedMediaItem(OrderMixin, models.Model):
     parent_content_type = models.ForeignKey(
         'contenttypes.ContentType',
         related_name='attachedmediaitem_parent_set', on_delete=models.CASCADE)
-    parent_object_id = models.IntegerField(db_index=True)
+    parent_object_id = models.TextField(db_index=True)
     parent_content_object = GenericForeignKey('parent_content_type',
                                               'parent_object_id')
 
