@@ -9,7 +9,6 @@ from sorl.thumbnail import get_thumbnail
 import itertools
 import os
 import re
-import warnings
 
 
 def find_thumbnails_in_templates():

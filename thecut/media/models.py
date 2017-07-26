@@ -4,12 +4,11 @@ from . import fields, managers, querysets
 from django.contrib.contenttypes.fields import (GenericForeignKey,
                                                 GenericRelation)
 from django.contrib.contenttypes.models import ContentType
-from django.utils.encoding import python_2_unicode_compatible
 from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
 from taggit.managers import TaggableManager
 from thecut.ordering.models import OrderMixin
 from thecut.publishing.models import PublishableResource
-import django
 
 
 @python_2_unicode_compatible

@@ -3,9 +3,7 @@ from __future__ import absolute_import, unicode_literals
 from django.core.files.uploadedfile import TemporaryUploadedFile
 from django.utils._os import upath
 from magic import Magic
-from thecut.media import utils as media_utils
 from thecut.media.mediasources import settings
-import warnings
 import os
 
 

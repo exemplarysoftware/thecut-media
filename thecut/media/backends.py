@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 from sorl.thumbnail import base, default
-from sorl.thumbnail.conf import (settings as thumbnail_settings,
-                                 defaults as thumbnail_defaults)
+from sorl.thumbnail.conf import (defaults as thumbnail_defaults,
+                                 settings as thumbnail_settings)
 from sorl.thumbnail.images import ImageFile
 from thecut.media import settings, tasks, utils
 
