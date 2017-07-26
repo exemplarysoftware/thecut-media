@@ -40,7 +40,7 @@ class Migration(migrations.Migration):
                 'abstract': False,
                 'get_latest_by': 'publish_at',
             },
-            bases=(thecut.media.mediasources.models.IsProcessedMixin, thecut.media.mediasources.models.FileMixin, models.Model),
+            bases=(thecut.media.mediasources.models.FileMixin, models.Model),
         ),
         migrations.CreateModel(
             name='Document',
@@ -66,7 +66,7 @@ class Migration(migrations.Migration):
                 'abstract': False,
                 'get_latest_by': 'publish_at',
             },
-            bases=(thecut.media.mediasources.models.IsProcessedMixin, thecut.media.mediasources.models.FileMixin, models.Model),
+            bases=(thecut.media.mediasources.models.FileMixin, models.Model),
         ),
         migrations.CreateModel(
             name='Image',
@@ -92,7 +92,7 @@ class Migration(migrations.Migration):
                 'abstract': False,
                 'get_latest_by': 'publish_at',
             },
-            bases=(thecut.media.mediasources.models.IsProcessedMixin, thecut.media.mediasources.models.FileMixin, models.Model),
+            bases=(thecut.media.mediasources.models.FileMixin, models.Model),
         ),
         migrations.CreateModel(
             name='Video',
@@ -118,7 +118,7 @@ class Migration(migrations.Migration):
                 'abstract': False,
                 'get_latest_by': 'publish_at',
             },
-            bases=(thecut.media.mediasources.models.IsProcessedMixin, thecut.media.mediasources.models.FileMixin, models.Model),
+            bases=(thecut.media.mediasources.models.FileMixin, models.Model),
         ),
         migrations.CreateModel(
             name='VimeoVideo',
@@ -146,7 +146,7 @@ class Migration(migrations.Migration):
                 'abstract': False,
                 'get_latest_by': 'publish_at',
             },
-            bases=(thecut.media.mediasources.models.IsProcessedMixin, models.Model),
+            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='YoutubeVideo',
@@ -172,6 +172,6 @@ class Migration(migrations.Migration):
                 'abstract': False,
                 'get_latest_by': 'publish_at',
             },
-            bases=(thecut.media.mediasources.models.IsProcessedMixin, models.Model),
+            bases=(models.Model,),
         ),
     ]
