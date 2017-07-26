@@ -100,9 +100,6 @@ class Document(AbstractDocument):
 
     pass
 
-models.signals.post_save.connect(utils.generate_thumbnails, sender=Document)
-models.signals.pre_delete.connect(utils.delete_file, sender=Document)
-
 
 class AbstractImage(FileMixin, AbstractMediaItem):
 
@@ -121,9 +118,6 @@ class AbstractImage(FileMixin, AbstractMediaItem):
 class Image(AbstractImage):
 
     pass
-
-models.signals.post_save.connect(utils.generate_thumbnails, sender=Image)
-models.signals.pre_delete.connect(utils.delete_file, sender=Image)
 
 
 class AbstractVideo(FileMixin, AbstractMediaItem):
@@ -164,9 +158,6 @@ class AbstractVideo(FileMixin, AbstractMediaItem):
 class Video(AbstractVideo):
 
     pass
-
-models.signals.post_save.connect(utils.generate_thumbnails, sender=Video)
-models.signals.pre_delete.connect(utils.delete_file, sender=Video)
 
 
 class AbstractYoutubeVideo(AbstractMediaItem):
@@ -228,9 +219,6 @@ class AbstractYoutubeVideo(AbstractMediaItem):
 class YoutubeVideo(AbstractYoutubeVideo):
 
     pass
-
-models.signals.post_save.connect(utils.generate_thumbnails,
-                                 sender=YoutubeVideo)
 
 
 class AbstractVimeoVideo(AbstractMediaItem):
@@ -301,8 +289,6 @@ class VimeoVideo(AbstractVimeoVideo):
 
     pass
 
-models.signals.post_save.connect(utils.generate_thumbnails, sender=VimeoVideo)
-
 
 class AbstractAudio(FileMixin, AbstractMediaItem):
 
@@ -318,5 +304,3 @@ class AbstractAudio(FileMixin, AbstractMediaItem):
 class Audio(AbstractAudio):
 
     pass
-
-models.signals.pre_delete.connect(utils.delete_file, sender=Audio)
