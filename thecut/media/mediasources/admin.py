@@ -8,6 +8,7 @@ from .models import Audio, Document, Image, Video, VimeoVideo, YoutubeVideo
 from .views import UploadView
 from django.contrib import admin
 from django.utils.functional import LazyObject
+from django.utils.html import format_html
 from thecut.authorship.admin import AuthorshipMixin
 
 
@@ -19,11 +20,11 @@ def preview_image(obj):
         except:
             pass
         else:
-            html = '<span class="image-preview"><img src="{0}" alt="{1}" />' \
-                   '</span>'.format(thumb.url, obj)
+            html = format_html(
+                '<span class="image-preview"><img src="{}" alt="{}" /></span>',
+                thumb.url, obj)
     return html
 preview_image.short_description = 'Preview'
-preview_image.allow_tags = True
 
 
 class AdminMediaMixin(object):
