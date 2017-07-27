@@ -1,34 +1,38 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
-from celery.task import task
+from celery import shared_task
+from celery.utils.log import get_task_logger
+from django.core.files.storage import get_storage_class
 from sorl.thumbnail import get_thumbnail
 from thecut.media import settings
 
 
-@task(ignore_result=True)
-def generate_thumbnail(file_, geometry_string, options):
-    logger = generate_thumbnail.get_logger()
+logger = get_task_logger(__name__)
+
+
+@shared_task(compression='gzip', ignore_result=True, serializer='json')
+def generate_thumbnail(file_name, file_storage, geometry_string, options):
+
     options.update({'no_placeholder': True})
-    get_thumbnail(file_, geometry_string, **options)
-    logger.info('Generated {0} thumbnail for {1}'.format(geometry_string,
-                                                         file_))
+
+    storage_import_path, storage_args, storage_kwargs = file_storage
+    Storage = get_storage_class(storage_import_path)
+    storage = Storage(*storage_args, **storage_kwargs)
+
+    with storage.open(file_name) as file_:
+        get_thumbnail(file_, geometry_string, **options)
+
+    logger.info('Generated {} thumbnail for {}'.format(geometry_string,
+                                                       file_name))
 
 
-@task(ignore_result=True)
-def generate_thumbnails(file_, thumbnail_sizes=None):
-    logger = generate_thumbnail.get_logger()
+@shared_task(compression='gzip', ignore_result=True, serializer='json')
+def generate_thumbnails(file_name, file_storage, thumbnail_sizes=None):
     thumbnails = thumbnail_sizes or settings.PREGENERATE_THUMBNAIL_SIZES
 
-    # Workaround for LazyStorage / LazyObject, which can't be pickled
-    if hasattr(file_, 'storage') \
-            and hasattr(file_.storage, '_wrapped') \
-            and hasattr(file_.storage, '_setup'):
-        file_.storage._setup()
-        file_.storage = file_.storage._wrapped
-
     for geometry_string, options in thumbnails:
-        try:
-            generate_thumbnail.delay(file_, geometry_string, options)
-        except:
-            pass
-    logger.info('Queued thumbnail generation for {0}'.format(file_))
+        generate_thumbnail.delay(
+            file_name=file_name, file_storage=file_storage,
+            geometry_string=geometry_string, options=options)
+
+    logger.info('Queued thumbnail generation for {}'.format(file_name))

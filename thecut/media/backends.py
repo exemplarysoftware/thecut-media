@@ -36,13 +36,16 @@ class ThumbnailBackend(base.ThumbnailBackend):
         else:
             # Queue thumbnail generation, and return placeholder
             default.kvstore.delete(thumbnail, delete_thumbnails=False)
+            # TODO - still required? no longer pickling.
             # Workaround for LazyStorage / LazyObject, which can't be pickled
             if hasattr(file_, 'storage') \
                     and hasattr(file_.storage, '_wrapped') \
                     and hasattr(file_.storage, '_setup'):
                 file_.storage._setup()
                 file_.storage = file_.storage._wrapped
-            tasks.generate_thumbnail.delay(file_, geometry_string, options)
+            tasks.generate_thumbnail.delay(
+                file_name=file_.name, file_storage=file_.storage.deconstruct(),
+                geometry_string=geometry_string, options=options)
             placeholder = utils.get_placeholder_image()
             return super(ThumbnailBackend, self).get_thumbnail(
                 placeholder, geometry_string, **options)

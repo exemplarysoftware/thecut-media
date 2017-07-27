@@ -10,7 +10,19 @@ import os
 def generate_thumbnails(sender, instance, created, raw=False, **kwargs):
     if created and settings.QUEUE_THUMBNAILS and not raw:
         from thecut.media import tasks
-        tasks.generate_thumbnails(instance.get_image(no_placeholder=True))
+
+        file_ = instance.get_image(no_placeholder=True)
+
+        # TODO - still required? no longer pickling.
+        # Workaround for LazyStorage / LazyObject, which can't be pickled
+        if hasattr(file_, 'storage') \
+                and hasattr(file_.storage, '_wrapped') \
+                and hasattr(file_.storage, '_setup'):
+            file_.storage._setup()
+            file_.storage = file_.storage._wrapped
+
+        tasks.generate_thumbnails.delay(
+            file_name=file_.name, file_storage=file_.storage.deconstruct())
 
 
 def delete_file(sender, instance, **kwargs):
