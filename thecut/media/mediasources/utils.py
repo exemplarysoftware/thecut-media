@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+
+import os
+
 from django.core.files.base import File
 from django.core.files.uploadedfile import TemporaryUploadedFile
 from django.utils._os import upath
 from magic import Magic
 from sorl.thumbnail.images import ImageFile
 from thecut.media.mediasources import settings
-import os
 
 
 def generate_thumbnails(sender, instance, created, raw=False, **kwargs):

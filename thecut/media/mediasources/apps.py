@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
-from . import utils as receivers
+
 from django import apps
 from django.db.models import signals
+
+from . import utils as receivers
 
 
 class AppConfig(apps.AppConfig):

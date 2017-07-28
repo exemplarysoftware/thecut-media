@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+
 from django.core.files.base import File
 from sorl.thumbnail import base, default
-from sorl.thumbnail.conf import (defaults as thumbnail_defaults,
-                                 settings as thumbnail_settings)
+from sorl.thumbnail.conf import defaults as thumbnail_defaults
+from sorl.thumbnail.conf import settings as thumbnail_settings
 from sorl.thumbnail.images import ImageFile
 from thecut.media import settings, tasks, utils
 
@@ -39,7 +40,7 @@ class ThumbnailBackend(base.ThumbnailBackend):
             default.kvstore.delete(thumbnail, delete_thumbnails=False)
             if isinstance(file_, (File, ImageFile)):
                 # TODO - still required? no longer pickling.
-                # Workaround for LazyStorage / LazyObject, which can't be pickled
+                # Workaround for LazyStorage/LazyObject, which can't be pickled
                 if hasattr(file_, 'storage') \
                         and hasattr(file_.storage, '_wrapped') \
                         and hasattr(file_.storage, '_setup'):

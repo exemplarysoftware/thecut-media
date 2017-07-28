@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
-from . import settings
+
+import itertools
+import os
+import re
+
 from django.apps import apps
 from django.core.files.base import File
 from django.core.files.images import ImageFile
 from django.template import engines
 from django.utils.encoding import smart_text
 from sorl.thumbnail import get_thumbnail
-import itertools
-import os
-import re
+
+from . import settings
 
 
 def find_thumbnails_in_templates():

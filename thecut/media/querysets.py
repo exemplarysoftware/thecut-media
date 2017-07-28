@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+
+from functools import partial
+
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from functools import partial
 from thecut.media import utils
 
 

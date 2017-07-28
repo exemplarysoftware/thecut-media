@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+
 from celery import shared_task
 from celery.utils.log import get_task_logger
 from django.core.files.storage import get_storage_class
 from sorl.thumbnail import get_thumbnail
 from thecut.media import settings
-
 
 logger = get_task_logger(__name__)
 

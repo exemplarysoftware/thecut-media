@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
-from . import views
+
 from django.conf.urls import include, url
 from rest_framework.urlpatterns import format_suffix_patterns
+
+from . import views
 
 
 def generate_urls(admin_site_name, namespace, media_models):

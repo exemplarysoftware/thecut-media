@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
-from . import forms, pagination, permissions, serializers
-from ..models import MediaContentType
+
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from rest_framework import authentication, generics, renderers, status
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.views import APIView
+
+from . import forms, pagination, permissions, serializers
+from ..models import MediaContentType
 
 
 class APIMixin(object):

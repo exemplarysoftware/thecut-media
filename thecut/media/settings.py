@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+
 from django.conf import settings
 from sorl.thumbnail.conf import settings as sorl_settings
-
 
 DEBUG = getattr(settings, 'MEDIA_DEBUG', settings.DEBUG)
 

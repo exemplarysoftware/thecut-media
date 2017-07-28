@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+
+from django.conf.urls import include, url
+from django.contrib import admin
+from django.contrib.contenttypes.admin import GenericStackedInline
+
 from . import settings
 from .api.urls import generate_urls as generate_api_urls
 from .forms import AttachedMediaItemInlineForm
 from .models import AttachedMediaItem
-from django.conf.urls import include, url
-from django.contrib import admin
-from django.contrib.contenttypes.admin import GenericStackedInline
 
 try:
     from django.urls import reverse
