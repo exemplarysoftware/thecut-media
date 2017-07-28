@@ -4,6 +4,7 @@ from django.core.files.base import File
 from django.core.files.uploadedfile import TemporaryUploadedFile
 from django.utils._os import upath
 from magic import Magic
+from sorl.thumbnail.images import ImageFile
 from thecut.media.mediasources import settings
 import os
 
@@ -14,7 +15,7 @@ def generate_thumbnails(sender, instance, created, raw=False, **kwargs):
 
         file_ = instance.get_image(no_placeholder=True)
 
-        if isinstance(file_, File):
+        if isinstance(file_, (File, ImageFile)):
             # TODO - still required? no longer pickling.
             # Workaround for LazyStorage / LazyObject, which can't be pickled
             if hasattr(file_, 'storage') \

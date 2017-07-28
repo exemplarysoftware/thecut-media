@@ -37,7 +37,7 @@ class ThumbnailBackend(base.ThumbnailBackend):
         else:
             # Queue thumbnail generation, and return placeholder
             default.kvstore.delete(thumbnail, delete_thumbnails=False)
-            if isinstance(file_, File):
+            if isinstance(file_, (File, ImageFile)):
                 # TODO - still required? no longer pickling.
                 # Workaround for LazyStorage / LazyObject, which can't be pickled
                 if hasattr(file_, 'storage') \

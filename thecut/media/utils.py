@@ -96,7 +96,7 @@ def queue_thumbnails():
         if hasattr(model_class, 'get_image'):
             for mediaitem in model_class.objects.all():
                 file_ = mediaitem.get_image(no_placeholder=True)
-                if isinstance(file_, File):
+                if isinstance(file_, (File, ImageFile)):
                     generate_thumbnails.delay(
                         file_name=file_.name,
                         file_storage=file_.storage.deconstruct())
