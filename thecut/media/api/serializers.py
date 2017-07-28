@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+
+from collections import OrderedDict
+
+from rest_framework import serializers
+from rest_framework.reverse import reverse
+
 from .. import utils
 from ..mediasources.models import FileMixin
 from ..mediasources.settings import USE_S3UPLOAD
 from ..models import MediaContentType
-from collections import OrderedDict
-from rest_framework import serializers
-from rest_framework.reverse import reverse
 
 try:
     from django.urls import NoReverseMatch

@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
-from . import content_types, utils
+
+import codecs
+import json
+import re
 from datetime import timedelta
+
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.safestring import mark_safe
 from sorl.thumbnail import get_thumbnail
 from thecut.media.models import AbstractMediaItem
-import codecs
-import json
-import re
+
+from . import content_types, utils
 
 try:
     from urllib.parse import urlencode

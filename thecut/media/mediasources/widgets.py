@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
-from ..utils import get_preview_thumbnail
+
 from django.forms.widgets import ClearableFileInput
 from django.utils.safestring import mark_safe
+
+from ..utils import get_preview_thumbnail
 
 
 class AdminImageWidget(ClearableFileInput):

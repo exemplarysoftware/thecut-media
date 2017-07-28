@@ -1,14 +1,18 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
-from . import settings
+
+import itertools
+import os
+import re
+
 from django.apps import apps
+from django.core.files.base import File
 from django.core.files.images import ImageFile
 from django.template import engines
 from django.utils.encoding import smart_text
 from sorl.thumbnail import get_thumbnail
-import itertools
-import os
-import re
+
+from . import settings
 
 
 def find_thumbnails_in_templates():
@@ -94,4 +98,11 @@ def queue_thumbnails():
         model_class = contenttype.model_class()
         if hasattr(model_class, 'get_image'):
             for mediaitem in model_class.objects.all():
-                generate_thumbnails(mediaitem.get_image())
+                file_ = mediaitem.get_image(no_placeholder=True)
+                if isinstance(file_, (File, ImageFile)):
+                    generate_thumbnails.delay(
+                        file_name=file_.name,
+                        file_storage=file_.storage.deconstruct())
+                else:
+                    generate_thumbnails.delay(file_name=file_,
+                                              file_storage=None)

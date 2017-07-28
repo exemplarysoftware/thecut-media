@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+
+import os
+
+from s3upload.views import DropzoneS3UploadFormView
+
 from . import AdminAddMixin
 from ..forms.s3upload import ContentTypeValidateS3UploadForm
-from s3upload.views import DropzoneS3UploadFormView
-import os
 
 
 class DropzoneUploadView(AdminAddMixin, DropzoneS3UploadFormView):

@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
-from .utils import get_media_source_models
-from django.apps import apps
-from django.contrib.contenttypes.models import ContentTypeManager
-from django.db.models import Manager, Model, Q
+
 import functools
 import operator
+
+from django.apps import apps
+from django.contrib.contenttypes.models import ContentTypeManager
+from django.db.models import Q, Manager, Model
+
+from .utils import get_media_source_models
 
 try:
     basestring
