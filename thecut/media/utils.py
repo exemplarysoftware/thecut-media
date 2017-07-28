@@ -2,6 +2,7 @@
 from __future__ import absolute_import, unicode_literals
 from . import settings
 from django.apps import apps
+from django.core.files.base import File
 from django.core.files.images import ImageFile
 from django.template import engines
 from django.utils.encoding import smart_text
@@ -95,6 +96,10 @@ def queue_thumbnails():
         if hasattr(model_class, 'get_image'):
             for mediaitem in model_class.objects.all():
                 file_ = mediaitem.get_image(no_placeholder=True)
-                generate_thumbnails.delay(
-                    file_name=file_.name,
-                    file_storage=file_.storage.deconstruct())
+                if isinstance(file_, File):
+                    generate_thumbnails.delay(
+                        file_name=file_.name,
+                        file_storage=file_.storage.deconstruct())
+                else:
+                    generate_thumbnails.delay(file_name=file_,
+                                              file_storage=None)

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+from django.core.files.base import File
 from django.core.files.uploadedfile import TemporaryUploadedFile
 from django.utils._os import upath
 from magic import Magic
@@ -13,16 +14,18 @@ def generate_thumbnails(sender, instance, created, raw=False, **kwargs):
 
         file_ = instance.get_image(no_placeholder=True)
 
-        # TODO - still required? no longer pickling.
-        # Workaround for LazyStorage / LazyObject, which can't be pickled
-        if hasattr(file_, 'storage') \
-                and hasattr(file_.storage, '_wrapped') \
-                and hasattr(file_.storage, '_setup'):
-            file_.storage._setup()
-            file_.storage = file_.storage._wrapped
-
-        tasks.generate_thumbnails.delay(
-            file_name=file_.name, file_storage=file_.storage.deconstruct())
+        if isinstance(file_, File):
+            # TODO - still required? no longer pickling.
+            # Workaround for LazyStorage / LazyObject, which can't be pickled
+            if hasattr(file_, 'storage') \
+                    and hasattr(file_.storage, '_wrapped') \
+                    and hasattr(file_.storage, '_setup'):
+                file_.storage._setup()
+                file_.storage = file_.storage._wrapped
+            tasks.generate_thumbnails.delay(
+                file_name=file_.name, file_storage=file_.storage.deconstruct())
+        else:
+            tasks.generate_thumbnails.delay(file_name=file_, file_storage=None)
 
 
 def delete_file(sender, instance, **kwargs):

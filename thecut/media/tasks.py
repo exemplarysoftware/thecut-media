@@ -15,12 +15,14 @@ def generate_thumbnail(file_name, file_storage, geometry_string, options):
 
     options.update({'no_placeholder': True})
 
-    storage_import_path, storage_args, storage_kwargs = file_storage
-    Storage = get_storage_class(storage_import_path)
-    storage = Storage(*storage_args, **storage_kwargs)
-
-    with storage.open(file_name) as file_:
-        get_thumbnail(file_, geometry_string, **options)
+    if file_storage:
+        storage_import_path, storage_args, storage_kwargs = file_storage
+        Storage = get_storage_class(storage_import_path)
+        storage = Storage(*storage_args, **storage_kwargs)
+        with storage.open(file_name) as file_:
+            get_thumbnail(file_, geometry_string, **options)
+    else:
+        get_thumbnail(file_name, geometry_string, **options)
 
     logger.info('Generated {} thumbnail for {}'.format(geometry_string,
                                                        file_name))
