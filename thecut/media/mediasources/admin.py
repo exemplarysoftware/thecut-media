@@ -162,7 +162,8 @@ admin.site.register(Video, VideoAdmin)
 class YoutubeVideoAdmin(AuthorshipMixin, AdminMediaMixin, admin.ModelAdmin):
 
     fieldsets = [
-        (None, {'fields': ['url', 'title', 'caption', 'content', 'tags']}),
+        (None, {'fields': ['url', 'title', 'caption', 'content',
+                           'custom_thumbnail', 'tags']}),
         ('Publishing', {'fields': [('publish_at', 'is_enabled'), 'expire_at',
                                    'publish_by', 'is_featured',
                                    ('created_at', 'created_by'),
