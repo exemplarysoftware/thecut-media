@@ -172,6 +172,14 @@ class AbstractYoutubeVideo(AbstractMediaItem):
 
     url = models.URLField()
 
+    custom_thumbnail = models.ImageField(
+        max_length=250, blank=True, null=True,
+        upload_to='uploads/media/customthumbnails/%Y/%m/%d',
+        help_text='You can use this field to change the thumbnail image '
+                  'shown for this video throughout the site. If this is not '
+                  'set, an image will automatically be retrieved from the '
+                  'video itself.')
+
     class Meta(AbstractMediaItem.Meta):
         abstract = True
 
@@ -197,6 +205,8 @@ class AbstractYoutubeVideo(AbstractMediaItem):
         return self.url
 
     def get_image(self, no_placeholder=False):
+        if self.custom_thumbnail:
+            return self.custom_thumbnail
         return self.oembed_data.get('thumbnail_url')
 
     def get_video_id(self):
