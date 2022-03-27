@@ -5,7 +5,6 @@ import os
 
 from django.core.files.base import File
 from django.core.files.uploadedfile import TemporaryUploadedFile
-from django.utils._os import upath
 from magic import Magic
 from sorl.thumbnail.images import ImageFile
 from thecut.media.mediasources import settings
@@ -43,7 +42,7 @@ def get_content_type(uploaded_file):
        uploaded_file.name[-5:].lower() == '.xlsx' or \
        uploaded_file.name[-5:].lower() == '.pptx':
             msooxml_magic_file = os.path.join(
-                os.path.dirname(os.path.realpath(upath(__file__))),
+                os.path.dirname(os.path.realpath(__file__)),
                 'magic/msooxml.magic')
     else:
         msooxml_magic_file = None
